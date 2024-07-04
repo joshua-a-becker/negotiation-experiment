@@ -32,7 +32,7 @@ function Calculator(props) {
     .join(", ");
 
     const localHandleOptionChange = featureName => {
-        console.log(selectedFeatures)
+        console.log('select',selectedFeatures)
         setSelectedFeatures(prev => {
             const newState = { ...prev, [featureName]: !prev[featureName] };
             handleOptionChange(newState)
@@ -48,7 +48,9 @@ function Calculator(props) {
           const roleBonus = feature.bonus[role] || 0;
           return (total + (isSelected ? roleBonus : 0));
         }, 0);
+        console.log("Updated playerBonusesByRole_informal:", pointsReturn);
         return(pointsReturn);
+    
     };
 
 

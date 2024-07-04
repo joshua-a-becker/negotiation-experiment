@@ -17,6 +17,9 @@ import "./stages/TableStyles.css";
 
 
 
+
+
+
 export function Stage() {
 
   const player = usePlayer();
@@ -26,6 +29,12 @@ export function Stage() {
   const game = useGame();
 
   const currentPhase = stage.get("name");
+
+
+
+
+
+
 
   
   if(game.get("featureData")===undefined) return <Loading />;

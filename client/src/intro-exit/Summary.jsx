@@ -22,29 +22,37 @@ export function Summary({next}) {
     const roleIdentifier = player.get("role");
     const roundPoints = player.get("roundPoints") || 0;
     const cumulativePoints = player.get("cumulativePoints") || 0;
-    const roundPointsHistory = game.get("RoundPointsHistory");
+    const roundPointsHistory = game.get("RoundPointsHistory")||[] ;
     const totalRounds = roundPointsHistory ? roundPointsHistory.length / 3 : 0;
-    const currentPlayerRoundPoints = roundPointsHistory.filter(({ role }) => role === roleIdentifier);
+   const currentPlayerRoundPoints = roundPointsHistory.filter(({ role }) => role === roleIdentifier);
     const roundScores = currentPlayerRoundPoints.map(({ totalPoints }) => totalPoints).join(" + ");
 
+    const proposalHistory = game.get("proposalHistory") || []; 
+    const lastProposal = proposalHistory[proposalHistory.length - 1]; // last one
+    const lastProposalMessage = lastProposal ? `Good job on your last proposal: ${lastProposal}` : "";
+
+    console.log(game.get("proposalHistory"))    
+
+    console.log('last',lastProposal)
+  
+
+
     useEffect(() => {
-        // 假设游戏状态中保存的属性名为RoundPointsHistory
+
         const roundPointsHistory = game.get("RoundPointsHistory");
         
         const missingProposal = game.get("missingProposal")
 
         if (roundPointsHistory) {
-          // 计算总轮数
+
           const totalRounds = roundPointsHistory.length;
-          
-          // 计算累积得分，并生成每轮得分的描述字符串
           let cumulativePoints = 0;
           const roundScores = roundPointsHistory.map(({ totalPoints }) => {
             cumulativePoints += totalPoints;
             return totalPoints;
           }).join(" + ");
     
-          // 设置总结信息
+  
           console.log(`In total you have earned £ ${roundScores} across ${totalRounds} rounds, for a total of ${cumulativePoints}.`);
           
           console.log(game.get("missingProposal"))    
@@ -72,6 +80,9 @@ export function Summary({next}) {
           {/* <p>In total you have earned £{roundScores} across {totalRounds} rounds, for a total bonus of ${cumulativePoints}  with basic payment £{basicpay}.</p> */}
           { game.get("missingProposal") ? <>No proposal was submitted in time.<br/><br/></> : <></>}
           { game.get("pass")  ? "" : <>The proposal did not pass.<br/><br/></> }
+       
+          { game.get("pagoendTriggeredss")  ? "" : <>阿斯顿发啊都是非法所得<br/><br/></> }
+
           {returnText}
           <br/><br/><strong>Please enter the code "completed" to indicate that you have completed the task.</strong>
           <br />

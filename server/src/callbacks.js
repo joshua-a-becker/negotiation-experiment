@@ -118,32 +118,57 @@ Empirica.onStageStart(({ stage }) => {
 
 Empirica.onStageEnded(({ stage, game }) => {
  
+// 检查当前阶段是否为 "Discussion and Informal Vote"
+if (stage.get("name") === "Discussion and Informal Vote") {
+  console.log("End of Discussion and Informal Vote stage");
+  const players = stage.currentGame.players;
+  for (const player of players) {
+
+
+  const goendTriggeredyes = player.get("goendTriggered");
+
+
+
+  // 检查是否触发了提前结束游戏的条件
+  if (goendTriggeredyes) {
+    console.log(`Game ended early due to trigger in Discussion and Informal Vote stage.`);
+    player.set("endearly", true); 
+    // 结束游戏，标记为 "failed" 并附加原因
+    stage.currentGame.end("failed", "end early due to goendTriggered");
+    
+    break; // 跳出循环，因为游戏已经结束
+    
+  }
+}
+}
+
+
   // only needed for the formal vote
   if (stage.get("name") !== "Formal Vote") return;
 
   const players = stage.currentGame.players;
   const round = stage.round;
-  const roundIndex = round.get("index"); // 获取当前轮次的索引
-  const pass = round.get("pass"); // 获取这一轮是否通过的标志
+  const roundIndex = round.get("index"); 
+  const pass = round.get("pass"); 
 
-  // 从round获取存储的每个角色奖励分数
+
   const playerBonusesByRole = round.get("playerBonusesByRole") || {};
 
-  // 如果这一轮没有通过，我们可以选择将所有玩家的本轮分数设置为0
+
   if (!pass) {
     for (const role in playerBonusesByRole) {
       playerBonusesByRole[role] = 0;
     }
   }
 
-   // 获取之前所有轮次的分数历史记录
+
    let roundPointsHistory = stage.currentGame.get("RoundPointsHistory") || [];
   
    for (const player of players) {
      const role = player.get("role");
-     const roleName = player.get("name"); // 获取玩家的角色名
+     const roleName = player.get("name"); 
  
-     let totalPoints = playerBonusesByRole[role] || 0; // 从playerBonusesByRole获取分数，默认为0
+     let totalPoints = playerBonusesByRole[role] || 0; 
  
      const cumulativePoints = player.get("cumulativePoints") || 0;
      const updatedCumulativePoints = totalPoints + cumulativePoints;
@@ -151,11 +176,11 @@ Empirica.onStageEnded(({ stage, game }) => {
      player.set("roundPoints", totalPoints);
      player.set("cumulativePoints", updatedCumulativePoints);
      player.set("RoundPointsHistory", roundPointsHistory);
-     // 将本轮分数添加到历史记录中
+
      roundPointsHistory.push({ roundIndex, totalPoints,  roleName, role });
    }
  
-   // 更新游戏对象中的历史记录
+
    stage.currentGame.set("RoundPointsHistory", roundPointsHistory);
  
    console.log("Round Points History:");
@@ -163,6 +188,19 @@ Empirica.onStageEnded(({ stage, game }) => {
    roundPointsHistory.forEach((roundData) => {
      console.log(`Round ${roundData.roundIndex + 1}: Rolename: ${roundData.roleName}, Role: ${roundData.role}, Total points: ${roundData.totalPoints}`);
    });
+
+
+
+
+
+
+
+
+
+
+
+
+
  });
 
 Empirica.onRoundEnded(({ round }) => {
@@ -252,17 +290,17 @@ Empirica.on("round", "goendTriggered", (ctx, { round, goendTriggered }) => {
  
   if (goendTriggered === true) {
     console.log("Go end triggered, preparing to move.");
-    // 获取当前游戏的所有玩家
+
     const players = round.currentGame.players;
-    // 获取当前回合的所有阶段
+
     const stages = round.stages;
 
-    // 查找 Result 阶段
+
     const resultStage = stages.find(stage => stage.name === "Result");
 
     if (resultStage) {
       players.forEach(player => {
-        // 设置每个玩家当前的阶段为 Result
+      
         player.stage.set(resultStage);
         console.log(`Player ${player.get("name")} moved to Result stage.`);
       });

@@ -16,10 +16,23 @@ import { ChatProvider } from "./ChatContext";
 import { AutoPlayerIdForm } from "./autoPlayerIdForm";
 import { MyConsent } from "./intro-exit/MyConsent.jsx"; 
 import { isDevelopment } from "@empirica/core/player"
-
+import {
+  usePlayer,
+  usePlayers,
+  useRound,
+  useStage,
+  useGame,
+} from "@empirica/core/player/classic/react";
 
 
 export default function App() {
+
+
+  const player = usePlayer();
+  const players = usePlayers();
+  const round = useRound();
+  const stage = useStage();
+  const game = useGame();
 
   const urlParams = new URLSearchParams(window.location.search);
   const playerKey = urlParams.get("participantKey") || "";
@@ -39,7 +52,13 @@ export default function App() {
     
   }
 
-  function exitSteps({ game, player }) {
+  function exitSteps({ game, player, round }) {
+    
+    if (game.get("goendTriggered") === true) {
+      return [Summary, ExitSurvey];
+  }
+
+
     if(player.get("ended")==="game failed" || player.get("ended")==="game terminated" || player.get("ended")==="no more games") {
       return [Sorry, ExitSurvey];  
     }

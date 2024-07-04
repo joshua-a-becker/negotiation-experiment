@@ -37,7 +37,18 @@ export function Choice() {
 
 
   const generateUniqueId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+  const [totalPoints, setTotalPoints] = useState(0);
 
+  const [proposalSubmitted, setProposalSubmitted] = useState(false);
+  const [votes, setVotes] = useState({});
+  const anySubmitted = round.get("anySubmitted");
+  
+  const submittedData_informal = round.get("submittedData_informal");
+  const nextClicked = round.get("nextClicked");
+  const votingCompleted = round.get("votingCompleted");
+  const submittedInformalVote = round.get("submittedInformalVote")
+
+  const [loading, setLoading] = useState(true);
 
   window.featureData = featureData
   
@@ -218,9 +229,9 @@ const handleContinue_goend = () => {
  ) : round.get("proposalOutcome") === "passed" ? (
    <>
      <div>Go to End. Logic Needed.</div>
-     <Button className="continue-button" handleClick={() => {round.set("goendTriggered", true); console.log("Go end triggered, preparing to move.")}}>Continue</Button>
+     <Button className="continue-button" handleClick={() => {player.stage.set("submit", true); round.set("goendTriggered", true); game.set("goendTriggered", true); player.set("goendTriggered", true); console.log("Go end triggered, preparing to move.")}}>Continue</Button>
      
-     
+
      
 
 
@@ -326,11 +337,11 @@ const handleContinue_goend = () => {
 
   const handleSubmitProposal = (submission_data) => {
 
-    console.log("setting status line 357")
-
     const ph = round.get("proposalHistory")
+    console.log("Current proposal history:", ph); 
     ph.push(submission_data)
     round.set("proposalHistory", ph)
+    game.set("proposalHistory", ph)
 
     round.set("proposalStatus", {
       status: true,
@@ -339,8 +350,8 @@ const handleContinue_goend = () => {
         vote: []
       }
     })
-    
-    console.log(round.get("proposalStatus"))
+    console.log("Updated proposal history:", round.get("proposalHistory")); 
+    console.log("proposalStatusSSS:", round.get("proposalStatus"))
 
     round.set("anySubmitted", true);   
     setProposalSubmitted(true);
@@ -351,6 +362,11 @@ const handleContinue_goend = () => {
     });
  
     round.set("submittedInformalVote", true);  
+
+    
+     console.log(`Proposal Submitted by ${submission_data.submitterRole}`);
+     console.log("Proposal Details:");
+     
 
     const messageText = `${submission_data.submitterRole} initiated an Informal Vote.`;
 
