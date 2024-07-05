@@ -118,7 +118,6 @@ Empirica.onStageStart(({ stage }) => {
 
 Empirica.onStageEnded(({ stage, game }) => {
  
-// 检查当前阶段是否为 "Discussion and Informal Vote"
 if (stage.get("name") === "Discussion and Informal Vote") {
   console.log("End of Discussion and Informal Vote stage");
   const players = stage.currentGame.players;
@@ -126,23 +125,17 @@ if (stage.get("name") === "Discussion and Informal Vote") {
 
 
   const goendTriggeredyes = player.get("goendTriggered");
-
-
-
-  // 检查是否触发了提前结束游戏的条件
   if (goendTriggeredyes) {
     console.log(`Game ended early due to trigger in Discussion and Informal Vote stage.`);
     player.set("endearly", true); 
-    // 结束游戏，标记为 "failed" 并附加原因
+
     stage.currentGame.end("failed", "end early due to goendTriggered");
     
-    break; // 跳出循环，因为游戏已经结束
+    break; 
     
   }
 }
 }
-
-
   // only needed for the formal vote
   if (stage.get("name") !== "Formal Vote") return;
 
@@ -188,18 +181,6 @@ if (stage.get("name") === "Discussion and Informal Vote") {
    roundPointsHistory.forEach((roundData) => {
      console.log(`Round ${roundData.roundIndex + 1}: Rolename: ${roundData.roleName}, Role: ${roundData.role}, Total points: ${roundData.totalPoints}`);
    });
-
-
-
-
-
-
-
-
-
-
-
-
 
  });
 
