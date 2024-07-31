@@ -67,7 +67,23 @@ export function Choice() {
 
   //-----------------------------------------------------------------------------------------------------------------------
 
+  const calculatePlayerTotalBonus = () => {
+    if (!submittedData_formal || !features) {
+      return 0; // 如果没有提交的数据或特性数据未加载，返回 0
+    }
+  
+
+    return features.reduce((total, feature) => {
+      // 检查此特性是否被选中
+      const isSelected = submittedData_formal.decisions[feature.name];
+      // 根据玩家的角色计算并累加奖金
+      const bonusAmount = isSelected ? feature.bonus[currentPlayerRole] : 0;
+      return total + bonusAmount;
+    }, 0);
+  };
+
 //reset， only for test
+
 const resetVotes = () => {
   const resetVotes = {role1: null, role2: null, role3: null};
 
@@ -81,6 +97,13 @@ const resetVotes = () => {
 };
 
 //before starting
+
+
+
+
+
+
+
 
 if (round.get("proposalOutcome") === undefined) {
   round.set("proposalOutcome", null); 
@@ -125,7 +148,7 @@ const checkAllVotes = (votes) => {
     playerBonusesByRole[player.get("role")] = playerTotalBonus;
     round.set("playerBonusesByRole", playerBonusesByRole);
   
-    console.log("Updated playerBonusesByRole£3333:", playerBonusesByRole);
+    console.log("Updated playerBonusesByRole£3333:", round.get("playerBonusesByRole"));
   };
   
   const allVoted = Object.values(votes).every(vote => vote !== null);
