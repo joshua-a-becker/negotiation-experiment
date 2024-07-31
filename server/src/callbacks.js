@@ -115,38 +115,75 @@ Empirica.onStageStart(({ stage }) => {
 });
 
 
-
 Empirica.onStageEnded(({ stage, game }) => {
- 
-if (stage.get("name") === "Discussion and Informal Vote") {
-  console.log("End of Discussion and Informal Vote stage");
-  const players = stage.currentGame.players;
-  for (const player of players) {
 
+  if (stage.get("name") === "Discussion and Informal Vote") {
+    console.log("End of Discussion and Informal Vote stage");
+    const players = stage.currentGame.players;
+    for (const player of players) {
+      const goendTriggeredyes = player.get("goendTriggered");
+      if (goendTriggeredyes) {
+        console.log(`Game ended early due to trigger in Discussion and Informal Vote stage.`);
+        player.set("endearly", true);
 
-  const goendTriggeredyes = player.get("goendTriggered");
-  if (goendTriggeredyes) {
-    console.log(`Game ended early due to trigger in Discussion and Informal Vote stage.`);
-    player.set("endearly", true); 
-
-    stage.currentGame.end("failed", "end early due to goendTriggered");
-    
-    break; 
-    
+        stage.currentGame.end("failed", "end early due to goendTriggered");
+        break;
+      }
+    }
   }
-}
-}
+
+  if (stage.get("name") === "Discussion and Informal Vote") {
+    console.log("End of Discussion and Informal Vote stage");
+
+    const round = stage.round;
+    const roundIndex = round.get("index");
+    const pass = round.get("pass");
+    const players = stage.currentGame.players;
+
+    const playerBonusesByRole = round.get("playerBonusesByRole") || {};
+
+    if (!pass) {
+      for (const role in playerBonusesByRole) {
+        playerBonusesByRole[role] = 0;
+      }
+    }
+
+    let roundPointsHistory = stage.currentGame.get("RoundPointsHistory") || [];
+
+    for (const player of players) {
+      const role = player.get("role");
+      const roleName = player.get("name");
+
+      let totalPoints = playerBonusesByRole[role] || 0;
+
+      const cumulativePoints = player.get("cumulativePoints") || 0;
+      const updatedCumulativePoints = totalPoints + cumulativePoints;
+
+      player.set("roundPoints", totalPoints);
+      player.set("cumulativePoints", updatedCumulativePoints);
+      player.set("RoundPointsHistory", roundPointsHistory);
+
+      roundPointsHistory.push({ roundIndex, totalPoints, roleName, role });
+    }
+
+    stage.currentGame.set("RoundPointsHistory", roundPointsHistory);
+
+    console.log("Round Points History:");
+
+    roundPointsHistory.forEach((roundData) => {
+      console.log(`Round ${roundData.roundIndex + 1}: Rolename: ${roundData.roleName}, Role: ${roundData.role}, Total points: ${roundData.totalPoints}`);
+    });
+  }
+
   // only needed for the formal vote
   if (stage.get("name") !== "Formal Vote") return;
 
   const players = stage.currentGame.players;
   const round = stage.round;
-  const roundIndex = round.get("index"); 
-  const pass = round.get("pass"); 
-
+  const roundIndex = round.get("index");
+  const pass = round.get("pass");
 
   const playerBonusesByRole = round.get("playerBonusesByRole") || {};
-
 
   if (!pass) {
     for (const role in playerBonusesByRole) {
@@ -154,35 +191,33 @@ if (stage.get("name") === "Discussion and Informal Vote") {
     }
   }
 
+  let roundPointsHistory = stage.currentGame.get("RoundPointsHistory") || [];
 
-   let roundPointsHistory = stage.currentGame.get("RoundPointsHistory") || [];
-  
-   for (const player of players) {
-     const role = player.get("role");
-     const roleName = player.get("name"); 
- 
-     let totalPoints = playerBonusesByRole[role] || 0; 
- 
-     const cumulativePoints = player.get("cumulativePoints") || 0;
-     const updatedCumulativePoints = totalPoints + cumulativePoints;
- 
-     player.set("roundPoints", totalPoints);
-     player.set("cumulativePoints", updatedCumulativePoints);
-     player.set("RoundPointsHistory", roundPointsHistory);
+  for (const player of players) {
+    const role = player.get("role");
+    const roleName = player.get("name");
 
-     roundPointsHistory.push({ roundIndex, totalPoints,  roleName, role });
-   }
- 
+    let totalPoints = playerBonusesByRole[role] || 0;
 
-   stage.currentGame.set("RoundPointsHistory", roundPointsHistory);
- 
-   console.log("Round Points History:");
- 
-   roundPointsHistory.forEach((roundData) => {
-     console.log(`Round ${roundData.roundIndex + 1}: Rolename: ${roundData.roleName}, Role: ${roundData.role}, Total points: ${roundData.totalPoints}`);
-   });
+    const cumulativePoints = player.get("cumulativePoints") || 0;
+    const updatedCumulativePoints = totalPoints + cumulativePoints;
 
- });
+    player.set("roundPoints", totalPoints);
+    player.set("cumulativePoints", updatedCumulativePoints);
+    player.set("RoundPointsHistory", roundPointsHistory);
+
+    roundPointsHistory.push({ roundIndex, totalPoints, roleName, role });
+  }
+
+  stage.currentGame.set("RoundPointsHistory", roundPointsHistory);
+  console.log("Round Points History:");
+  roundPointsHistory.forEach((roundData) => {
+    console.log(`Round ${roundData.roundIndex + 1}: Rolename: ${roundData.roleName}, Role: ${roundData.role}, Total points: ${roundData.totalPoints}`);
+  });
+
+});
+
+
 
 Empirica.onRoundEnded(({ round }) => {
   console.log("hello/adsf")
@@ -224,10 +259,7 @@ Empirica.on("round", "proposalStatus", (ctx, {round, proposalStatus}) => {
         }
       })
 
-      // save proposal and vote to history
-      //const ph = round.get("proposalHistory")
-      //ph.push(resultingProposal)
-      //round.append("proposalHistory", "resultingProposal")
+
       const ph = round.get("proposalVoteHistory")
       ph.push(resultingProposal)
       round.set("proposalVoteHistory", ph)

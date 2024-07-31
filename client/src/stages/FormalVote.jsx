@@ -109,6 +109,7 @@
       playerBonusesByRole[player.get("role")] = playerTotalBonus;
       round.set("playerBonusesByRole", playerBonusesByRole);
       console.log("UUUUUUspdated playerBonusesByRole:", playerBonusesByRole);
+      
   
   
       // 检查是否所有玩家都已经投票

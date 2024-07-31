@@ -81,7 +81,7 @@ export function Summary({next}) {
           { game.get("missingProposal") ? <>No proposal was submitted in time.<br/><br/></> : <></>}
           { game.get("pass")  ? "" : <>The proposal did not pass.<br/><br/></> }
        
-          { game.get("pagoendTriggeredss")  ? "" : <>阿斯顿发啊都是非法所得<br/><br/></> }
+          { game.get("pagoendTriggeredss")  ? "" : <>calculation needed at this page !!!!!!!!!!<br/><br/></> }
 
           {returnText}
           <br/><br/><strong>Please enter the code "completed" to indicate that you have completed the task.</strong>

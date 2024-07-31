@@ -97,6 +97,7 @@ const handleMakeOfficial = () => {
   round.set("votesFormal", updatedVotes);
 
   console.log(`After updating, ${playerRole} votes:`, updatedVotes);
+  
   checkAllVotes(updatedVotes);
 };
 
@@ -114,6 +115,19 @@ const handleRejectOfficial = () => {
 };
 
 const checkAllVotes = (votes) => {
+
+  const calculateAndUpdateBonuses = () => {
+    const playerTotalBonus = calculatePlayerTotalBonus();
+    const playerBonusesByRole = round.get("playerBonusesByRole") || {};
+    const totalPoints = round.get("totalPoints");
+    const role1 = players.find(p => p.get("role") === "role1").get("role");
+    playerBonusesByRole[role1] = totalPoints;
+    playerBonusesByRole[player.get("role")] = playerTotalBonus;
+    round.set("playerBonusesByRole", playerBonusesByRole);
+  
+    console.log("Updated playerBonusesByRole£3333:", playerBonusesByRole);
+  };
+  
   const allVoted = Object.values(votes).every(vote => vote !== null);
   if (allVoted) {
     const anyRejected = Object.values(votes).some(vote => vote === false);
@@ -150,10 +164,19 @@ const checkAllVotes = (votes) => {
           role: "System",
         }
       });
+
+      calculateAndUpdateBonuses();
       
     }
   }
 };
+
+
+
+
+
+
+
 
 const handleContinue_goend = () => {
   
@@ -295,7 +318,7 @@ const handleContinue_goend = () => {
         }
       });
     }
-  }, [remainingSeconds, appendSystemMessage]); // 在依赖数组中添加 appendSystemMessage
+  }, [remainingSeconds, appendSystemMessage]); 
 
   const handleInstructionsModal = function() {
     setShownInstructionsModel(!showInstructionsModal)   
