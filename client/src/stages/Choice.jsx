@@ -67,20 +67,6 @@ export function Choice() {
 
   //-----------------------------------------------------------------------------------------------------------------------
 
-  const calculatePlayerTotalBonus = () => {
-    if (!submittedData_formal || !features) {
-      return 0; // 如果没有提交的数据或特性数据未加载，返回 0
-    }
-  
-
-    return features.reduce((total, feature) => {
-      // 检查此特性是否被选中
-      const isSelected = submittedData_formal.decisions[feature.name];
-      // 根据玩家的角色计算并累加奖金
-      const bonusAmount = isSelected ? feature.bonus[currentPlayerRole] : 0;
-      return total + bonusAmount;
-    }, 0);
-  };
 
 //reset， only for test
 
@@ -275,7 +261,7 @@ const handleContinue_goend = () => {
  ) : round.get("proposalOutcome") === "passed" ? (
    <>
      <div>Go to End. Logic Needed.</div>
-     <Button className="continue-button" handleClick={() => {player.stage.set("submit", true); round.set("goendTriggered", true); game.set("goendTriggered", true); player.set("goendTriggered", true); console.log("Go end triggered, preparing to move.")}}>Continue</Button>
+     <Button className="continue-button" handleClick={() => {player.stage.set("submit", true); round.set("goendTriggered", true); game.set("goendTriggered", true); player.set("goendTriggered", true); game.set("pass", true); console.log("Go end triggered, preparing to move.")}}>Continue</Button>
      
 
      
@@ -381,6 +367,13 @@ const handleContinue_goend = () => {
     
   };
 
+
+
+
+
+
+
+
   const handleSubmitProposal = (submission_data) => {
 
     const ph = round.get("proposalHistory")
@@ -399,23 +392,62 @@ const handleContinue_goend = () => {
     console.log("Updated proposal history:", round.get("proposalHistory")); 
     console.log("proposalStatusSSS:", round.get("proposalStatus"))
 
+
+
+
+
+    function extractProductNames(history) {
+      const productNames = [];
+      history.forEach(submission => {
+        const names = Object.keys(submission.decisions); 
+        productNames.push(...names);
+      });
+      return productNames;
+    }
+
+
+    function calculateRoleScoresFromLatestSubmission(history, features) {
+      const roleScores = { role1: 0, role2: 0, role3: 0 };
+      if (history.length > 0) {
+        const latestSubmission = history[history.length - 1]; // 获取最新的提交
+        const productNames = Object.keys(latestSubmission.decisions);
+    
+        productNames.forEach(name => {
+          const feature = features.find(feature => feature.name === name);
+          if (feature) {
+            roleScores.role1 += feature.bonus.role1;
+            roleScores.role2 += feature.bonus.role2;
+            roleScores.role3 += feature.bonus.role3;
+          }
+        });
+      }
+    
+      return roleScores;
+    }
+    
+   
+    const roleScores = calculateRoleScoresFromLatestSubmission(ph, featureData.features);
+
+    console.log("Role Scores:", roleScores);
+    game.set("roleScores", roleScores);  
+    console.log("round get test", game.get("roleScores"));
+    
+
+
+
+
     round.set("anySubmitted", true);   
     setProposalSubmitted(true);
     round.set("submittedData_informal", {
-      playerID: player._id,
-      decisions: submission_data.choices,
+      playerID: player._id,   /////////////////Here Undefined!!!!!!!!!!!!!!!!
+      decisions: submission_data.decisions,
       submitterRole: submission_data.submitterRole
     });
- 
+    console.log("Submitted Data (Informal):", round.get("submittedData_informal"));// we can get the specific bonus here 
+
     round.set("submittedInformalVote", true);  
 
-    
-     console.log(`Proposal Submitted by ${submission_data.submitterRole}`);
-     console.log("Proposal Details:");
-     
-
     const messageText = `${submission_data.submitterRole} initiated an Informal Vote.`;
-
     appendSystemMessage({
       id: generateUniqueId(), 
       text: messageText,
@@ -426,10 +458,24 @@ const handleContinue_goend = () => {
         role: "Notification", 
       }
     });
-
+    console.log({featureData})
   };
 
- 
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   const header = 
     <>
@@ -487,6 +533,7 @@ const handleContinue_goend = () => {
           handleOptionChange = {handleOptionChange}
           playerRole = {player.get("role")}
         />
+  
   
         
       </div>

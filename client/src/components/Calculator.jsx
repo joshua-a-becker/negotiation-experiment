@@ -48,6 +48,7 @@ function Calculator(props) {
           const roleBonus = feature.bonus[role] || 0;
           return (total + (isSelected ? roleBonus : 0));
         }, 0);
+        console.log("Player role", playerRole);
         console.log("Updated playerBonusesByRole_informal:", pointsReturn);
         return(pointsReturn);
     
