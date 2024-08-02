@@ -50,6 +50,7 @@ function Calculator(props) {
         }, 0);
         console.log("Player role", playerRole);
         console.log("Updated playerBonusesByRole_informal:", pointsReturn);
+        
         return(pointsReturn);
     
     };

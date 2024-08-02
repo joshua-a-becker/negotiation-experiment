@@ -31,7 +31,8 @@ export function Summary({next}) {
     const lastProposalMessage = lastProposal ? `Good job on your last proposal: ${lastProposal}` : "";
     const roleScores = game.get("roleScores");// infomral 
     console.log("round get test", game.get("roleScores"));
-    const currentRoleScore = roleScores[roleIdentifier];
+    //const currentRoleScore = roleScores[roleIdentifier];
+    const currentRoleScore = roleScores?.[roleIdentifier] || null;
 
 
     console.log(game.get("proposalHistory"))    
@@ -65,17 +66,27 @@ export function Summary({next}) {
       
 
   
-    const handleContinue = () => {
-      player.stage.set("submit", true);
-    };
+ 
     const goendTriggered = game.get("goendTriggered");
     let returnText = "";
-    if (!goendTriggered){
-    const returnText = roundScores>=0 ?
-      <>You earned a bonus of £{Math.round(roundScores*100)/100} and a base payment of £{basicpay} for a total payment of £{Math.round((parseFloat(basicpay) + parseFloat(roundScores))*100)/100}.</>
-      : <>Your bonus was negative, and so was set to zero.<br/><br/>  You earned a base payment of £{basicpay}</>
-    }
+    // if (!goendTriggered){
+    // const returnText = roundScores>=0 ?
+    //   <>You earned a bonus of £{Math.round(roundScores*100)/100} and a base payment of £{basicpay} for a total payment of £{Math.round((parseFloat(basicpay) + parseFloat(roundScores))*100)/100}.</>
+    //   : <>Your bonus was negative, and so was set to zero.<br/><br/>  You earned a base payment of £{basicpay}</>
+    // }
   
+
+    if (!goendTriggered) {
+      if (roundScores >= 0) {
+          returnText = <>You earned a bonus of £{Math.round(roundScores*100)/100} and a base payment of £{basicpay} for a total payment of £{Math.round((parseFloat(basicpay) + parseFloat(roundScores))*100)/100}.</>;
+      } else {
+          returnText = <>Your bonus was negative, and so was set to zero.<br/><br/>  You earned a base payment of £{basicpay}</>;
+      }
+  } else {
+      returnText = <>Your score for this round: £{currentRoleScore.toFixed(2)} and a base payment of £{basicpay} for a total payment of £{(Math.round((parseFloat(basicpay) + parseFloat(currentRoleScore)) * 100) / 100).toFixed(2)}.</>;
+  }
+
+
     return (
       <>{game&&(<div className="waiting-section">
         <h4>
@@ -83,8 +94,14 @@ export function Summary({next}) {
           <br />
           {/* <p>In total you have earned £{roundScores} across {totalRounds} rounds, for a total bonus of ${cumulativePoints}  with basic payment £{basicpay}.</p> */}
           { game.get("missingProposal") ? <>No proposal was submitted in time.<br/><br/></> : <></>}
-          { game.get("pass")  ? "" : <>The proposal did not pass.<br/><br/></> }
-          {
+          {  game.get("pass") || game.get("goendTriggered") ? 
+  ""
+          
+           : <>The proposal did not pass.<br/><br/></> }
+          {returnText}
+
+
+          {/* {
   game.get("goendTriggered") ? 
     <>
       Your score for this round: £{currentRoleScore.toFixed(2)} and a base payment of £{basicpay} for a total payment of £{
@@ -93,7 +110,7 @@ export function Summary({next}) {
     </> 
   : 
     <>.<br/><br/></>
-}
+} */}
 
 
           <br />
@@ -101,7 +118,7 @@ export function Summary({next}) {
 
           {/* { game.get("pagoendTriggeredss")  ? "" : <> Your score for this round: £{currentRoleScore.toFixed(2)}<br /><br/><br/></> } */}
           
-          {returnText}
+      
           <br/><br/><strong>Please enter the code "completed" to indicate that you have completed the task.</strong>
           <br />
           <br/><p>Please press "OK" to acknowledge and continue.</p>

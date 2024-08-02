@@ -109,19 +109,27 @@ export function FormalSubmit() {
 
 
   const handleSubmitProposal = (event) => {
-   // player.stage.set("submit", true); // 这里假设 "submit" 是进入结果页面的正确阶段键
     event.preventDefault();
 
-  // 首先，检查是否至少选择了一个特性
-  const hasSelectedFeatureformal = Object.values(selectedFeatures).some(isSelected => isSelected);
 
-  // 如果没有选择任何特性，显示警告弹窗并退出函数
+  const hasSelectedFeatureformal = Object.values(selectedFeatures).some(isSelected => isSelected);
   if (!hasSelectedFeatureformal) {
     alert("You must propose at least one feature to include in your product.");
     return;
   }
 
-    // 假设的保存选择逻辑
+  const totalPoints = calculateTotal(); // 确保总分数是最新的
+
+  // 检查总奖金是否为负数
+  if (totalPoints < 0) {
+    const confirmResult = window.confirm("Are you sure? This proposal will earn you a negative bonus. Note that if you do not reach agreement, you will still earn the base pay for this task. Please Click 'OK' if you still want to submit this proposal, or click 'Cancel' to choose products again.");
+    if (!confirmResult) {
+      return; // 用户选择了 'Cancel'，退出函数，不提交任何东西
+    }
+  }
+
+
+  // 提交逻辑
     const choices = Object.entries(selectedFeatures).reduce((acc, [feature, isSelected]) => {
       if (isSelected) acc[feature] = features.find(f => f.name === feature).bonus[player.get("role")];
       return acc;

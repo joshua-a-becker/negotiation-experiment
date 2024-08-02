@@ -86,10 +86,30 @@
     
     
     const handleVote = (vote) => {
+
+       //bonues
+       const playerTotalBonus = calculatePlayerTotalBonus();
+       const playerBonusesByRole = round.get("playerBonusesByRole") || {};
+       const totalPoints = round.get("totalPoints");
+       const role1 = players.find(p => p.get("role") === "role1").get("role");
+       playerBonusesByRole[role1] = totalPoints;
+       playerBonusesByRole[player.get("role")] = playerTotalBonus;
+       round.set("playerBonusesByRole", playerBonusesByRole);
+       console.log("UUUUUUspdated playerBonusesByRole:", playerBonusesByRole);
+       
+  // 如果玩家点击 "Accept" 并且总奖金为负数
+  if (vote === "For" && playerTotalBonus < 0) {
+    const confirmAccept = window.confirm("Are you sure? This proposal will earn you a negative bonus. Note that if you do not reach agreement, you will still earn the base pay for this task. Please Click 'OK' if you still want to accept this proposal, or click 'Cancel' to Reject it.");
+    if (!confirmAccept) {
+      vote = "Against";  // 如果用户点击 "Cancel"，改变投票为 "Reject"
+    }
+  }
+
+
+
       player.set("vote", vote);
       console.log("Vote set for", player.id, "to", vote);
       setTimeout(() => {
-
         console.log("Checking votes:");
         players.forEach(p => {
           console.log(p.id, p.get("vote"));
@@ -100,16 +120,7 @@
     
       player.stage.set("submit", true);
  
-      //bonues
-      const playerTotalBonus = calculatePlayerTotalBonus();
-      const playerBonusesByRole = round.get("playerBonusesByRole") || {};
-      const totalPoints = round.get("totalPoints");
-      const role1 = players.find(p => p.get("role") === "role1").get("role");
-      playerBonusesByRole[role1] = totalPoints;
-      playerBonusesByRole[player.get("role")] = playerTotalBonus;
-      round.set("playerBonusesByRole", playerBonusesByRole);
-      console.log("UUUUUUspdated playerBonusesByRole:", playerBonusesByRole);
-      
+     
   
   
       // 检查是否所有玩家都已经投票

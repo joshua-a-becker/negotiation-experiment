@@ -18,9 +18,30 @@ function StrawPoll(props) {
 
 
     const handleVoteSubmit = (vote) => {
+
+        if (vote === 1 && submissionInfo && Math.round(submissionInfo.totalBonus * 100) / 100 < 0) {
         
-        props.handleVoteSubmission(vote);
+            if (window.confirm("Are you sure? This proposal will earn you a negative bonus. Note that if you do not reach agreement, you will still earn the base pay for this task. Please click 'OK' if you still wish to accept the proposal, or click 'Cancel' to reject it.  ")) {
+                props.handleVoteSubmission(1); // OK means accept 
+            } else {
+                props.handleVoteSubmission(0); // Cancel means reject 
+            }
+        } else {
+           
+            props.handleVoteSubmission(vote);
+        }
     };
+    
+    
+
+
+
+
+
+    // const handleVoteSubmit = (vote) => {
+        
+    //     props.handleVoteSubmission(vote);
+    // };
      
 
 
@@ -112,7 +133,7 @@ function StrawPoll(props) {
                     })}
                </tbody>
                 </table>
-                {(currentVote===undefined) && (<div className="total-points-display"> Total bonus: ${submissionInfo && Math.round(submissionInfo.totalBonus*100)/100}</div>)}
+                {(currentVote===undefined) && (<div className="total-points-display"> Totalss bonus: ${submissionInfo && Math.round(submissionInfo.totalBonus*100)/100}</div>)}
             {(currentVote===undefined) && (
                 <div className="voting-buttons-container">
                 <Button className="vote-button" handleClick={() => handleVoteSubmit(1)}>Accept</Button>

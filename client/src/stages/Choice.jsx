@@ -240,18 +240,12 @@ const handleContinue_goend = () => {
     proposalStatusData.status ? 
       currentlyVoted ? 
         <>
-          {/*
-            currentVote === 1 ? 
-              <>You Accepted this informal proposal.</>
-              :
-              <>You Rejected this informal proposal.</>
-          */}
           Please wait for others to vote
         </>
       :  
         "Please cast an informal vote."
     : 
- //IF the proposal passed… add text that says “Would you like to make this official? (with Yes/No buttons)
+
 
  <div className="container">
  {round.get("proposalOutcome") === "failed" ? (
@@ -260,8 +254,18 @@ const handleContinue_goend = () => {
    </>
  ) : round.get("proposalOutcome") === "passed" ? (
    <>
-     <div>Go to End. Logic Needed.</div>
-     <Button className="continue-button" handleClick={() => {player.stage.set("submit", true); round.set("goendTriggered", true); game.set("goendTriggered", true); player.set("goendTriggered", true); game.set("pass", true); console.log("Go end triggered, preparing to move.")}}>Continue</Button>
+     <div>Please click the Continue button to go to the Summary Pages.</div>
+     <Button className="continue-button" handleClick={() => {
+      player.stage.set("submit", true);
+      round.set("goendTriggered", true);
+      game.set("goendTriggered", true);
+      player.set("goendTriggered", true);
+      player.set("officialproposal", NA_Early_Vote)
+      round.set("pass", pass);  
+      game.set("pass", true);
+          console.log("Go end triggered, preparing to move.")}}
+           
+           >Continue</Button>
      
 
      
@@ -276,23 +280,30 @@ const handleContinue_goend = () => {
    </div>
  ) : (
    <>
-     {proposalStatusData.content.proposal === undefined ? 
-       "status false undefined" 
-     : <>
-         PROPOSAL {proposalStatusData.content.proposal.result.for === treatment.playerCount ? (
-           <>
-             "PASSED (unofficial)"
-             <br/>
-             "Would you like to make this official?"
-             <div className="voting-buttons-container">
-               <Button className="vote-button" handleClick={handleMakeOfficial}>Yes</Button>
-               <Button className="vote-button" handleClick={handleRejectOfficial}>No</Button>
-             </div>
-           </>
-         ) : "REJECTED"}
-         <br/>Yes: {proposalStatusData.content.proposal.result.for} &nbsp;&nbsp;&nbsp;&nbsp; No: {proposalStatusData.content.proposal.result.against}
-       </>
-     }
+
+{proposalStatusData.content.proposal === undefined ? 
+  "status false undefined" 
+: <>
+    PROPOSAL {proposalStatusData.content.proposal.result.for === treatment.playerCount ? (
+      <>
+        "PASSED (unofficial)"
+        <br/>
+        "Would you like to make this official?"
+        <div className="voting-buttons-container">
+          <Button className="vote-button" handleClick={handleMakeOfficial}>Yes</Button>
+          <Button className="vote-button" handleClick={handleRejectOfficial}>No</Button>
+        </div>
+      </>
+    ) : <>
+        "REJECTED"
+        <br/>
+        Yes: {proposalStatusData.content.proposal.result.for} &nbsp;&nbsp;&nbsp;&nbsp; No: {proposalStatusData.content.proposal.result.against}
+      </>
+    }
+  </>
+}
+
+ 
    </>
  )}
 </div>
@@ -375,6 +386,12 @@ const handleContinue_goend = () => {
 
 
   const handleSubmitProposal = (submission_data) => {
+
+
+  // Reset proposalOutcome to null each time a new proposal is submitted
+  round.set("proposalOutcome", null);
+  const resetVotes = {role1: null, role2: null, role3: null};
+  round.set("votesFormal", resetVotes);
 
     const ph = round.get("proposalHistory")
     console.log("Current proposal history:", ph); 

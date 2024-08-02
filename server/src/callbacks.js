@@ -250,6 +250,9 @@ Empirica.on("round", "proposalStatus", (ctx, {round, proposalStatus}) => {
       
       const  proposalItems = Object.keys(proposalStatus.content.proposal.decisions).join(", ")
       
+
+      
+      console.log('  ${submission_data.submitterRole}')
       // reset vote status 
       round.set("proposalStatus", {
         status: false, 
@@ -315,7 +318,7 @@ Empirica.on("round", "goendTriggered", (ctx, { round, goendTriggered }) => {
       players.forEach(player => {
       
         player.stage.set(resultStage);
-        console.log(`Player ${player.get("name")} moved to Result stage.`);
+        
       });
     } else {
       console.log("Result stage not found. Please check the stage setup.");

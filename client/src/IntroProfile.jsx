@@ -32,7 +32,7 @@ export function IntroProfile(props) {
   ...restProps } = props;
 
   // 状态用于控制 TaskBriefModal 的显示和隐藏
-  const [showTaskBrief, setShowTaskBrief] = useState(true);
+  const [showTaskBrief, setShowTaskBrief] = useState(false);
 
   // 函数用于打开和关闭模态框
   const handleShowTaskBrief = () => setShowTaskBrief(true);
