@@ -21,13 +21,10 @@ function StrawPoll(props) {
 
         if (vote === 1 && submissionInfo && Math.round(submissionInfo.totalBonus * 100) / 100 < 0) {
         
-            if (window.confirm("Are you sure? This proposal will earn you a negative bonus. Note that if you do not reach agreement, you will still earn the base pay for this task. Please click 'OK' if you still wish to accept the proposal, or click 'Cancel' to reject it.  ")) {
-                props.handleVoteSubmission(1); // OK means accept 
-            } else {
-                props.handleVoteSubmission(0); // Cancel means reject 
-            }
+            alert("This proposal will earn you a negative bonus, you are not allowed to accept it. Note that if you do not reach agreement, you will still earn the base pay for this task.");
+            // Do not submit the vote, allow reselection
         } else {
-           
+            // Proceed with submitting the vote as normal
             props.handleVoteSubmission(vote);
         }
     };

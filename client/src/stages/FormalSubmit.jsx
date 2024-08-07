@@ -95,13 +95,9 @@ export function FormalSubmit() {
     }, 0);
   };
 
-
-
-
   const getSubmittedFeaturesAndBonuses = () => {
-      // 确保 submittedData_formal 不为空
       if (!submittedData_formal) {
-        return null; // 或者返回一个表示无数据的默认状态
+        return null; 
       }
   };
   const submissionInfo = getSubmittedFeaturesAndBonuses();
@@ -118,15 +114,15 @@ export function FormalSubmit() {
     return;
   }
 
-  const totalPoints = calculateTotal(); // 确保总分数是最新的
+  const totalPoints = calculateTotal(); 
 
-  // 检查总奖金是否为负数
-  if (totalPoints < 0) {
-    const confirmResult = window.confirm("Are you sure? This proposal will earn you a negative bonus. Note that if you do not reach agreement, you will still earn the base pay for this task. Please Click 'OK' if you still want to submit this proposal, or click 'Cancel' to choose products again.");
-    if (!confirmResult) {
-      return; // 用户选择了 'Cancel'，退出函数，不提交任何东西
+    // Check if the total bonus is negative
+    if (totalPoints < 0) {
+      alert("This proposal will earn you a negative bonus, you are not allowed to propose a negative bonus proposal.");
+      return; // Exit the function without submitting anything, allowing the user to reselect
     }
-  }
+ 
+
 
 
   // 提交逻辑
@@ -144,7 +140,7 @@ export function FormalSubmit() {
     round.set("isSubmitted", true);
     setHasSubmittedProposal(true);
     round.set("isVoting", true);  
-    round.set("totalPoints", totalPoints); // 存储totalPoints到round
+    round.set("totalPoints", totalPoints); 
     round.set("gonext", true);
 
 
@@ -164,7 +160,7 @@ export function FormalSubmit() {
   const selectedFeatureNames = Object.entries(selectedFeatures).filter(([_, isSelected]) => isSelected).map(([featureName]) => featureName);
    const formalmessageText = `${role1} has submitted a formal proposal. Features Included are: ${selectedFeatureNames.join(", ")}.`;
    appendSystemMessage({
-     id: generateUniqueId(), // 使用生成的唯一ID
+     id: generateUniqueId(), 
      text: formalmessageText,
      sender: {
        id: Date.now(),

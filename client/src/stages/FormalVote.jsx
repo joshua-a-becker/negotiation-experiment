@@ -97,13 +97,14 @@
        round.set("playerBonusesByRole", playerBonusesByRole);
        console.log("UUUUUUspdated playerBonusesByRole:", playerBonusesByRole);
        
-  // 如果玩家点击 "Accept" 并且总奖金为负数
-  if (vote === "For" && playerTotalBonus < 0) {
-    const confirmAccept = window.confirm("Are you sure? This proposal will earn you a negative bonus. Note that if you do not reach agreement, you will still earn the base pay for this task. Please Click 'OK' if you still want to accept this proposal, or click 'Cancel' to Reject it.");
-    if (!confirmAccept) {
-      vote = "Against";  // 如果用户点击 "Cancel"，改变投票为 "Reject"
-    }
-  }
+
+       if (vote === "For" && playerTotalBonus < 0) {
+        alert("This proposal will earn you a negative bonus, you are not allowed to accept it. Note that if you do not reach agreement, you will still earn the base pay for this task.");
+        return; // Prevent the vote from being set and allow the player to reconsider
+      }
+
+      
+
 
 
 
@@ -139,9 +140,6 @@
   
  
     };
-  
-  
-  
     // 如果所有玩家都已投票
     if (round.get("allVoted") || round.get("missingProposal")) {
       round.set("pass", pass);  // 保存这轮是否通
