@@ -29,7 +29,7 @@ export function Choice() {
   const handleCloseTaskBrief = () => setShowTaskBrief(false);
   const treatment = game.get("treatment");
   
-
+  window.playerRole=player.get("role");
   
   const featureData = game.get("featureData")===undefined ? undefined : game.get("featureData")[treatment.scenario]
   const features = featureData === undefined ? undefined : featureData.features
@@ -97,8 +97,50 @@ if (round.get("proposalOutcome") === undefined) {
 
 const [localProposalStatus, setLocalProposalStatus] = useState(null);
 
+
+
+function calculateRoleScoresFromLatestSubmission(history, features) {
+    
+  const roleScores = { role1: 0, role2: 0, role3: 0 };
+  if (history.length > 0) {
+    const latestSubmission = history[history.length - 1]; // 获取最新的提交
+    const productNames = Object.keys(latestSubmission.decisions);
+
+    productNames.forEach(name => {
+      const feature = features.find(feature => feature.name === name);
+      if (feature) {
+        roleScores.role1 += feature.bonus.role1;
+        roleScores.role2 += feature.bonus.role2;
+        roleScores.role3 += feature.bonus.role3;
+      }
+    });
+  }
+
+  return roleScores;
+}
+
+
+const ph = round.get("proposalHistory")
+
+
+
 const handleMakeOfficial = () => {
+
+  const roleScores = calculateRoleScoresFromLatestSubmission(ph, featureData.features);
   const playerRole = player.get("role");
+  console.log("TRYING")
+  console.log(roleScores)
+  if(roleScores[playerRole]<0) {
+    alert("This proposal will earn you a negative bonus, you are not allowed to accept it. Note that if you do not reach agreement, you will still earn the base pay for this task.");
+    console.log("stop!")
+    return;
+  }
+
+  window.roleScores=roleScores
+
+  console.log("TESTBONUS: " + roleScores);
+
+  
   const currentVotes = round.get("votesFormal") || {role1: null, role2: null, role3: null};
   console.log(`Before updating, ${playerRole} votes:`, currentVotes);
 
@@ -383,6 +425,7 @@ const handleContinue_goend = () => {
 
 
 
+ 
 
 
   const handleSubmitProposal = (submission_data) => {

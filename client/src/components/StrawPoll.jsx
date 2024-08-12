@@ -13,11 +13,14 @@ function StrawPoll(props) {
 
     const features = props.featureData === undefined ? undefined : props.featureData.features;
     const currentVote = props.CurrentVote
-
+    const totalBonusOverride=props.totalBonusOverride
     var submittedData_informal  = props.submissionData;
 
 
     const handleVoteSubmit = (vote) => {
+
+        props.handleVoteSubmission(vote);
+        return;
 
         if (vote === 1 && submissionInfo && Math.round(submissionInfo.totalBonus * 100) / 100 < 0) {
         
@@ -130,7 +133,7 @@ function StrawPoll(props) {
                     })}
                </tbody>
                 </table>
-                {(currentVote===undefined) && (<div className="total-points-display"> Totalss bonus: ${submissionInfo && Math.round(submissionInfo.totalBonus*100)/100}</div>)}
+               <div className="total-points-display"> Total bonus: ${submissionInfo && Math.round(submissionInfo.totalBonus*100)/100}</div>
             {(currentVote===undefined) && (
                 <div className="voting-buttons-container">
                 <Button className="vote-button" handleClick={() => handleVoteSubmit(1)}>Accept</Button>
@@ -140,6 +143,7 @@ function StrawPoll(props) {
             )}
                 
         
+            
                  
                 <div className="total-points-display" style={{ color: 'red' }}>{props.message}</div>
                  
