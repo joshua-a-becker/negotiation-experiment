@@ -85,6 +85,7 @@ export default function App() {
 
   return (
     <EmpiricaParticipant url={url} ns={playerIdFromUrl} modeFunc={EmpiricaClassic}>
+    
       <ChatProvider>  
       <div className="h-screen relative">
         <EmpiricaMenu position="bottom-left" />

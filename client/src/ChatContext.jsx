@@ -22,8 +22,10 @@ export const ChatProvider = ({ children }) => {
   };
 
   return (
+    <div>
     <ChatContext.Provider value={{ systemMessages, appendSystemMessage }}>
       {children}
     </ChatContext.Provider>
+    </div>
   );
 };

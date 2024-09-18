@@ -2,6 +2,7 @@
 import React from "react";
 import { useState, useEffect} from 'react';
 import { Button } from "../components/Button";
+import CustomModal from "../stages/Modal";
 function Calculator(props) {
 
     //const totalPoints = 100
@@ -24,6 +25,14 @@ function Calculator(props) {
     const [selectedFeatures, setSelectedFeatures] = useState(propSelectedFeatures);
 
     const playerRole = props.playerRole;
+
+
+    const [showModal, setShowModal] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+    };
 
 
     const desiredFeaturesForRole = features
@@ -69,7 +78,12 @@ function Calculator(props) {
         
         // if nothign selected, alert and do nothing
         if (!Object.values(selectedFeatures).some(value => value === true)) {
-            alert("You must propose at least one feature to include in your product.");
+            setModalMessage(
+                "You must propose at least one feature to include in your product"
+              );
+              setShowModal(true);
+              console.log("stop!")
+            // alert("You must propose at least one feature to include in your product.");
             return;
         }
         
@@ -149,6 +163,7 @@ function Calculator(props) {
                             >
                                 Submit for Informal Vote
                             </button>
+                            <CustomModal show={showModal} handleClose={handleCloseModal} message={modalMessage} />
                         </div>
                     )}
                     

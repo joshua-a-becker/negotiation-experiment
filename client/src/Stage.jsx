@@ -12,12 +12,8 @@ import { Choice } from "./stages/Choice";
 import { FormalSubmit } from "./stages/FormalSubmit";
 import { FormalVote } from "./stages/FormalVote";
 import { Result } from "./stages/Result";
-import { useEffect} from 'react';
-import "./stages/TableStyles.css";
-
-
-
-
+import { useEffect } from 'react';
+import "./stages/css/TableStyles.css";
 
 
 export function Stage() {
@@ -30,14 +26,7 @@ export function Stage() {
 
   const currentPhase = stage.get("name");
 
-
-
-
-
-
-
-  
-  if(game.get("featureData")===undefined) return <Loading />;
+  if (game.get("featureData") === undefined) return <Loading />;
 
   if (player.stage.get("submit")) {
     if (players.length !== 3) {
@@ -46,31 +35,28 @@ export function Stage() {
 
     return (
       <div className="waiting-section">
-      <div className="loader"></div> 
-    <p>Please wait for other players.</p>
-  </div>
+        <div className="loader"></div>
+        <p>Please wait for other players.</p>
+      </div>
     );
   }
 
 
-      switch (stage.get("name")) {
-        case "Discussion and Informal Vote":
-          return <Choice />;
-
-
+  switch (stage.get("name")) {
+    case "Discussion and Informal Vote":
+      return <Choice />;
 
     case "Submit Formal Vote":
-   
-        return <FormalSubmit />
 
-      case "Formal Vote":
-  
+      return <FormalSubmit />
+
+    case "Formal Vote":
+
       return <FormalVote />;
 
-
     case "Result":
-    
-       // if (player.stage.get("submit")) {
+
+      // if (player.stage.get("submit")) {
       //   return <FormalVote />;
       // }
       // if (round.get("isSubmitted")) {
@@ -78,10 +64,10 @@ export function Stage() {
       // } else {
       //   return <FormalSubmit />;
       // }
-      
+
       return <Result />;
 
     default:
       return <Loading />;
-    }
+  }
 }

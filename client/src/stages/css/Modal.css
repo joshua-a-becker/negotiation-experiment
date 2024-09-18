@@ -1,0 +1,62 @@
+/* Modal backdrop styling */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7); /* Dark, semi-transparent backdrop */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  transition: opacity 0.3s ease-in-out; /* Smooth transition for modal appearance */
+}
+
+/* Modal content container */
+.modal-content {
+  background-color: #fff; /* White background for the modal */
+  padding: 20px 30px; /* Ample padding for content */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow for a floating effect */
+  max-width: 500px; /* Limit modal width */
+  width: 100%; /* Make it responsive */
+  text-align: center;
+  transition: all 0.3s ease; /* Smooth transition for modal scaling */
+  transform: scale(1); /* Modal scaling effect */
+}
+
+/* Text inside the modal */
+.modal-content p {
+  font-size: 1.1rem; /* Increase font size */
+  color: #333; /* Dark gray text */
+  line-height: 1.6; /* Improve readability */
+  margin-bottom: 20px;
+}
+
+/* Modal close button */
+.modal-content button {
+  padding: 10px 20px; /* Padding around the button */
+  background-color: #007bff; /* Professional blue color */
+  color: white; /* White text */
+  border: none;
+  border-radius: 4px; /* Slightly rounded button */
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease; /* Smooth hover transition */
+}
+
+/* Close button hover effect */
+.modal-content button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Modal fade-in effect */
+.modal-backdrop.show {
+  opacity: 1;
+}
+
+/* Modal content animation on open */
+.modal-content.show {
+  transform: scale(1.05); /* Slight scale on modal open */
+}

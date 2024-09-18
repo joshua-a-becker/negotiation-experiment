@@ -12,10 +12,6 @@ factors:
       values:
         - value: 2.5
         - value: 1
-    - name: featureUrl
-      desc: URL of the pay off matrix
-      values:
-        - value: https://decide.empirica.app/data/json/feature_data.json
     - name: scenario
       values:
         - value: pilot_simple_scaled
@@ -34,6 +30,11 @@ factors:
       values:
         - value: 60
         - value: 222222
+    - name: featureUrl
+      desc: URL of the pay off matrix
+      values:
+        - value: https://decide.empirica.app/data/json/feature_data.json
+        - value: https://raw.githubusercontent.com/joshua-a-becker/RTools/master/testscoresheet.json
 treatments:
     - name: short
       factors:
@@ -49,6 +50,16 @@ treatments:
       factors:
         basicpay: 2.5
         featureUrl: https://decide.empirica.app/data/json/feature_data.json
+        formalSubmitDuration: 603333
+        formalVoteDuration: 222222
+        informalSubmitDuration: 600333
+        numRounds: 1
+        playerCount: 3
+        scenario: pilot_simple_scaled
+    - name: pilot_simple_scaled1
+      factors:
+        basicpay: 2.5
+        featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/master/testscoresheet.json
         formalSubmitDuration: 603333
         formalVoteDuration: 222222
         informalSubmitDuration: 600333

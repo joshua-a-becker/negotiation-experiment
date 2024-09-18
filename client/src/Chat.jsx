@@ -138,6 +138,7 @@ const game = useGame();
 
     if (msgs.length === 0) {
       return (
+       
         <div className="h-full w-full flex justify-center items-center" >
           <div className="flex flex-col justify-center items-center w-2/3 space-y-2">
             <div className="w-24 h-24 text-gray-200">
@@ -155,6 +156,7 @@ const game = useGame();
             </p>
           </div>
         </div>
+       
       );
     }
     return (
@@ -192,11 +194,12 @@ const roleColors = {
   window.relativeTime=relativeTime;
 
   return (
-    <div className="flex items-start my-2">
+
+    <div className="flex items-start my-2" >
       {/* <div className="flex-shrink-0">{avatarImage}</div> */}
-      <div className="ml-3 text-sm">
+      <div className="ml-3 text-sm" >
         <p>
-          <span className="font-semibold" style={{ color: textColor }}>
+          <span className="font-semibold" style={{ color: textColor } }>
             {msg.sender.name}
           </span>
           <span className="pl-2 text-gray-400">{(relativeTime!=="NaN:NaN") ? relativeTime : ""}</span>
@@ -240,9 +243,11 @@ function Input({ onNewMessage, playerRole, playerName }) {
     resize(e);
   };
   return (
+    <div >
     <form
       className="p-2 flex items-strech gap-2 border-t"
       onSubmit={handleSubmit}
+      
     >
       <textarea
         name="message"
@@ -270,6 +275,7 @@ function Input({ onNewMessage, playerRole, playerName }) {
         </svg>
       </button>
     </form>
+    </div>
   );
 }
 function humanTimer(seconds) {
