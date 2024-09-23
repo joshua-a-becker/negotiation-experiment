@@ -23,6 +23,8 @@ export function Choice() {
 
   let remainingSeconds = timer?.remaining ? Math.round(timer.remaining / 1000) : null;
 
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlDev = urlParams.get("urlDev");
 
   const [showTaskBrief, setShowTaskBrief] = useState(false);
   const handleShowTaskBrief = () => setShowTaskBrief(true);
@@ -277,7 +279,9 @@ export function Choice() {
           Please wait for others to vote
         </>
         :
-        "Please cast an informal vote."
+        <div>
+          "Please cast an informal vote."
+        </div>
       :
 
 
@@ -546,15 +550,19 @@ export function Choice() {
               />
 
 
-              {isDevelopment && (
+              {isDevelopment && urlDev && (
                 <>
-                  <Button className="reset-button" handleClick={resetVotes} >Reset Votes</Button>
+                  {/*
+                    <Button className="reset-button" handleClick={resetVotes} >Reset Votes</Button>
+                  */}
                   <Button handleClick={() => player.stage.set("submit", true)}>
                     Continue
                   </Button>
+                  {/*
                   <Button handleClick={() => { round.set("watchValue", round.get("watchValue") + 1); console.log(round.get("watchValue")) }}>
                     Click Me
-                  </Button>
+                  </Button> 
+                  */}
                 </>
               )}
 

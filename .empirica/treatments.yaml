@@ -12,40 +12,34 @@ factors:
       values:
         - value: 2.5
         - value: 1
-    - name: scenario
-      values:
-        - value: pilot_simple_scaled
-    - name: informalSubmitDuration
-      desc: Duration of the Informal Submit stage in seconds
-      values:
-        - value: 600
-        - value: 600333
-    - name: formalSubmitDuration
-      desc: Duration of the Formal Submit stage in seconds
-      values:
-        - value: 60
-        - value: 603333
-    - name: formalVoteDuration
-      desc: Duration of the Formal Submit stage in seconds
-      values:
-        - value: 60
-        - value: 222222
     - name: featureUrl
       desc: URL of the pay off matrix
       values:
         - value: https://decide.empirica.app/data/json/feature_data.json
         - value: https://raw.githubusercontent.com/joshua-a-becker/RTools/master/testscoresheet.json
+    - name: formalSubmitDuration
+      desc: Duration of the Formal Submit stage in seconds
+      values:
+        - value: 60
+        - value: 603333
+        - value: 600
+    - name: formalVoteDuration
+      desc: Duration of the Formal Submit stage in seconds
+      values:
+        - value: 60
+        - value: 222222
+        - value: 600
+    - name: informalSubmitDuration
+      desc: Duration of the Informal Submit stage in seconds
+      values:
+        - value: 600
+        - value: 600333
+        - value: 60
+    - name: scenario
+      values:
+        - value: pilot_simple_scaled
+        - value: pilot_final_easy
 treatments:
-    - name: short
-      factors:
-        basicpay: 2.5
-        featureUrl: https://decide.empirica.app/data/json/feature_data.json
-        formalSubmitDuration: 600
-        formalVoteDuration: 600
-        informalSubmitDuration: 60
-        numRounds: 1
-        playerCount: 3
-        scenario: pilot_simple_scaled
     - name: pilot_simple_scaled
       factors:
         basicpay: 2.5
@@ -66,3 +60,13 @@ treatments:
         numRounds: 1
         playerCount: 3
         scenario: pilot_simple_scaled
+    - name: short
+      factors:
+        basicpay: 2.5
+        featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/master/testscoresheet.json
+        formalSubmitDuration: 60
+        formalVoteDuration: 60
+        informalSubmitDuration: 600
+        numRounds: 1
+        playerCount: 3
+        scenario: pilot_final_easy

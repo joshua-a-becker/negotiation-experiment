@@ -47,8 +47,8 @@ export default function App() {
     //if(isDevelopment) return [WaitingPage];
     
     //return [Walkthrough, WaitingPage];
-    return [MyConsent];
-    // return [MyConsent, Introduction1, Introduction2, Walkthrough, WaitingPage];
+    //return [MyConsent];
+    return [MyConsent, Introduction1, Introduction2, Walkthrough];//, WaitingPage];
     
   }
 
