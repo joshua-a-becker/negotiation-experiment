@@ -10,6 +10,7 @@ import { Timer } from "../components/Timer";
 import { useStageTimer } from "@empirica/core/player/classic/react";
 import Calculator from "../components/Calculator"
 //import featureData from "../featureData"
+import CustomModal from "./css/Modal.css"
 
 
 export function FormalSubmit() {
@@ -40,6 +41,14 @@ export function FormalSubmit() {
   const role1 = featureData === undefined ? "" :
     featureData.roleNames === undefined ? "" :
       featureData.roleNames['role1']
+
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
 
   useEffect(() => {
 
@@ -110,7 +119,11 @@ export function FormalSubmit() {
 
     const hasSelectedFeatureformal = Object.values(selectedFeatures).some(isSelected => isSelected);
     if (!hasSelectedFeatureformal) {
-      alert("You must propose at least one feature to include in your product.");
+      setModalMessage(
+        "You must propose at least one feature to include in your product"
+      );
+      setShowModal(true);
+      //alert("You must propose at least one feature to include in your product.");
       return;
     }
 
@@ -118,11 +131,12 @@ export function FormalSubmit() {
 
     // Check if the total bonus is negative
     if (totalPoints < 0) {
-      alert("This proposal will earn you a negative bonus, you are not allowed to propose a negative bonus proposal.");
+      setModalMessage(
+        "This proposal will earn you a negative bonus, you are not allowed to propose a negative bonus proposal."
+      );
+      setShowModal(true);
       return; // Exit the function without submitting anything, allowing the user to reselect
     }
-
-
 
 
     // 提交逻辑
@@ -233,6 +247,7 @@ export function FormalSubmit() {
                 <button onClick={handleSubmitProposal} className={"submit-button-orange"}>
                   Submit for Formal Vote
                 </button>
+                <CustomModal show={showModal} handleClose={handleCloseModal} message={modalMessage} />
               </div>
             )}
           </div>

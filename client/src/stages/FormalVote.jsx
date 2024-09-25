@@ -6,6 +6,7 @@ import { usePlayer, usePlayers, useRound, useGame } from "@empirica/core/player/
 import './css/TableStyles.css';
 import { useChat } from '../ChatContext';
 import { Button } from "../components/Button";
+import CustomModal from "./Modal";
 
 
 
@@ -30,8 +31,12 @@ export function FormalVote() {
   const formalresultText = `Formal Voting Results: ${forVotes + 1} Accept, ${againstVotes} Reject. ` + (pass ? "The proposal has been accepted." : "The proposal has not been accepted.");
   const treatment = game.get("treatment");
 
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
 
-
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
 
 
   const featureData = game.get("featureData")[treatment.scenario]
@@ -58,26 +63,22 @@ export function FormalVote() {
   }, [round]);
 
   useEffect(() => {
-    // 当轮次改变时重置所有玩家的投票状态
+
     players.forEach(p => {
       p.set("vote", null);
     });
     round.set("allVoted", false);
-    //round.set("totalPoints", totalPoints);
 
   }, [round]);
 
 
   const calculatePlayerTotalBonus = () => {
     if (!submittedData_formal || !features) {
-      return 0; // 如果没有提交的数据或特性数据未加载，返回 0
+      return 0;
     }
-
-
     return features.reduce((total, feature) => {
-      // 检查此特性是否被选中
+
       const isSelected = submittedData_formal.decisions[feature.name];
-      // 根据玩家的角色计算并累加奖金
       const bonusAmount = isSelected ? feature.bonus[currentPlayerRole] : 0;
       return total + bonusAmount;
     }, 0);
@@ -98,8 +99,13 @@ export function FormalVote() {
     console.log("UUUUUUspdated playerBonusesByRole:", playerBonusesByRole);
 
 
+
     if (vote === "For" && playerTotalBonus < 0) {
-      alert("This proposal will earn you a negative bonus, you are not allowed to accept it. Note that if you do not reach agreement, you will still earn the base pay for this task.");
+
+      setModalMessage("This proposal will earn you a negative bonus, you are not allowed to accept it. Note if you do not reach agreement, you will still earn the base pay for the task.");
+      setShowModal(true)
+
+      //alert("This proposal will earn you a negative bonus, you are not allowed to accept it. Note that if you do not reach agreement, you will still earn the base pay for this task.");
       return; // Prevent the vote from being set and allow the player to reconsider
     }
 
@@ -230,6 +236,7 @@ export function FormalVote() {
       <div className="buttons-container-vote">
         <Button handleClick={() => handleVote("For")}>Accept</Button>
         <Button handleClick={() => handleVote("Against")}>Reject</Button>
+        <CustomModal show={showModal} handleClose={handleCloseModal} message={modalMessage} />
       </div>
     </div>
   );
