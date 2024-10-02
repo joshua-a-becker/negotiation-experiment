@@ -9,8 +9,8 @@ import { useChat } from '../ChatContext';
 import { Timer } from "../components/Timer";
 import { useStageTimer } from "@empirica/core/player/classic/react";
 import Calculator from "../components/Calculator"
-//import featureData from "../featureData"
-import CustomModal from "./css/Modal.css"
+import featureData from "../featureData"
+import CustomModal from "./Modal"
 
 
 export function FormalSubmit() {
@@ -82,8 +82,6 @@ export function FormalSubmit() {
   }, [remainingSeconds, appendSystemMessage]);
 
 
-
-
   useEffect(() => {
     setTotalPoints(calculateTotal());
   }, [selectedFeatures, player]);
@@ -138,8 +136,6 @@ export function FormalSubmit() {
       return; // Exit the function without submitting anything, allowing the user to reselect
     }
 
-
-    // 提交逻辑
     const choices = Object.entries(selectedFeatures).reduce((acc, [feature, isSelected]) => {
       if (isSelected) acc[feature] = features.find(f => f.name === feature).bonus[player.get("role")];
       return acc;
@@ -200,7 +196,6 @@ export function FormalSubmit() {
           </div>
         </div>
         <br />
-        {/* 第一个表格始终显示 */}
         <div className="table-container">
           <div className="table-wrapper">
             <br />
@@ -214,7 +209,6 @@ export function FormalSubmit() {
               </thead>
               <tbody>
                 {features.map((feature, index) => {
-                  // 检查当前 feature 是否为 desired feature
                   const isDesiredFeature = desiredFeaturesForRole.split(", ").includes(feature.name);
                   return (
                     <tr key={index} className={isDesiredFeature ? "selected-feature" : ""}>
@@ -260,10 +254,10 @@ export function FormalSubmit() {
     return (
       <div className="flex-container">
         <div className="flex-child">
-          <div className="informal-text-brief-wrapper">
+          <div className="informal-text-brief-wrapper" style={{marginTop:'100px'}}> 
             <div className="informal-text-brief-1">
               <b>Your role:</b> {player.get("name")}.
-              <br /><br />Please wait while {role1} submits a final proposal for an official, binding vote.
+              <br />Please wait while {role1} submits a final proposal for an official, binding vote.
             </div><br /><br /><br />
           </div>
           <div className="table-container">

@@ -1,6 +1,6 @@
 
 import React from "react";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import { Button } from "../components/Button";
 import CustomModal from "../stages/Modal";
 function Calculator(props) {
@@ -14,6 +14,15 @@ function Calculator(props) {
         ...restProps } = props;
 
     const [totalPoints, setTotalPoints] = useState(0);
+
+
+    const codeSectionRef = useRef(null);
+
+    const scrollToCodeSection = () => {
+        if (codeSectionRef.current) {
+            codeSectionRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
 
     //const [features, setFeatures] = useState([]);
     //const [productName, setProductName] = useState([]);
@@ -64,11 +73,13 @@ function Calculator(props) {
 
     };
 
-
     const handleSubmitProposal = (event) => {
+
         event.preventDefault();
 
-        console.log("stop!")
+        if (codeSectionRef.current) {
+            codeSectionRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
 
         const choices = features.reduce((choices, feature) => {
             if (selectedFeatures[feature.name]) {
@@ -89,20 +100,21 @@ function Calculator(props) {
 
         const selectedFeatureNames = Object.keys(selectedFeatures).filter(feature => selectedFeatures[feature]);
 
-
         const submission_data = {
             decisions: choices,
             submitterRole: props.roleName
         };
 
         props.handleProposalSubmission(submission_data);
+
+
     };
 
 
     useEffect(() => {
         setTotalPoints(calculateTotal());
-    }, [selectedFeatures]);
 
+    }, [selectedFeatures]);
 
 
     const calculatorBody = <>
@@ -157,22 +169,36 @@ function Calculator(props) {
             </div>
             {props.displaySubmit && (
                 <div className="button-container">
+
                     <button onClick={handleSubmitProposal}
                         className="submit-button"
                     >
                         Submit for Informal Vote
                     </button>
                     <CustomModal show={showModal} handleClose={handleCloseModal} message={modalMessage} />
+
                 </div>
             )}
 
         </>
 
-
     return (
         <div className="table-wrapper">
             {renderCalculator}
-
+            <div>
+                {/* <button onClick={scrollToCodeSection}>scrollToCodeSection</button> */}
+                <pre
+                    ref={codeSectionRef}
+                    style={{
+                        padding: '100px',
+                        background: '#FFFFFF',
+                        color: '#fff',
+                        borderRadius: '5px',
+                    }}
+                >
+                    {``}
+                </pre>
+            </div>
 
         </div>
     );

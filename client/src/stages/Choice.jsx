@@ -1,6 +1,7 @@
 import { usePlayer, useRound, useGame } from "@empirica/core/player/classic/react";
 import { usePlayers } from "@empirica/core/player/classic/react";
 import React from "react";
+import { useContext } from "react";
 import { Button } from "../components/Button";
 import './css/TableStyles.css';
 import { useState, useEffect } from 'react';
@@ -12,6 +13,7 @@ import Calculator from "../components/Calculator"
 import StrawPoll from "../components/StrawPoll"
 import CustomModal from './Modal';
 
+
 export function Choice() {
   const player = usePlayer();
   const players = usePlayers();
@@ -20,6 +22,7 @@ export function Choice() {
   const { appendSystemMessage } = useChat();
   const timer = useStageTimer();
   const [submissionData, setSubmissionData] = useState(player.get("submissionData"));
+
 
   let remainingSeconds = timer?.remaining ? Math.round(timer.remaining / 1000) : null;
 
@@ -58,7 +61,6 @@ export function Choice() {
   const handleCloseModal = () => {
     setShowModal(false);
   };
-
 
   window.featureData = featureData
 
@@ -130,7 +132,7 @@ export function Choice() {
   const handleMakeOfficial = () => {
 
     const roleScores = calculateRoleScoresFromLatestSubmission(ph, featureData.features);
-    const playerRole = player.get("role");
+    const playerRole = player.get("role")
     console.log("TRYING")
     console.log(roleScores)
     if (roleScores[playerRole] < 0) {
@@ -279,8 +281,14 @@ export function Choice() {
           Please wait for others to vote
         </>
         :
-        <div>
-          "Please cast an informal vote."
+        <div ref={textRef} style={{
+          marginTop: '10px',
+          padding: '20px',
+          background: '#f9f9f9',
+          border: '1px solid #ddd',
+        }}>
+          <p>  "Please cast an informal vote."</p>
+
         </div>
       :
 
@@ -292,7 +300,7 @@ export function Choice() {
           </>
         ) : round.get("proposalOutcome") === "passed" ? (
           <>
-            <div>Please click the Continue button to go to the Summary Pages.</div>
+            {/* <div>Please click the Continue button to go to the Summary Pages.</div> */}
             <Button className="continue-button" handleClick={() => {
               player.stage.set("submit", true);
               round.set("goendTriggered", true);
@@ -304,7 +312,7 @@ export function Choice() {
               console.log("Go end triggered, preparing to move.")
             }}
 
-            >Continue</Button>
+            > Continue Make your final vote </Button>
 
           </>
         ) : votesFormal[player.get("role")] !== null ? (
@@ -555,6 +563,7 @@ export function Choice() {
                   {/*
                     <Button className="reset-button" handleClick={resetVotes} >Reset Votes</Button>
                   */}
+
                   <Button handleClick={() => player.stage.set("submit", true)}>
                     Continue
                   </Button>

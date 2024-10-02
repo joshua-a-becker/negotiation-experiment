@@ -29,16 +29,17 @@ factors:
         - value: 60
         - value: 222222
         - value: 600
+    - name: scenario
+      values:
+        - value: pilot_simple_scaled
+        - value: pilot_final_easy
     - name: informalSubmitDuration
       desc: Duration of the Informal Submit stage in seconds
       values:
         - value: 600
         - value: 600333
         - value: 60
-    - name: scenario
-      values:
-        - value: pilot_simple_scaled
-        - value: pilot_final_easy
+        - value: 15
 treatments:
     - name: pilot_simple_scaled
       factors:
@@ -67,6 +68,16 @@ treatments:
         formalSubmitDuration: 60
         formalVoteDuration: 60
         informalSubmitDuration: 600
+        numRounds: 1
+        playerCount: 3
+        scenario: pilot_final_easy
+    - name: super short
+      factors:
+        basicpay: 2.5
+        featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/master/testscoresheet.json
+        formalSubmitDuration: 60
+        formalVoteDuration: 60
+        informalSubmitDuration: 15
         numRounds: 1
         playerCount: 3
         scenario: pilot_final_easy
