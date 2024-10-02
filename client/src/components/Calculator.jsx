@@ -3,6 +3,7 @@ import React from "react";
 import { useState, useEffect, useContext, useRef } from 'react';
 import { Button } from "../components/Button";
 import CustomModal from "../stages/Modal";
+import { ScrollContext } from "../components/ScrollContext";
 function Calculator(props) {
 
     //const totalPoints = 100

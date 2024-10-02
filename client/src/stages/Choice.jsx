@@ -12,6 +12,7 @@ import { isDevelopment } from "@empirica/core/player"
 import Calculator from "../components/Calculator"
 import StrawPoll from "../components/StrawPoll"
 import CustomModal from './Modal';
+import { ScrollContext } from "../components/ScrollContext";
 
 
 export function Choice() {
@@ -22,7 +23,7 @@ export function Choice() {
   const { appendSystemMessage } = useChat();
   const timer = useStageTimer();
   const [submissionData, setSubmissionData] = useState(player.get("submissionData"));
-
+  const textRef = useContext(ScrollContext);
 
   let remainingSeconds = timer?.remaining ? Math.round(timer.remaining / 1000) : null;
 
@@ -61,6 +62,9 @@ export function Choice() {
   const handleCloseModal = () => {
     setShowModal(false);
   };
+
+
+
 
   window.featureData = featureData
 
@@ -303,12 +307,12 @@ export function Choice() {
             {/* <div>Please click the Continue button to go to the Summary Pages.</div> */}
             <Button className="continue-button" handleClick={() => {
               player.stage.set("submit", true);
-              round.set("goendTriggered", true);
-              game.set("goendTriggered", true);
-              player.set("goendTriggered", true);
-              player.set("officialproposal", NA_Early_Vote)
-              round.set("pass", pass);
-              game.set("pass", true);
+              // round.set("goendTriggered", true);
+              // game.set("goendTriggered", true);
+              // player.set("goendTriggered", true);
+              // player.set("officialproposal", NA_Early_Vote)
+              // round.set("pass", pass);
+              // game.set("pass", true);
               console.log("Go end triggered, preparing to move.")
             }}
 
