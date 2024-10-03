@@ -268,8 +268,8 @@ Empirica.on("round", "proposalStatus", (ctx, {round, proposalStatus}) => {
       round.set("proposalVoteHistory", ph)
   
 
-      const passtext = votes_for >= playerCount ? "Proposal passed." : "Proposal rejected with " + votes_for + " yes votes."
-      const text = passtext + " Items included: " + proposalItems
+      const passtext = votes_for >= playerCount ? "Informal proposal passed.  " : "Informal proposal rejected with " + votes_for + " yes votes.  "
+      const text = passtext + "Proposal details: " + proposalItems
       round.append("chat", {
         text,
         sender: {

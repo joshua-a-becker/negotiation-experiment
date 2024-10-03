@@ -19,7 +19,7 @@ function Header(props) {
 
     const messageContent = message===undefined ? "" :
         <div className="header-text" style={{ position: "relative", marginTop: '20px' }}>
-            <div ref={textRef} style={{
+            <div style={{
                 marginTop: '10px',
                 padding: '20px',
                 background: '#f9f9f9',

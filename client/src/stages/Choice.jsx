@@ -207,16 +207,16 @@ export function Choice() {
         round.set("proposalOutcome", "failed");
         setLocalProposalStatus("failed");
 
-        appendSystemMessage({
-          id: `vote-failure-${Date.now()}`,
-          text: "Sorry, this official proposal did not pass.",
-          sender: {
-            id: "system",
-            name: "System",
-            avatar: "",
-            role: "System",
-          }
-        });
+        // appendSystemMessage({
+        //   id: `vote-failure-${Date.now()}`,
+        //   text: "Sorry, this official proposal did not pass.",
+        //   sender: {
+        //     id: "system",
+        //     name: "System",
+        //     avatar: "",
+        //     role: "System",
+        //   }
+        // });
 
       } else {
         console.log("The official proposal passed.");
@@ -224,16 +224,16 @@ export function Choice() {
         round.set("proposalOutcome", "passed");
         setLocalProposalStatus("passed");
 
-        appendSystemMessage({
-          id: `vote-success-${Date.now()}`,
-          text: "Congratulations, every participant agrees to put the latest proposal forward for an official vote.",
-          sender: {
-            id: "system",
-            name: "System",
-            avatar: "",
-            role: "System",
-          }
-        });
+        // appendSystemMessage({
+        //   id: `vote-success-${Date.now()}`,
+        //   text: "Congratulations, every participant agrees to put the latest proposal forward for an official vote.",
+        //   sender: {
+        //     id: "system",
+        //     name: "System",
+        //     avatar: "",
+        //     role: "System",
+        //   }
+        // });
 
         calculateAndUpdateBonuses();
 
@@ -531,16 +531,16 @@ export function Choice() {
     round.set("submittedInformalVote", true);
 
     const messageText = `${submission_data.submitterRole} initiated an Informal Vote.`;
-    appendSystemMessage({
-      id: generateUniqueId(),
-      text: messageText,
-      sender: {
-        id: Date.now(),
-        name: "Notification",
-        avatar: "",
-        role: "Notification",
-      }
-    });
+    // appendSystemMessage({
+    //   id: generateUniqueId(),
+    //   text: messageText,
+    //   sender: {
+    //     id: Date.now(),
+    //     name: "Notification",
+    //     avatar: "",
+    //     role: "Notification",
+    //   }
+    // });
     console.log({ featureData })
   };
 
