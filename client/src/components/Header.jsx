@@ -40,7 +40,7 @@ function Header(props) {
                 >
                 {showInstructionsModal ? <b>X</b> : "▼"}
                 </div>
-                <h6><strong>INSTRUCTIONS (click to expand)</strong></h6>
+                <h6><strong><a style={{cursor: "pointer"}} onClick={handleInstructionsModal}>INSTRUCTIONS (click to expand)</a></strong></h6>
                 {showInstructionsModal && (<>
                     <br />
                     <h6>Submit as many informal proposals as you want below.</h6>

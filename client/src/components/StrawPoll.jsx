@@ -97,7 +97,10 @@ function StrawPoll(props) {
                 <thead>
                 <tr  >
                     <td colSpan="2" style={{borderTop:'0px',borderRight:'0px',borderLeft:'0px',fontWeight:'bold'}}>
-                    Proposal by: {submittedData_informal['submitterRole']}
+                    Proposal by {submittedData_informal['submitterRole']}
+                    <br/>
+                    <div className="total-points-display"> </div>
+                
                     </td>
                 </tr>
                 <tr  >
@@ -133,19 +136,7 @@ function StrawPoll(props) {
                     })}
                </tbody>
                 </table>
-               <div className="total-points-display"> Total bonus: ${submissionInfo && Math.round(submissionInfo.totalBonus*100)/100}</div>
-            {(currentVote===undefined) && (
-                <div className="voting-buttons-container">
-                <Button className="vote-button" handleClick={() => handleVoteSubmit(1)}>Accept</Button>
-                
-                <Button className="vote-button" handleClick={() => handleVoteSubmit(0)}>Reject</Button> 
-                </div>
-            )}
-                
-        
             
-                 
-                {/*<div className="total-points-display" style={{ color: 'red' }}>{props.message}</div> */}
                  
             </div>
 

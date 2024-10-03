@@ -306,7 +306,7 @@ export function Choice() {
         return undefined;
 
       if(round.get("proposalOutcome") == 'failed')
-        return("proposal failed")
+        return("Formal Vote Failed (voting results TBD)")
 
       if(round.get("proposalOutcome") === "passed") {
         return(
@@ -342,11 +342,12 @@ export function Choice() {
 
       return(
         <>
-          PROPOSAL {proposalStatusData.content.proposal.result.for === treatment.playerCount ? (
+          Proposal {proposalStatusData.content.proposal.result.for === treatment.playerCount ? (
             <>
-              PASSED (unofficial)
-              <br />
+              Passed (unofficial)
+              <br /><br/>
               Would you like to make this official?
+              <br/><br/>
               <div className="voting-buttons-container">
                 <Button className="vote-button" handleClick={handleMakeOfficial}>Yes</Button>
                 <CustomModal show={showModal} handleClose={handleCloseModal} message={modalMessage} />
@@ -354,8 +355,8 @@ export function Choice() {
               </div>
             </>
           ) : <>
-            REJECTED
-            <br />
+            Rejected
+            <br /><br/>
             Yes: {proposalStatusData.content.proposal.result.for} &nbsp;&nbsp;&nbsp;&nbsp; No: {proposalStatusData.content.proposal.result.against}
           </>
           }
@@ -374,9 +375,17 @@ export function Choice() {
     }
 
     if(proposalStatusData.status==true & currentlyVoted==false) {
-      return(
-        <p>Please cast an informal vote.</p>
-      )
+      return(<>
+        &lt;TBD&gt; has made a proposal!  See details below.
+        <br/><br/>Value to you:  $TBD
+        <br/><br/>Please cast an informal vote.
+        <br/><br/>
+        <div className="voting-buttons-container">
+                <Button className="vote-button" handleClick={() => handleVoteSubmit(1)}>Accept</Button>
+                
+                <Button className="vote-button" handleClick={() => handleVoteSubmit(0)}>Reject</Button> 
+                </div>
+      </>)
     }
 
     return("unexpected condition, please report this message")
