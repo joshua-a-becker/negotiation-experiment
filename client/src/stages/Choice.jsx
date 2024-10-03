@@ -288,6 +288,7 @@ export function Choice() {
   window.proposalStatus = round.get("proposalStatus")
   window.proposalStatusData = proposalStatusData
   window.currentlyVoted = currentlyVoted
+  window.round=round
   
 
   const votesFormal = round.get("votesFormal") || { role1: null, role2: null, role3: null };
@@ -302,7 +303,42 @@ export function Choice() {
     
     if(proposalStatusData.status==false) {
       if(proposalStatusData.content.proposal==undefined) 
-        return "proposal status data false and undefined";
+        return undefined;
+
+      if(round.get("proposalOutcome") == 'failed')
+        return("proposal failed")
+
+      if(round.get("proposalOutcome") === "passed") {
+        return(
+          <>
+          Congratulations!  
+          <br/><br/>
+          Your proposal has passed and you have earned the bonus shown.
+          <br/><br/>
+          <Button className="continue-button" handleClick={() => {
+              player.stage.set("submit", true);
+              // round.set("goendTriggered", true);
+              // game.set("goendTriggered", true);
+              // player.set("goendTriggered", true);
+              // player.set("officialproposal", NA_Early_Vote)
+              // round.set("pass", pass);
+              // game.set("pass", true);
+              console.log("Go end triggered, preparing to move.")
+            }}
+            
+            > Continue to Exit</Button>
+          </>
+        )
+      }
+
+      if(votesFormal[player.get("role")] !== null)
+        return(
+          <div>
+            Please wait for others to vote
+          </div>
+        )
+      
+      
 
       return(
         <>
