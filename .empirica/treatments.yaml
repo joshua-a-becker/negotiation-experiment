@@ -44,16 +44,6 @@ treatments:
     - name: pilot_simple_scaled
       factors:
         basicpay: 2.5
-        featureUrl: https://decide.empirica.app/data/json/feature_data.json
-        formalSubmitDuration: 603333
-        formalVoteDuration: 222222
-        informalSubmitDuration: 600333
-        numRounds: 1
-        playerCount: 3
-        scenario: pilot_simple_scaled
-    - name: pilot_simple_scaled1
-      factors:
-        basicpay: 2.5
         featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/master/testscoresheet.json
         formalSubmitDuration: 603333
         formalVoteDuration: 222222
@@ -61,23 +51,3 @@ treatments:
         numRounds: 1
         playerCount: 3
         scenario: pilot_simple_scaled
-    - name: short
-      factors:
-        basicpay: 2.5
-        featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/master/testscoresheet.json
-        formalSubmitDuration: 60
-        formalVoteDuration: 60
-        informalSubmitDuration: 600
-        numRounds: 1
-        playerCount: 3
-        scenario: pilot_final_easy
-    - name: super short
-      factors:
-        basicpay: 2.5
-        featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/master/testscoresheet.json
-        formalSubmitDuration: 60
-        formalVoteDuration: 60
-        informalSubmitDuration: 15
-        numRounds: 1
-        playerCount: 3
-        scenario: pilot_final_easy

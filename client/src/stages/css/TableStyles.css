@@ -136,8 +136,9 @@
 }
 
 .voting-buttons-container {
-  display: flex;
-  margin-left: 173.5px;
+  
+  margin: auto;
+  /*margin-left: 173.5px;*/
 
 }
 
@@ -158,6 +159,17 @@
 }
 
 
+.header-text {
+  color: red; 
+  width: 80%;
+  text-align: center;
+  margin-top: 0px;
+  padding: 15px;
+  border: none;
+}
+
+
+.header-message,
 .total-points-display,
 .button-container {
   width: 100%;

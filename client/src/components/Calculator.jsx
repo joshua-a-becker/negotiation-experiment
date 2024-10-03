@@ -4,6 +4,7 @@ import { useState, useEffect, useContext, useRef } from 'react';
 import { Button } from "../components/Button";
 import CustomModal from "../stages/Modal";
 import { ScrollContext } from "../components/ScrollContext";
+
 function Calculator(props) {
 
     //const totalPoints = 100
@@ -151,7 +152,7 @@ function Calculator(props) {
                 <thead>
                     <tr>
                         <td colSpan="3" style={{ borderTop: '0px', borderRight: '0px', borderLeft: '0px', fontWeight: 'bold' }}>
-                            Your Role: {props.roleName}
+                            {props.roleName} (you) - Scoring Calculator 
                         </td>
                     </tr>
                     <tr style={{ backgroundColor: 'lightblue' }}>

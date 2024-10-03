@@ -97,7 +97,7 @@ function StrawPoll(props) {
                 <thead>
                 <tr  >
                     <td colSpan="2" style={{borderTop:'0px',borderRight:'0px',borderLeft:'0px',fontWeight:'bold'}}>
-                    Proposal by {submittedData_informal['submitterRole']}
+                    Proposal by: {submittedData_informal['submitterRole']}
                     </td>
                 </tr>
                 <tr  >
@@ -145,7 +145,7 @@ function StrawPoll(props) {
         
             
                  
-                <div className="total-points-display" style={{ color: 'red' }}>{props.message}</div>
+                {/*<div className="total-points-display" style={{ color: 'red' }}>{props.message}</div> */}
                  
             </div>
 

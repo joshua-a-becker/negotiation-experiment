@@ -11,6 +11,7 @@ import { useStageTimer } from "@empirica/core/player/classic/react";
 import { isDevelopment } from "@empirica/core/player"
 import Calculator from "../components/Calculator"
 import StrawPoll from "../components/StrawPoll"
+import Header from "../components/Header"
 import CustomModal from './Modal';
 import { ScrollContext } from "../components/ScrollContext";
 
@@ -25,6 +26,10 @@ export function Choice() {
   const [submissionData, setSubmissionData] = useState(player.get("submissionData"));
   const textRef = useContext(ScrollContext);
 
+  const [forceUpdate, setForceUpdate] = useState(false);
+
+  if(forceUpdate){setForceUpdate(false)}
+
   let remainingSeconds = timer?.remaining ? Math.round(timer.remaining / 1000) : null;
 
   const urlParams = new URLSearchParams(window.location.search);
@@ -35,7 +40,7 @@ export function Choice() {
   const handleCloseTaskBrief = () => setShowTaskBrief(false);
   const treatment = game.get("treatment");
 
-  window.playerRole = player.get("role");
+  
 
   const featureData = game.get("featureData") === undefined ? undefined : game.get("featureData")[treatment.scenario]
   const features = featureData === undefined ? undefined : featureData.features
@@ -64,10 +69,6 @@ export function Choice() {
   };
 
 
-
-
-  window.featureData = featureData
-
   player.set("name",
     featureData === undefined ? "" :
       featureData.roleNames === undefined ?
@@ -78,7 +79,6 @@ export function Choice() {
       featureData.roleNames['role1']
 
 
-  const [showInstructionsModal, setShownInstructionsModel] = useState(true);
 
 
   //-----------------------------------------------------------------------------------------------------------------------
@@ -133,6 +133,7 @@ export function Choice() {
   const ph = round.get("proposalHistory")
 
 
+
   const handleMakeOfficial = () => {
 
     const roleScores = calculateRoleScoresFromLatestSubmission(ph, featureData.features);
@@ -148,7 +149,6 @@ export function Choice() {
       return;
     }
 
-    window.roleScores = roleScores
 
     console.log("TESTBONUS: " + roleScores);
 
@@ -175,6 +175,13 @@ export function Choice() {
     console.log(`After updating, ${playerRole} votes:`, updatedVotes);
     checkAllVotes(updatedVotes);
 
+  };
+
+  const resetHeaderMessage = () => {
+    round.set("proposalStatus", {
+      undefined
+    })
+    setForceUpdate(true);
   };
 
   const checkAllVotes = (votes) => {
@@ -243,7 +250,7 @@ export function Choice() {
 
   };
 
-  //------------------------------------------------------------------------------------------------------------------------
+
 
   // set the proposal status data from the round variable
   // or set to a blank proposal, if the round variable is undefined
@@ -251,6 +258,8 @@ export function Choice() {
     { status: false, content: "" }
     :
     round.get("proposalStatus")
+
+
 
   // set the proposal displayed in the straw poll component
   const strawPollContent = proposalStatusData === undefined ?
@@ -262,10 +271,11 @@ export function Choice() {
   const currentlyVoted = proposalStatusData === undefined ? undefined :
     proposalStatusData.content.proposal === undefined ? undefined :
       proposalStatusData.content.proposal.vote === undefined ?
-        undefined
+        false
         :
         proposalStatusData.content.proposal.vote.filter(v => Object.keys(v)[0] === player.get("role"))
           .length > 0
+
 
   // calculate player's current vote
   const currentVote = !currentlyVoted ? undefined :
@@ -274,87 +284,70 @@ export function Choice() {
 
   // set message shown in straw poll component 
   // depending on proposal status and content
+
+  window.proposalStatus = round.get("proposalStatus")
+  window.proposalStatusData = proposalStatusData
+  window.currentlyVoted = currentlyVoted
+  
+
   const votesFormal = round.get("votesFormal") || { role1: null, role2: null, role3: null };
 
-  const strawPollMessage = proposalStatusData === undefined ?
-    undefined
-    :
-    proposalStatusData.status ?
-      currentlyVoted ?
+
+  const calcHeaderMessage = (proposalStatusData) => {
+
+    if(proposalStatusData===undefined) {
+      return undefined
+    }
+
+    
+    if(proposalStatusData.status==false) {
+      if(proposalStatusData.content.proposal==undefined) 
+        return "proposal status data false and undefined";
+
+      return(
+        <>
+          PROPOSAL {proposalStatusData.content.proposal.result.for === treatment.playerCount ? (
+            <>
+              PASSED (unofficial)
+              <br />
+              Would you like to make this official?
+              <div className="voting-buttons-container">
+                <Button className="vote-button" handleClick={handleMakeOfficial}>Yes</Button>
+                <CustomModal show={showModal} handleClose={handleCloseModal} message={modalMessage} />
+                <Button className="vote-button" handleClick={handleRejectOfficial}>No</Button>
+              </div>
+            </>
+          ) : <>
+            REJECTED
+            <br />
+            Yes: {proposalStatusData.content.proposal.result.for} &nbsp;&nbsp;&nbsp;&nbsp; No: {proposalStatusData.content.proposal.result.against}
+          </>
+          }
+        </>
+      )
+
+    }
+
+
+    if(proposalStatusData.status==true & currentlyVoted==true) {
+      return(
         <>
           Please wait for others to vote
-        </>
-        :
-        <div ref={textRef} style={{
-          marginTop: '10px',
-          padding: '20px',
-          background: '#f9f9f9',
-          border: '1px solid #ddd',
-        }}>
-          <p>  "Please cast an informal vote."</p>
+        </>        
+      )
+    }
 
-        </div>
-      :
+    if(proposalStatusData.status==true & currentlyVoted==false) {
+      return(
+        <p>Please cast an informal vote.</p>
+      )
+    }
 
-
-      <div className="container">
-        {round.get("proposalOutcome") === "failed" ? (
-          <>
-            <div>Sorry, you did not agree to make this proposal official, please continue submit informal proposal.</div>
-          </>
-        ) : round.get("proposalOutcome") === "passed" ? (
-          <>
-            {/* <div>Please click the Continue button to go to the Summary Pages.</div> */}
-            <Button className="continue-button" handleClick={() => {
-              player.stage.set("submit", true);
-              // round.set("goendTriggered", true);
-              // game.set("goendTriggered", true);
-              // player.set("goendTriggered", true);
-              // player.set("officialproposal", NA_Early_Vote)
-              // round.set("pass", pass);
-              // game.set("pass", true);
-              console.log("Go end triggered, preparing to move.")
-            }}
-
-            > Continue Make your final vote </Button>
-
-          </>
-        ) : votesFormal[player.get("role")] !== null ? (
-          //  <div className="waiting-section">
-          <div>
-            <div className="loader"></div>
-            <div>Other parties are still voting. Once votes are in and tallied, the results will be shown.</div>
-          </div>
-        ) : (
-          <>
-
-            {proposalStatusData.content.proposal === undefined ?
-              "status false undefined"
-              : <>
-                PROPOSAL {proposalStatusData.content.proposal.result.for === treatment.playerCount ? (
-                  <>
-                    "PASSED (unofficial)"
-                    <br />
-                    "Would you like to make this official?"
-                    <div className="voting-buttons-container">
-                      <Button className="vote-button" handleClick={handleMakeOfficial}>Yes</Button>
-                      <CustomModal show={showModal} handleClose={handleCloseModal} message={modalMessage} />
-                      <Button className="vote-button" handleClick={handleRejectOfficial}>No</Button>
-                    </div>
-                  </>
-                ) : <>
-                  "REJECTED"
-                  <br />
-                  Yes: {proposalStatusData.content.proposal.result.for} &nbsp;&nbsp;&nbsp;&nbsp; No: {proposalStatusData.content.proposal.result.against}
-                </>
-                }
-              </>
-            }
+    return("unexpected condition, please report this message")
+  }
 
 
-          </>
-        )}
-      </div>
+  const strawPollMessage = calcHeaderMessage(proposalStatusData);
 
 
   // code for handling countdown reminder notifications
@@ -507,37 +500,13 @@ export function Choice() {
   };
 
 
-  const header =
-
-
-    <div className="informal-text-brief-1" style={{ position: "relative", marginTop: '20px' }}>
-      <div
-        className="modal-closer"
-        onClick={handleInstructionsModal}
-      >
-        {showInstructionsModal ? <b>X</b> : "▼"}
-      </div>
-      <h6><strong>INSTRUCTIONS</strong></h6>
-      {showInstructionsModal && (<>
-        <br />
-        <h6>Submit as many informal proposals as you want below.</h6>
-        <h6><br />The calculator shows what proposal is worth.</h6>
-        <br />
-        <h6>{'role1' === player.get("role") ? "As " + role1 + ", you" : "At the end, " + role1} will submit a final proposal {'role1' === player.get("role") ? "at the end." : ""}</h6>
-        <h6><br /><strong>You ALL must agree for the final proposal to pass!</strong></h6>
-
-      </>)}
-    </div>
-
 
   return (
     <>
       <div className="h-full w-full flex" style={{ position: 'relative' }}>
         <div className="h-full w-full flex flex-col">
           <div style={{ height: '90%', overflowY: 'auto' }}>
-            <div className="informal-text-brief-wrapper" style={{ position: "relative" }}>
-              {header}
-            </div>
+              <Header message={strawPollMessage} player={player} role1={role1} textRef={textRef} />
             <br />
             <br />
             <div className="table-container">
