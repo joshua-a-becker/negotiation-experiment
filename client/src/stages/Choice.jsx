@@ -14,6 +14,7 @@ import StrawPoll from "../components/StrawPoll"
 import Header from "../components/Header"
 import CustomModal from './Modal';
 import { ScrollContext } from "../components/ScrollContext";
+import Summary from "../intro-exit/Summary";
 
 
 export function Choice() {
@@ -27,8 +28,9 @@ export function Choice() {
   const textRef = useContext(ScrollContext);
 
   const [forceUpdate, setForceUpdate] = useState(false);
+  const [test, setTest] = useState()
 
-  if(forceUpdate){setForceUpdate(false)}
+  if (forceUpdate) { setForceUpdate(false) }
 
   let remainingSeconds = timer?.remaining ? Math.round(timer.remaining / 1000) : null;
 
@@ -40,7 +42,7 @@ export function Choice() {
   const handleCloseTaskBrief = () => setShowTaskBrief(false);
   const treatment = game.get("treatment");
 
-  
+
 
   const featureData = game.get("featureData") === undefined ? undefined : game.get("featureData")[treatment.scenario]
   const features = featureData === undefined ? undefined : featureData.features
@@ -251,7 +253,6 @@ export function Choice() {
   };
 
 
-
   // set the proposal status data from the round variable
   // or set to a blank proposal, if the round variable is undefined
   const proposalStatusData = round.get("proposalStatus") === undefined ?
@@ -288,66 +289,73 @@ export function Choice() {
   window.proposalStatus = round.get("proposalStatus")
   window.proposalStatusData = proposalStatusData
   window.currentlyVoted = currentlyVoted
-  window.round=round
-  
+  window.round = round
+
 
   const votesFormal = round.get("votesFormal") || { role1: null, role2: null, role3: null };
 
 
   const calcHeaderMessage = (proposalStatusData) => {
 
-    if(proposalStatusData===undefined) {
+    if (proposalStatusData === undefined) {
       return undefined
     }
 
-    
-    if(proposalStatusData.status==false) {
-      if(proposalStatusData.content.proposal==undefined) 
+
+    if (proposalStatusData.status == false) {
+      if (proposalStatusData.content.proposal == undefined)
         return undefined;
 
-      if(round.get("proposalOutcome") == 'failed')
-        return("Formal Vote Failed (voting results TBD)")
+      if (round.get("proposalOutcome") == 'failed')
+        return (<> Formal Vote Failed <br />
+          Yes: {proposalStatusData.content.proposal.result.for} &nbsp;&nbsp;&nbsp;&nbsp; No: {proposalStatusData.content.proposal.result.against}</>)
 
-      if(round.get("proposalOutcome") === "passed") {
-        return(
+      const nextStep = () => {
+        return
+        <Summary />
+      }
+
+      if (round.get("proposalOutcome") === "passed") {
+        return (
           <>
-          Congratulations!  
-          <br/><br/>
-          Your proposal has passed and you have earned the bonus shown.
-          <br/><br/>
-          <Button className="continue-button" handleClick={() => {
-              player.stage.set("submit", true);
-              // round.set("goendTriggered", true);
-              // game.set("goendTriggered", true);
-              // player.set("goendTriggered", true);
-              // player.set("officialproposal", NA_Early_Vote)
-              // round.set("pass", pass);
-              // game.set("pass", true);
-              console.log("Go end triggered, preparing to move.")
-            }}
-            
+            Congratulations!
+            <br /><br />
+            Your proposal has passed and you have earned the bonus shown.
+            <br /><br />
+            <Button className="continue-button"
+              handleClick={() => {
+                player.stage.set("submit", true);
+                // round.set("goendTriggered", true);
+                // game.set("goendTriggered", true);
+                // player.set("goendTriggered", true);
+                // player.set("officialproposal", NA_Early_Vote)
+                // round.set("pass", pass);
+                // game.set("pass", true);
+                // console.log("Go end triggered, preparing to move.")
+              }}
             > Continue to Exit</Button>
           </>
         )
       }
 
-      if(votesFormal[player.get("role")] !== null)
-        return(
+      if (votesFormal[player.get("role")] !== null)
+        return (
+
           <div>
             Please wait for others to vote
           </div>
         )
-      
-      
 
-      return(
+
+
+      return (
         <>
           Proposal {proposalStatusData.content.proposal.result.for === treatment.playerCount ? (
             <>
               Passed (unofficial)
-              <br /><br/>
+              <br /><br />
               Would you like to make this official?
-              <br/><br/>
+              <br /><br />
               <div className="voting-buttons-container">
                 <Button className="vote-button" handleClick={handleMakeOfficial}>Yes</Button>
                 <CustomModal show={showModal} handleClose={handleCloseModal} message={modalMessage} />
@@ -356,7 +364,7 @@ export function Choice() {
             </>
           ) : <>
             Rejected
-            <br /><br/>
+            <br /><br />
             Yes: {proposalStatusData.content.proposal.result.for} &nbsp;&nbsp;&nbsp;&nbsp; No: {proposalStatusData.content.proposal.result.against}
           </>
           }
@@ -366,29 +374,30 @@ export function Choice() {
     }
 
 
-    if(proposalStatusData.status==true & currentlyVoted==true) {
-      return(
+    if (proposalStatusData.status == true & currentlyVoted == true) {
+      return (
         <>
           Please wait for others to vote
-        </>        
+        </>
       )
     }
 
-    if(proposalStatusData.status==true & currentlyVoted==false) {
-      return(<>
-        &lt;TBD&gt; has made a proposal!  See details below.
-        <br/><br/>Value to you:  $TBD
-        <br/><br/>Please cast an informal vote.
-        <br/><br/>
+    if (proposalStatusData.status == true & currentlyVoted == false) {
+      return (<>
+        {submittedData_informal['submitterRole']} has made a proposal!  See details below.
+        <br /><br />Value to you: {test}
+        <br /><br />Please cast an informal vote.
+        <br /><br />
+
+
         <div className="voting-buttons-container">
-                <Button className="vote-button" handleClick={() => handleVoteSubmit(1)}>Accept</Button>
-                
-                <Button className="vote-button" handleClick={() => handleVoteSubmit(0)}>Reject</Button> 
-                </div>
+          <Button className="vote-button" handleClick={() => handleVoteSubmit(1)}>Accept</Button>
+
+          <Button className="vote-button" handleClick={() => handleVoteSubmit(0)}>Reject</Button>
+        </div>
       </>)
     }
-
-    return("unexpected condition, please report this message")
+    return ("unexpected condition, please report this message")
   }
 
 
@@ -428,6 +437,10 @@ export function Choice() {
 
   const handleInstructionsModal = function () {
     setShownInstructionsModel(!showInstructionsModal)
+  }
+
+  const onTest = (number) => {
+    setTest(number)
   }
 
   // handle a vote click from the StrawPoll component
@@ -551,7 +564,7 @@ export function Choice() {
       <div className="h-full w-full flex" style={{ position: 'relative' }}>
         <div className="h-full w-full flex flex-col">
           <div style={{ height: '90%', overflowY: 'auto' }}>
-              <Header message={strawPollMessage} player={player} role1={role1} textRef={textRef} />
+            <Header message={strawPollMessage} player={player} role1={role1} textRef={textRef} />
             <br />
             <br />
             <div className="table-container">
@@ -563,6 +576,8 @@ export function Choice() {
                 CurrentVote={currentVote}
                 message={strawPollMessage}
                 playerRole={player.get("role")}
+                sampleValue={test}
+                onTest={onTest}
               />
               <Calculator
                 featureData={featureData}

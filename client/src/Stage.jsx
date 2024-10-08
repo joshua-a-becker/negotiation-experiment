@@ -14,6 +14,7 @@ import { FormalVote } from "./stages/FormalVote";
 import { Result } from "./stages/Result";
 import { useEffect } from 'react';
 import "./stages/css/TableStyles.css";
+import Summary from "./intro-exit/Summary";
 
 
 export function Stage() {
@@ -35,8 +36,9 @@ export function Stage() {
 
     return (
       <div className="waiting-section">
-        <div className="loader"></div>
-        <p>Please wait for other players.</p>
+        <p>
+          please wait for others
+        </p>
       </div>
     );
   }
