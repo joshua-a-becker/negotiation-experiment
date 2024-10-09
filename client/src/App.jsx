@@ -56,7 +56,12 @@ export default function App() {
 
   function exitSteps({ game, player, round }) {
 
+    console.log("----------------------------------------------------------")
+    console.log(player.get("ended"))
+
+
     if (game.get("goendTriggered") === true) {
+      console.log(game.get("goendTriggered"))
       return [Summary, ExitSurvey];
     }
 

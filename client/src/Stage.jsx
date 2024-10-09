@@ -30,8 +30,8 @@ export function Stage() {
   if (game.get("featureData") === undefined) return <Loading />;
 
   if (player.stage.get("submit")) {
-    if (players.length !== 3) {
-      return <Loading />;
+    if (players.length === 3) {
+      return <Summary />;
     }
 
     return (

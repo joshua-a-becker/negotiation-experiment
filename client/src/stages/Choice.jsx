@@ -26,6 +26,7 @@ export function Choice() {
   const timer = useStageTimer();
   const [submissionData, setSubmissionData] = useState(player.get("submissionData"));
   const textRef = useContext(ScrollContext);
+  let isShow = false;
 
   const [forceUpdate, setForceUpdate] = useState(false);
   const [test, setTest] = useState()
@@ -245,16 +246,17 @@ export function Choice() {
 
 
   const handleContinue_goend = () => {
-
     round.set("goendTriggered");
     console.log("Go end triggered, preparing to move.");
-
-
   };
-
 
   // set the proposal status data from the round variable
   // or set to a blank proposal, if the round variable is undefined
+
+  if (round.get("proposalStatus") === undefined) {
+    isShow = true
+  }
+
   const proposalStatusData = round.get("proposalStatus") === undefined ?
     { status: false, content: "" }
     :
@@ -297,22 +299,22 @@ export function Choice() {
 
   const calcHeaderMessage = (proposalStatusData) => {
 
+
     if (proposalStatusData === undefined) {
       return undefined
     }
-
-
     if (proposalStatusData.status == false) {
       if (proposalStatusData.content.proposal == undefined)
         return undefined;
 
-      if (round.get("proposalOutcome") == 'failed')
+      if (!(proposalStatusData.content.proposal.result.for === treatment.playerCount)) {
+        isShow = true
+      }
+
+      if (round.get("proposalOutcome") == 'failed') {
+        isShow = true
         return (<> Formal Vote Failed <br />
           Yes: {proposalStatusData.content.proposal.result.for} &nbsp;&nbsp;&nbsp;&nbsp; No: {proposalStatusData.content.proposal.result.against}</>)
-
-      const nextStep = () => {
-        return
-        <Summary />
       }
 
       if (round.get("proposalOutcome") === "passed") {
@@ -325,13 +327,13 @@ export function Choice() {
             <Button className="continue-button"
               handleClick={() => {
                 player.stage.set("submit", true);
-                // round.set("goendTriggered", true);
-                // game.set("goendTriggered", true);
-                // player.set("goendTriggered", true);
-                // player.set("officialproposal", NA_Early_Vote)
-                // round.set("pass", pass);
-                // game.set("pass", true);
-                // console.log("Go end triggered, preparing to move.")
+                round.set("goendTriggered", true);
+                game.set("goendTriggered", true);
+                player.set("goendTriggered", true);
+                player.set("officialproposal", NA_Early_Vote)
+                round.set("pass", pass);
+                game.set("pass", true);
+                console.log("Go end triggered, preparing to move.")
               }}
             > Continue to Exit</Button>
           </>
@@ -340,7 +342,6 @@ export function Choice() {
 
       if (votesFormal[player.get("role")] !== null)
         return (
-
           <div>
             Please wait for others to vote
           </div>
@@ -349,6 +350,7 @@ export function Choice() {
 
 
       return (
+
         <>
           Proposal {proposalStatusData.content.proposal.result.for === treatment.playerCount ? (
             <>
@@ -579,15 +581,15 @@ export function Choice() {
                 sampleValue={test}
                 onTest={onTest}
               />
+
               <Calculator
                 featureData={featureData}
                 handleProposalSubmission={handleSubmitProposal}
                 roleName={player.get("name")}
-                displaySubmit={!proposalStatusData.status}
+                displaySubmit={isShow}
                 propSelectedFeatures={player.get("selectedFeatures") ? player.get("selectedFeatures") : {}}
                 handleOptionChange={handleOptionChange}
                 playerRole={player.get("role")}
-
               />
 
 

@@ -1,4 +1,5 @@
 
+
 import React from "react";
 import { useState, useEffect, useContext, useRef } from 'react';
 import { Button } from "../components/Button";
@@ -152,7 +153,7 @@ function Calculator(props) {
                 <thead>
                     <tr>
                         <td colSpan="3" style={{ borderTop: '0px', borderRight: '0px', borderLeft: '0px', fontWeight: 'bold' }}>
-                            {props.roleName} (you) - Scoring Calculator 
+                            {props.roleName} (you) - Scoring Calculator
                         </td>
                     </tr>
                     <tr style={{ backgroundColor: 'lightblue' }}>
