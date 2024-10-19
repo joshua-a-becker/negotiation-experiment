@@ -386,7 +386,8 @@ export function Choice() {
 
     if (proposalStatusData.status == true & currentlyVoted == false) {
       return (<>
-        {submittedData_informal['submitterRole']} has made a proposal!  See details below.
+        {/* {submittedData_informal['submitterRole']} */}
+        has made a proposal!  See details below.
         <br /><br />Value to you: {test}
         <br /><br />Please cast an informal vote.
         <br /><br />

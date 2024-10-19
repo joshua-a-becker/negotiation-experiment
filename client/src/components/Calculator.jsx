@@ -33,11 +33,9 @@ function Calculator(props) {
     const features = props.featureData === undefined ? props.featureData : props.featureData.features;
     //const productName = props.featureData.productName;
 
-
     const [selectedFeatures, setSelectedFeatures] = useState(propSelectedFeatures);
 
     const playerRole = props.playerRole;
-
 
     const [showModal, setShowModal] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
@@ -45,7 +43,6 @@ function Calculator(props) {
     const handleCloseModal = () => {
         setShowModal(false);
     };
-
 
     const desiredFeaturesForRole = features
         .filter(feature => feature.bonus[playerRole] > 0)
@@ -60,7 +57,6 @@ function Calculator(props) {
             return newState;
         });
     };
-
 
     const calculateTotal = () => {
         const role = playerRole;
@@ -193,7 +189,7 @@ function Calculator(props) {
                 <pre
                     ref={codeSectionRef}
                     style={{
-                        padding: '100px',
+                        padding: '40px',
                         background: '#FFFFFF',
                         color: '#fff',
                         borderRadius: '5px',
