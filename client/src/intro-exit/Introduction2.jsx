@@ -22,7 +22,7 @@ export function Introduction2({ next }) {
     
   ]
 
-  if(startTime!=="NA") instructions.push('The game will open at exactly '+startTime+'.')
+  if(startTime!=="NA"&&startTime!=="") instructions.push('The game will open at exactly '+startTime+'.')
 
   useEffect(() => {
     fetch("https://decide.empirica.app/data/json/settings.json")

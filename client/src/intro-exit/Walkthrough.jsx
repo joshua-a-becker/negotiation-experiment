@@ -3,6 +3,7 @@ import { Button } from "../components/Button";
 import { usePlayer, useGame } from "@empirica/core/player/classic/react";
 import Calculator from "../components/Calculator"
 import StrawPoll from "../components/StrawPoll"
+import Header from "../components/Header"
 import { useEffect} from 'react';
 import Chat from "../Chat";
 import { useChat } from '../ChatContext'; 
@@ -13,10 +14,9 @@ export function Walkthrough({ next }) {
   const game = useGame(); 
   const player = usePlayer();
   const treatment = game.get("treatment");
-  const role1 = treatment.role1;
   const {instructionPage} = treatment;
   const { appendSystemMessage } = useChat();
-
+  const [proposalValue, setProposalValue] = useState()
   const [showInstructionsModal, setShownInstructionsModel] = useState(true);
 
   //const walkThroughFeatures = featureData["walkthrough_features"];
@@ -27,8 +27,15 @@ export function Walkthrough({ next }) {
   const [voteButtonActive, setVoteButtonActive] = useState(true); 
   const [showNextButton, setShowNextButton] = useState(false); 
 
- 
-  const [playerMessage, setPlayerMessage] = useState("")
+  const role1 = walkThroughFeatures.roleNames===undefined ? "undefined" : walkThroughFeatures.roleNames.role1;
+
+  window.wtf = walkThroughFeatures
+
+  //const [playerMessage, setPlayerMessage] = useState("")
+
+  const setPlayerMessage = (message) => {
+    player.set("walkthroughMessage", message)
+  }
 
   useEffect(() => {
     fetch(treatment.featureUrl)
@@ -42,6 +49,7 @@ export function Walkthrough({ next }) {
   const handleProposalSubmission = (submission_data) => {
     setSubmissionData(submission_data)
     player.set("submissionData", submission_data)
+    setPlayerMessage("proposed")
     sendSystemMessage("Good!  Now, even though this is your own proposal, you still need to vote.")
 
     setTimeout(
@@ -59,7 +67,7 @@ export function Walkthrough({ next }) {
     
   }
 
-  const handleVoteSubmission = (vote) => {
+  const handleVoteSubmit = (vote) => {
     sendSystemMessage("Good job!  You'll see the same thing when someone else offers a proposal.")
     setTimeout(
       (sendSystemMessage, myMessage)=>{sendSystemMessage(myMessage)}
@@ -142,39 +150,29 @@ export function Walkthrough({ next }) {
     setShownInstructionsModel(!showInstructionsModal)   
   }
 
-
+  const calcWalkthroughMessage = (message) => {
+    if(message == "proposed") {
+      return(
+        (<>
+          {role1} has made a proposal!  See details below.
+          <br /><br />Value to you: {proposalValue}
+          <br /><br />Please cast an informal vote.
+          <br /><br />
+  
+  
+          <div className="voting-buttons-container">
+            <Button className="vote-button" handleClick={() => handleVoteSubmit(1)}>Accept</Button>
+  
+            <Button className="vote-button" handleClick={() => handleVoteSubmit(0)}>Reject</Button>
+          </div>
+        </>)
+      )
+    }
+  };
 
   onLoad();
 
 
-  const header = 
-    <>
-
-        
-        <div className="informal-text-brief-1" style={{position: "relative", marginBottom:"50px", marginTop:"50px"}}>
-
-         <div
-          className="modal-closer"
-          onClick={handleInstructionsModal}
-        >
-          {showInstructionsModal ? <b>X</b> : "▼" } 
-        </div>
-        <h6><strong>THIS IS A DEMO.</strong></h6>
-          {showInstructionsModal&&(<>
-            
-            <h6><br/>This platform will help your group agree on a plan for lunch.  Try out proposals using the informal vote, to find out how people feel</h6>
-            <h6><br/>Use the chat to discuss the proposals as you proceed.</h6>
-            <h6><br/>This calculator shows your bonus different options and let's you make informal proposals.  They don't count, though!  Only the final vote counts.</h6>
-            <br/>
-                  
-            <h6>In the game, when time is up, {role1} will submit a final proposal.</h6>
-            <h6><br/><strong>You ALL must agree for the final proposal to pass!</strong></h6>
-          
-          </>)}      
-        </div>
-      
-    </>
-  
 
   
   // if they're done the walkthrough
@@ -216,13 +214,14 @@ export function Walkthrough({ next }) {
         <div className=" items-center justify-center">
 
         If this were a real game, you'd be waiting for other players to vote.<br/><br/>
-        <strong>Remember: informal votes don't count - only the final vote will count!</strong>
-          <br/><br/><br/>
+        If it passes informally, you'll get a chance to make it official.<br/><br/>
+        <strong>Remember: these informal votes don't count - you must make it official!</strong>
+          <br/><br/>
           <center>
           <button onClick={next} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
             <strong>Next (Continue to Game)</strong>
           </button>
-          <br/><br/><br/>
+          <br/><br/>
           <button onClick={repeatWalkthrough} className="bg-gray hover:bg-black text-white font-bold py-2 px-4 rounded">
             <strong>Repeat Walkthrough</strong>
           </button>
@@ -233,37 +232,61 @@ export function Walkthrough({ next }) {
    
   
   const walkthroughCompleted = !(player.get("currentVote")===undefined || player.get("currentVote") ===null)
+
+  const playerMessage =  calcWalkthroughMessage(player.get("walkthroughMessage"))
   
+  const walkThroughInstructions = 
+    <>
+      <br />
+      <h6>This is a <b>DEMONSTRATION PAGE.</b></h6>
+      <h6><br />Try submitting an informal proposal below!</h6>
+      <h6><br />Once in the game, you can submit as many informal proposals as you want.</h6>
+      <h6><br />The calculator shows what proposal is worth.</h6>
+      <br />
+      <h6>If you don't reach agreement within 10 minutes, the leader (randomly assigned) will submit a final proposal.</h6>
+      <h6><br /><strong>You ALL must agree for the final proposal to pass!</strong></h6>
+    </>  
+
   return (
-    <div className="h-full w-full flex">
-      <div className="h-full w-full flex flex-col">
-      <IntroProfile featureData={walkThroughFeatures} showNextButton={false} onNext={next} roleName={"Lunch Attendee"} />
+      <div className="h-full w-full flex" style={{ position: 'relative' }}>
+        <div className="h-full w-full flex flex-col">
+          <div style={{ height: '90%', overflowY: 'auto' }}>
+
+      <IntroProfile featureData={walkThroughFeatures} showNextButton={false} onNext={next} roleName={role1} />
       {walkthroughCompleted ? completedWalkthroughModal : ""}
-        <div className="informal-text-brief-wrapper" style={{position:"relative"}}>
-          {header}
-        </div>
+
+      <Header message={(playerMessage==""?undefined:playerMessage)} player={player} role1={role1} textRef={null} 
+      instructions={walkThroughInstructions}/>
+            <br />
+            <br />
+
         <div className="table-container" >
-              
+
+
+ 
         <StrawPoll 
           featureData = {walkThroughFeatures}
           submissionData = {submissionData}
-          handleVoteSubmission = {handleVoteSubmission}
+          handleVoteSubmission = {handleVoteSubmit}
           message = {playerMessage}
           CurrentVote = {(player.get("currentVote")===null || player.get("currentVote")===undefined) ? undefined : player.get("currentVote")}
           playerRole = "role1"
+          onTest = {setProposalValue}
+        
         />
       
         <Calculator 
           featureData = {walkThroughFeatures}
           handleProposalSubmission={handleProposalSubmission}
           showVoteButton={true}
-          roleName = "Lunch Attendee"
+          roleName = {role1}
           playerRole = "role1"
           displaySubmit = {!player.get("submissionData")}
           propSelectedFeatures = {player.get("selectedFeatures") ? player.get("selectedFeatures") : {} }
           handleOptionChange = {handleCalcOptionChange}
         />
      
+          </div>
         </div>
       </div>
       <div className="h-full w-256 border-l flex justify-center items-center">

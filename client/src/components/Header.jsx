@@ -10,6 +10,30 @@ function Header(props) {
     const role1 = props.role1
     const message = props.message
     const textRef = null
+    const instructionsText = ((instructions) => {
+        if(instructions===undefined) {
+            return(
+                    <>
+                        <br />
+                        <h6>Submit as many informal proposals as you want below.</h6>
+                        <h6><br />The calculator shows what proposal is worth.</h6>
+                        <br />
+                        <h6>{'role1' === player.get("role") ? "As " + role1 + ", you" : "At the end, " + role1} will submit a final proposal {'role1' === player.get("role") ? "at the end." : ""}</h6>
+                        <h6><br /><strong>You ALL must agree for the final proposal to pass!</strong></h6>
+                    </>            
+                )
+            }
+
+            if(typeof instructions === 'object'){
+                return(instructions)
+            }
+
+            return(
+                <><br/><div dangerouslySetInnerHTML={{__html:instructions}}></div></>
+            )
+        })(props.instructions)
+
+    window.it = props.instructions;
 
     const [showInstructionsModal, setShownInstructionsModel] = useState(false);
 
@@ -41,14 +65,7 @@ function Header(props) {
                 {showInstructionsModal ? <b>X</b> : "▼"}
                 </div>
                 <h6><strong><a style={{cursor: "pointer"}} onClick={handleInstructionsModal}>INSTRUCTIONS (click to expand)</a></strong></h6>
-                {showInstructionsModal && (<>
-                    <br />
-                    <h6>Submit as many informal proposals as you want below.</h6>
-                    <h6><br />The calculator shows what proposal is worth.</h6>
-                    <br />
-                    <h6>{'role1' === player.get("role") ? "As " + role1 + ", you" : "At the end, " + role1} will submit a final proposal {'role1' === player.get("role") ? "at the end." : ""}</h6>
-                    <h6><br /><strong>You ALL must agree for the final proposal to pass!</strong></h6>
-                </>)}
+                {showInstructionsModal && (instructionsText)}
             </div>
             {messageContent}
         </div>
