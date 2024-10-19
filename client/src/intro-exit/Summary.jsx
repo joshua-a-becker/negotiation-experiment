@@ -94,9 +94,8 @@ export function Summary({ next }) {
 } */}
         <br />
         {/* { game.get("pagoendTriggeredss")  ? "" : <> Your score for this round: £{currentRoleScore.toFixed(2)}<br /><br/><br/></> } */}
-        <br /><br /><strong>Please enter the code "completed" to indicate that you have completed the task.</strong>
+        <br /><strong>Please enter the code "completed" to indicate that you have completed the task.</strong>
         <br />
-        <br /><p>Please press "OK" to acknowledge and continue.</p>
       </h4>
       <br />
       <Button handleClick={next} autoFocus >

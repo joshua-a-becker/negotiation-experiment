@@ -64,7 +64,7 @@ function Header(props) {
                 >
                 {showInstructionsModal ? <b>X</b> : "▼"}
                 </div>
-                <h6><strong><a style={{cursor: "pointer"}} onClick={handleInstructionsModal}>INSTRUCTIONS (click to expand)</a></strong></h6>
+                <h6 style={{cursor: "pointer"}} onClick={handleInstructionsModal}><strong><a style={{cursor: "pointer"}} onClick={handleInstructionsModal}>INSTRUCTIONS (click to expand)</a></strong></h6>
                 {showInstructionsModal && (instructionsText)}
             </div>
             {messageContent}

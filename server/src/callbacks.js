@@ -229,7 +229,35 @@ Empirica.onRoundEnded(({ round }) => {
 Empirica.onGameEnded(({ game }) => {});
 
  
+Empirica.on("round", "proposalOutcome", (ctx, {round, proposalOutcome}) => {
+  console.log("P OUTCOME: " + proposalOutcome)
+  
+  const proposalItems = round.get("lastProposalItems")
+  const submitterRole = round.get("lastProposalSubmitter")
 
+  const votes = round.get("votesFormal")
+  const votes_for =  Object.values(votes).filter(vote => vote === true).length;
+  // const noCount =   Object.values(votes).filter(vote => vote === false).length;
+
+
+  const passtext = proposalOutcome==='passed' ? "OFFICIAL proposal by " + submitterRole + " passed.  " 
+  : "OFFICIAL proposal by " + submitterRole + " rejected with " + votes_for + " yes votes.  "
+
+  const text = passtext + "Proposal included: " + proposalItems
+
+  console.log(text)
+
+  round.append("chat", {
+    text,
+    sender: {
+      id: Date.now(), 
+      name: "Notification",
+      role: "Notification", 
+    },
+  });
+  
+
+});
 
 Empirica.on("round", "proposalStatus", (ctx, {round, proposalStatus}) => {
 
@@ -241,7 +269,7 @@ Empirica.on("round", "proposalStatus", (ctx, {round, proposalStatus}) => {
       
       
       const resultingProposal = proposalStatus.content.proposal
-
+      
       
       const votes_for = resultingProposal.vote.filter(v=>Object.values(v)==1).length
       const votes_against = resultingProposal.vote.filter(v=>Object.values(v)==0).length
@@ -249,9 +277,8 @@ Empirica.on("round", "proposalStatus", (ctx, {round, proposalStatus}) => {
       resultingProposal.result = {for: votes_for, against: votes_against}
       
       const  proposalItems = Object.keys(proposalStatus.content.proposal.decisions).join(", ")
-      
+      const submitterRole = resultingProposal.submitterRole
 
-      
       console.log('  ${submission_data.submitterRole}')
       // reset vote status 
       round.set("proposalStatus", {
@@ -268,8 +295,10 @@ Empirica.on("round", "proposalStatus", (ctx, {round, proposalStatus}) => {
       round.set("proposalVoteHistory", ph)
   
 
-      const passtext = votes_for >= playerCount ? "Informal proposal passed.  " : "Informal proposal rejected with " + votes_for + " yes votes.  "
-      const text = passtext + "Proposal details: " + proposalItems
+      const passtext = votes_for >= playerCount ? "INFORMAL proposal by " + submitterRole + " passed.  " 
+        : "INFORMAL proposal by " + submitterRole + " rejected with " + votes_for + " yes votes.  "
+
+      const text = passtext + "Proposal included: " + proposalItems
       round.append("chat", {
         text,
         sender: {
@@ -279,6 +308,10 @@ Empirica.on("round", "proposalStatus", (ctx, {round, proposalStatus}) => {
         },
       });
       
+
+      round.set("lastProposalItems", proposalItems)
+      round.set("lastProposalSubmitter", submitterRole)
+      round.set("lastProposalVoteCount", votes_for)
 
     }
   } else {

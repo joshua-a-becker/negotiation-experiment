@@ -82,7 +82,7 @@ export function Choice() {
       featureData.roleNames['role1']
 
 
-
+  window.round = round
 
   //-----------------------------------------------------------------------------------------------------------------------
 
@@ -311,10 +311,14 @@ export function Choice() {
         isShow = true
       }
 
+      window.formal = round.get("votesFormal")
+      const votes = round.get("votesFormal")
+      const yesCount =  Object.values(votes).filter(vote => vote === true).length;
+      const noCount =   Object.values(votes).filter(vote => vote === false).length;
       if (round.get("proposalOutcome") == 'failed') {
         isShow = true
-        return (<> Formal Vote Failed <br />
-          Yes: {proposalStatusData.content.proposal.result.for} &nbsp;&nbsp;&nbsp;&nbsp; No: {proposalStatusData.content.proposal.result.against}</>)
+        return (<> Official Vote Failed <br />
+          Yes: {yesCount} &nbsp;&nbsp;&nbsp;&nbsp; No: {noCount}</>)
       }
 
       if (round.get("proposalOutcome") === "passed") {
@@ -356,6 +360,8 @@ export function Choice() {
             <>
               Passed (unofficial)
               <br /><br />
+              Value to you: <b>{test}</b>
+              <br /><br />
               Would you like to make this official?
               <br /><br />
               <div className="voting-buttons-container">
@@ -388,7 +394,7 @@ export function Choice() {
       return (<>
         {/* {submittedData_informal['submitterRole']} */}
         has made a proposal!  See details below.
-        <br /><br />Value to you: {test}
+        <br /><br />Value to you: <b>{test}</b>
         <br /><br />Please cast an informal vote.
         <br /><br />
 
