@@ -65,6 +65,7 @@ export function Profile() {
         <div
           className="task-brief-modal"
           style={{
+            overflow: 'auto',
             position: "fixed",
             top: "20%",
             right: "20%",
@@ -86,7 +87,7 @@ export function Profile() {
             
             
             <center>
-            <div
+            <div className='task-brief-text'
             style={{
               cursor: "pointer", // 鼠标悬停时的指针形状
               background: "#a31f15", // 深灰色背景
