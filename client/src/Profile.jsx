@@ -19,7 +19,7 @@ export function Profile() {
   const round = useRound();
   const stage = useStage();
 
-  const [showTaskBrief, setShowTaskBrief] = useState(false);
+  const [showTaskBrief, setShowTaskBrief] = useState(true);
 
 
   // 函数用于打开和关闭模态框
@@ -83,6 +83,25 @@ export function Profile() {
             </h2>
             <br />
             <div className="task-brief-text" dangerouslySetInnerHTML={{ __html: task_brief_parsed }} />
+            
+            
+            <center>
+            <div
+            style={{
+              cursor: "pointer", // 鼠标悬停时的指针形状
+              background: "#a31f15", // 深灰色背景
+              color: "white", // 白色文字
+              width: 'fit-content',              
+              paddingLeft: '10px',
+              paddingRight: '10px',
+              borderRadius: '5px'
+            }}
+            onClick={onClose}
+          >
+            <b>CLOSE</b>
+          </div>
+
+            </center>
           </div>
 
           {/* 关闭按钮，使用绝对定位 */}
