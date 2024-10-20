@@ -27,50 +27,35 @@ export function Choice() {
   const [submissionData, setSubmissionData] = useState(player.get("submissionData"));
   const textRef = useContext(ScrollContext);
   let isShow = false;
-
   const [forceUpdate, setForceUpdate] = useState(false);
-  const [test, setTest] = useState()
-
+  const [value,setValue] = useState()
   if (forceUpdate) { setForceUpdate(false) }
-
   let remainingSeconds = timer?.remaining ? Math.round(timer.remaining / 1000) : null;
-
   const urlParams = new URLSearchParams(window.location.search);
   const urlDev = urlParams.get("urlDev");
-
   const [showTaskBrief, setShowTaskBrief] = useState(false);
   const handleShowTaskBrief = () => setShowTaskBrief(true);
   const handleCloseTaskBrief = () => setShowTaskBrief(false);
   const treatment = game.get("treatment");
-
-
-
   const featureData = game.get("featureData") === undefined ? undefined : game.get("featureData")[treatment.scenario]
   const features = featureData === undefined ? undefined : featureData.features
   const productName = featureData === undefined ? undefined : featureData.product_name
-
-
   const generateUniqueId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
   const [totalPoints, setTotalPoints] = useState(0);
-
   const [proposalSubmitted, setProposalSubmitted] = useState(false);
   const [votes, setVotes] = useState({});
   const anySubmitted = round.get("anySubmitted");
-
   const submittedData_informal = round.get("submittedData_informal");
   const nextClicked = round.get("nextClicked");
   const votingCompleted = round.get("votingCompleted");
   const submittedInformalVote = round.get("submittedInformalVote")
-
   const [loading, setLoading] = useState(true);
-
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
 
   const handleCloseModal = () => {
     setShowModal(false);
   };
-
 
   player.set("name",
     featureData === undefined ? "" :
@@ -81,36 +66,24 @@ export function Choice() {
     featureData.roleNames === undefined ? "" :
       featureData.roleNames['role1']
 
-
   window.round = round
 
-  //-----------------------------------------------------------------------------------------------------------------------
-
-
+  //----------------------------------------------------------------------------------------------------------------------
   //reset， only for test
-
   const resetVotes = () => {
     const resetVotes = { role1: null, role2: null, role3: null };
-
     round.set("votesFormal", resetVotes);
-
     round.set("proposalOutcome", null);
-
     setLocalProposalStatus(null);
-
     console.log("All votes and proposal outcomes have been reset");
   };
 
   //before starting
-
-
   if (round.get("proposalOutcome") === undefined) {
     round.set("proposalOutcome", null);
   }
 
   const [localProposalStatus, setLocalProposalStatus] = useState(null);
-
-
 
   function calculateRoleScoresFromLatestSubmission(history, features) {
 
@@ -132,10 +105,7 @@ export function Choice() {
     return roleScores;
   }
 
-
   const ph = round.get("proposalHistory")
-
-
 
   const handleMakeOfficial = () => {
 
@@ -151,11 +121,6 @@ export function Choice() {
       console.log("stop!")
       return;
     }
-
-
-    console.log("TESTBONUS: " + roleScores);
-
-
     const currentVotes = round.get("votesFormal") || { role1: null, role2: null, role3: null };
     console.log(`Before updating, ${playerRole} votes:`, currentVotes);
 
@@ -252,17 +217,13 @@ export function Choice() {
 
   // set the proposal status data from the round variable
   // or set to a blank proposal, if the round variable is undefined
-
   if (round.get("proposalStatus") === undefined) {
     isShow = true
   }
-
   const proposalStatusData = round.get("proposalStatus") === undefined ?
     { status: false, content: "" }
     :
     round.get("proposalStatus")
-
-
 
   // set the proposal displayed in the straw poll component
   const strawPollContent = proposalStatusData === undefined ?
@@ -279,15 +240,9 @@ export function Choice() {
         proposalStatusData.content.proposal.vote.filter(v => Object.keys(v)[0] === player.get("role"))
           .length > 0
 
-
   // calculate player's current vote
   const currentVote = !currentlyVoted ? undefined :
     proposalStatusData.content.proposal.vote.filter(v => Object.keys(v)[0] === player.get("role"))[0][player.get("role")]
-
-
-  // set message shown in straw poll component 
-  // depending on proposal status and content
-
   window.proposalStatus = round.get("proposalStatus")
   window.proposalStatusData = proposalStatusData
   window.currentlyVoted = currentlyVoted
@@ -296,10 +251,7 @@ export function Choice() {
 
   const votesFormal = round.get("votesFormal") || { role1: null, role2: null, role3: null };
 
-
   const calcHeaderMessage = (proposalStatusData) => {
-
-
     if (proposalStatusData === undefined) {
       return undefined
     }
@@ -351,8 +303,6 @@ export function Choice() {
           </div>
         )
 
-
-
       return (
 
         <>
@@ -360,7 +310,7 @@ export function Choice() {
             <>
               Passed (unofficial)
               <br /><br />
-              Value to you: <b>{test}</b>
+              Value to you: <b>{value}</b>
               <br /><br />
               Would you like to make this official?
               <br /><br />
@@ -390,18 +340,18 @@ export function Choice() {
       )
     }
 
+    const user = submittedData_informal?.submitterRole || "defaultRole";
+
     if (proposalStatusData.status == true & currentlyVoted == false) {
       return (<>
-        {/* {submittedData_informal['submitterRole']} */}
-        has made a proposal!  See details below.
-        <br /><br />Value to you: <b>{test}</b>
+        {/* {submittedData_informal['submitterRole']}  */}
+        {user} has made a proposal!  See details below.
+        <br /><br />Value to you: <b>{value}</b>
         <br /><br />Please cast an informal vote.
         <br /><br />
 
-
         <div className="voting-buttons-container">
           <Button className="vote-button" handleClick={() => handleVoteSubmit(1)}>Accept</Button>
-
           <Button className="vote-button" handleClick={() => handleVoteSubmit(0)}>Reject</Button>
         </div>
       </>)
@@ -409,15 +359,12 @@ export function Choice() {
     return ("unexpected condition, please report 'Error Message 1'")
   }
 
-
   const strawPollMessage = calcHeaderMessage(proposalStatusData);
-
-
   // code for handling countdown reminder notifications
   useEffect(() => {
-    const reminders = [300, 120]; // 剩余时间提醒点
+    const reminders = [300, 120]; 
     if (reminders.includes(remainingSeconds)) {
-      const minutesLeft = remainingSeconds / 60; // 将秒转换为分钟
+      const minutesLeft = remainingSeconds / 60; 
       appendSystemMessage({
         id: `reminder-${remainingSeconds}`,
         text: `Reminder: ${minutesLeft} Minute${minutesLeft > 1 ? 's' : ''} left.`,
@@ -448,8 +395,8 @@ export function Choice() {
     setShownInstructionsModel(!showInstructionsModal)
   }
 
-  const onTest = (number) => {
-    setTest(number)
+  const onValue = (number) => {
+    setValue(number)
   }
 
   // handle a vote click from the StrawPoll component
@@ -478,9 +425,7 @@ export function Choice() {
 
   }
 
-  const handleOptionChange = featureName => {
-
-  };
+  const handleOptionChange = featureName => {};
 
   const handleSubmitProposal = (submission_data) => {
 
@@ -566,8 +511,6 @@ export function Choice() {
     console.log({ featureData })
   };
 
-
-
   return (
     <>
       <div className="h-full w-full flex" style={{ position: 'relative' }}>
@@ -585,8 +528,8 @@ export function Choice() {
                 CurrentVote={currentVote}
                 message={strawPollMessage}
                 playerRole={player.get("role")}
-                sampleValue={test}
-                onTest={onTest}
+                sampleValue={onValue}
+                onValue={onValue}
               />
 
               <Calculator
@@ -619,7 +562,6 @@ export function Choice() {
 
 
             </div>
-
 
           </div>
         </div>

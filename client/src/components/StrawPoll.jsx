@@ -80,7 +80,7 @@ function StrawPoll(props) {
     const submissionInfo = getSubmittedFeaturesAndBonuses();
     // sampleValue = submissionInfo && Math.round(submissionInfo.totalBonus * 100) / 100
 
-    props.onTest(submissionInfo && Math.round(submissionInfo.totalBonus * 100) / 100)
+    props.onValue(submissionInfo && Math.round(submissionInfo.totalBonus * 100) / 100)
     const selectedFeatureNames = submittedData_informal ? Object.keys(submittedData_informal.decisions).join(", ") : "No features selected";
 
 
