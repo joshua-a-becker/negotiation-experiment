@@ -40,14 +40,15 @@ factors:
         - value: 600333
         - value: 60
         - value: 15
+        - value: 30
 treatments:
     - name: pilot_simple_scaled
       factors:
         basicpay: 2.5
         featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/master/testscoresheet.json
-        formalSubmitDuration: 60
-        formalVoteDuration: 60
-        informalSubmitDuration: 600
+        formalSubmitDuration: 600
+        formalVoteDuration: 600
+        informalSubmitDuration: 30
         numRounds: 1
         playerCount: 3
         scenario: pilot_simple_scaled

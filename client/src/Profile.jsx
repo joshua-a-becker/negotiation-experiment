@@ -19,12 +19,18 @@ export function Profile() {
   const round = useRound();
   const stage = useStage();
 
-  const [showTaskBrief, setShowTaskBrief] = useState(true);
+  const playerModalSeen = player.get("playerModalSeen") || false // return true if set to true, false if undefined or false
+  console.log("default = " + playerModalSeen)
+
+  const [showTaskBrief, setShowTaskBrief] = useState(!playerModalSeen);
 
 
   // 函数用于打开和关闭模态框
   const handleShowTaskBrief = () => setShowTaskBrief(true);
-  const handleCloseTaskBrief = () => setShowTaskBrief(false);
+  const handleCloseTaskBrief = () => {
+    player.set("playerModalSeen", true)
+    setShowTaskBrief(false);
+  }
   const featureData = game.get("featureData") === undefined ? undefined : game.get("featureData")[treatment.scenario]
 
   function interpolateString(template, variables) {
