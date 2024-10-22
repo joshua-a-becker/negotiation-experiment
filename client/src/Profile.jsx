@@ -45,8 +45,17 @@ export function Profile() {
     };
     const task_brief_parsed = task_brief === undefined ? undefined : interpolateString(task_brief, parse_vars);
 
+    function onContainerClick(event) {
+      event.preventDefault()
+      const thisTarget = event.target
+      if(thisTarget.id == "container") {
+        onClose();
+      }
+    }
+
     return (
       <div
+        id = "container"
         className="task-brief-modal"
         style={{
           position: "fixed",
@@ -61,6 +70,7 @@ export function Profile() {
           zIndex: 100,
           backgroundColor: "rgb(220, 243, 247,0.70)",
         }}
+        onClick={onContainerClick}
       >
         <div
           className="task-brief-modal"
@@ -76,7 +86,9 @@ export function Profile() {
             boxShadow: "0 0 10px rgba(0,0,0,0.5)",
             zIndex: 100,
             backgroundColor: "#FFFFFF",
+            cursor: "auto"
           }}
+          onClick = {null}
         >
           <div className="task-brief text-black">
             <h2 className="task-brief-title">
