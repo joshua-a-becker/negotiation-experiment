@@ -271,7 +271,7 @@ export function Walkthrough({ next }) {
           message = {playerMessage}
           CurrentVote = {(player.get("currentVote")===null || player.get("currentVote")===undefined) ? undefined : player.get("currentVote")}
           playerRole = "role1"
-          onTest = {setProposalValue}
+          onChangeTotalBonus = {setProposalValue}
         
         />
       
