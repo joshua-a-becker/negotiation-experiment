@@ -88,7 +88,6 @@ export function FormalVote() {
 
   const handleVote = (vote) => {
 
-    //bonues
     const playerTotalBonus = calculatePlayerTotalBonus();
     const playerBonusesByRole = round.get("playerBonusesByRole") || {};
     const totalPoints = round.get("totalPoints");
@@ -96,23 +95,13 @@ export function FormalVote() {
     playerBonusesByRole[role1] = totalPoints;
     playerBonusesByRole[player.get("role")] = playerTotalBonus;
     round.set("playerBonusesByRole", playerBonusesByRole);
-    console.log("UUUUUUspdated playerBonusesByRole:", playerBonusesByRole);
-
-
 
     if (vote === "For" && playerTotalBonus < 0) {
-
-      setModalMessage("This proposal will earn you a negative bonus, you are not allowed to accept it. Note if you do not reach agreement, you will still earn the base pay for the task.");
-      setShowModal(true)
-
-      //alert("This proposal will earn you a negative bonus, you are not allowed to accept it. Note that if you do not reach agreement, you will still earn the base pay for this task.");
-      return; // Prevent the vote from being set and allow the player to reconsider
+      // setModalMessage("This proposal will earn you a negative bonus, you are not allowed to accept it. Note if you do not reach agreement, you will still earn the base pay for the task.");
+      // setShowModal(true)
+      alert("Hello")
+      return;
     }
-
-
-
-
-
 
     player.set("vote", vote);
     console.log("Vote set for", player.id, "to", vote);
@@ -123,48 +112,33 @@ export function FormalVote() {
       });
       const allVotedCheck = players.every(p => p.get("vote") || p.get("role") === "role1");
       console.log("All voted:", allVotedCheck);
-    }, 1000); // 延迟1秒后检查
+    }, 1000);
 
-    player.stage.set("submit", true);
+    //player.stage.set("submit", true);
 
-
-
-
-    // 检查是否所有玩家都已经投票
+    // Check if all players have voted
     const allPlayersVoted = players.every(p => p.get("vote") || p.get("role") === "role1");
-    console.log(`allPlayersVoted bbbb`, allPlayersVoted);
+    console.log(`allPlayersVoted`, allPlayersVoted);
     if (allPlayersVoted) {
       round.set("allVoted", true);
       round.set("pass", pass);
-      console.log(`Round result: ${pass ? 'Passed' : 'Dddddddddid Not Pass'}`);
       const nonVoters = players.filter(p => !p.get("vote") && p.get("role") !== "role1").map(p => p.get("name"));
       round.set("nonVoters", nonVoters);
-
-
-
     };
 
-
   };
-  // 如果所有玩家都已投票
+  // If all players have voted
   if (round.get("allVoted") || round.get("missingProposal")) {
-    round.set("pass", pass);  // 保存这轮是否通
-    console.log(`allPlayersVoted bbbb`, allPlayersVoted);
-
-    console.log(`Round result: ${pass ? 'Passed' : 'DDDDid Not Pass'}`);
+    round.set("pass", pass);  // Save this round to see if it passes
     player.stage.set("submit", true);
 
   }
 
-
-
-
-  // 如果当前玩家已经投票，或者玩家是 "Stellar_Cove"，则显示等待
+  // If the current player has already voted, or the player is "Stellar_Cove", then show wait
   if (player.get("vote") || player.get("role") === "role1") {
     return (
       <div className="container">
         <div className="waiting-section">
-
           <div className="loader"></div>
           <div>Other parties are still voting. Once votes are in and tallied, the results will be shown.</div>
         </div>
@@ -172,13 +146,10 @@ export function FormalVote() {
     );
   }
 
-
   if (!submittedData_formal || !submittedData_formal.decisions) {
-
-    round.set("missingProposal", true); // 设置一个状态，表示提案缺失
+    round.set("missingProposal", true); // Set a status indicating that the proposal is missing
 
   }
-
   const decisionsMap = submittedData_formal.decisions
     ? Object.entries(submittedData_formal.decisions).reduce((acc, [feature, isSelected]) => {
       acc[feature] = isSelected;
@@ -186,12 +157,7 @@ export function FormalVote() {
     }, {})
     : {};
 
-
-
-
-
   window.features = features
-
 
   return (
     <div>

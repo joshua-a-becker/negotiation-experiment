@@ -44,16 +44,6 @@ factors:
         - value: pilot_easy_scaled
         - value: pilot_hard_scaled
 treatments:
-    - name: pilot_simple_scaled
-      factors:
-        basicpay: 2.5
-        featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/master/testscoresheet.json
-        formalSubmitDuration: 600
-        formalVoteDuration: 600
-        informalSubmitDuration: 30
-        numRounds: 1
-        playerCount: 3
-        scenario: pilot_simple_scaled
     - name: pilot_easy_scaled
       factors:
         basicpay: 2.5
@@ -64,6 +54,16 @@ treatments:
         numRounds: 1
         playerCount: 3
         scenario: pilot_easy_scaled
+    - name: quicktest
+      factors:
+        basicpay: 2.5
+        featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/master/testscoresheet.json
+        formalSubmitDuration: 60
+        formalVoteDuration: 60
+        informalSubmitDuration: 30
+        numRounds: 1
+        playerCount: 3
+        scenario: pilot_easy_scaled
     - name: pilot_hard_scaled
       factors:
         basicpay: 2.5
@@ -71,6 +71,16 @@ treatments:
         formalSubmitDuration: 60
         formalVoteDuration: 60
         informalSubmitDuration: 600
+        numRounds: 1
+        playerCount: 3
+        scenario: pilot_hard_scaled
+    - name: quicktesthard
+      factors:
+        basicpay: 2.5
+        featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/master/testscoresheet.json
+        formalSubmitDuration: 60
+        formalVoteDuration: 60
+        informalSubmitDuration: 15
         numRounds: 1
         playerCount: 3
         scenario: pilot_hard_scaled

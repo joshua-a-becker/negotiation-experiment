@@ -127,6 +127,8 @@ export function FormalSubmit() {
 
     const totalPoints = calculateTotal();
 
+
+
     // Check if the total bonus is negative
     if (totalPoints < 0) {
       setModalMessage(
@@ -254,7 +256,7 @@ export function FormalSubmit() {
     return (
       <div className="flex-container">
         <div className="flex-child">
-          <div className="informal-text-brief-wrapper" style={{marginTop:'100px'}}> 
+          <div className="informal-text-brief-wrapper" style={{ marginTop: '100px' }}>
             <div className="informal-text-brief-1">
               <b>Your role:</b> {player.get("name")}.
               <br />Please wait while {role1} submits a final proposal for an official, binding vote.

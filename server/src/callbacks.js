@@ -8,8 +8,8 @@ export const Empirica = new ClassicListenersCollector();
 Empirica.onGameStart(({ game }) => {
   const treatment = game.get("treatment");
   const { role1, role2, role3, numRounds, informalSubmitDuration, formalSubmitDuration, formalVoteDuration, resultDuration, featureUrl } = treatment;
-  
-  
+
+
   /*
   console.log("setting feature data...")
   
@@ -46,7 +46,7 @@ Empirica.onGameStart(({ game }) => {
     round.addStage({ name: "Discussion and Informal Vote", duration: informalSubmitDuration });
     round.addStage({ name: "Submit Formal Vote", duration: formalSubmitDuration });
     round.addStage({ name: "Formal Vote", duration: formalVoteDuration });
-    
+
     // 只有当不是最后一轮时才添加结果阶段
     if (i < numRounds - 1) {
       round.addStage({ name: "Result", duration: resultDuration });
@@ -72,22 +72,22 @@ Empirica.onGameStart(({ game }) => {
 });
 
 
-Empirica.onRoundStart(({ round }) => { 
+Empirica.onRoundStart(({ round }) => {
 
-  
+
   const featureUrl = round.currentGame.get("treatment").featureUrl;
 
-  if(round.currentGame.get("featureData")==="undefined") {
+  if (round.currentGame.get("featureData") === "undefined") {
     console.log("round start fetch")
     fetch(featureUrl)
-    .then(response => response.json()) // 将响应转换为 JSON
-    .then(data => {
-      round.currentGame.set("featureData", data)
-      console.log("done inside roundstart")
-    })
-    .catch(error => console.error("Failed to load features:", error)); // 处理可能的错误
+      .then(response => response.json()) // 将响应转换为 JSON
+      .then(data => {
+        round.currentGame.set("featureData", data)
+        console.log("done inside roundstart")
+      })
+      .catch(error => console.error("Failed to load features:", error)); // 处理可能的错误
   }
-  
+
   round.set("proposalVoteHistory", [])
   round.set("proposalHistory", [])
   round.set("systemMessages", []);
@@ -95,20 +95,20 @@ Empirica.onRoundStart(({ round }) => {
   round.set("roundStartTime", startTime);
   console.log(`Round ${round.get("index")} Start: Round start time set at ${new Date(startTime).toISOString()}`);
 });
- 
+
 Empirica.onStageStart(({ stage }) => {
   if (stage.get("name") === "Informal Submit") {
-   
+
     const players = stage.currentGame.players;
     for (const player of players) {
-//    player.set("vote", null);
- //   player.set("currentVote", null); // 如果你有这个状态的话
-  //  player.set("allVoted", false)
-        // 重置与投票相关的轮次状态
-  //  stage.set("anySubmitted", false);
-  //  stage.set("votingCompleted", false);
-  //  stage.set("submittedData_informal", null);
-  //  stage.set("allVoted", false)
+      //    player.set("vote", null);
+      //   player.set("currentVote", null); // 如果你有这个状态的话
+      //  player.set("allVoted", false)
+      // 重置与投票相关的轮次状态
+      //  stage.set("anySubmitted", false);
+      //  stage.set("votingCompleted", false);
+      //  stage.set("submittedData_informal", null);
+      //  stage.set("allVoted", false)
       console.log(`Reset vote for player ${player.id}`);
     }
   }
@@ -226,22 +226,22 @@ Empirica.onRoundEnded(({ round }) => {
   round.currentGame.set("missingProposal", round.get("missingProposal"))
   round.currentGame.set("pass", round.get("pass"))
 });
-Empirica.onGameEnded(({ game }) => {});
+Empirica.onGameEnded(({ game }) => { });
 
- 
-Empirica.on("round", "proposalOutcome", (ctx, {round, proposalOutcome}) => {
+
+Empirica.on("round", "proposalOutcome", (ctx, { round, proposalOutcome }) => {
   console.log("P OUTCOME: " + proposalOutcome)
-  
+
   const proposalItems = round.get("lastProposalItems")
   const submitterRole = round.get("lastProposalSubmitter")
-
-  const votes = round.get("votesFormal")
-  const votes_for =  Object.values(votes).filter(vote => vote === true).length;
+  round.set("votesFormal", {});
+  const votes = round.get("votesFormal") || {};
+  const votes_for = Object.values(votes).filter(vote => vote === true).length;
   // const noCount =   Object.values(votes).filter(vote => vote === false).length;
 
 
-  const passtext = proposalOutcome==='passed' ? "OFFICIAL proposal by " + submitterRole + " passed.  " 
-  : "OFFICIAL proposal by " + submitterRole + " rejected with " + votes_for + " yes votes.  "
+  const passtext = proposalOutcome === 'passed' ? "OFFICIAL proposal by " + submitterRole + " passed.  "
+    : "OFFICIAL proposal by " + submitterRole + " rejected with " + votes_for + " yes votes.  "
 
   const text = passtext + "Proposal included: " + proposalItems
 
@@ -250,41 +250,41 @@ Empirica.on("round", "proposalOutcome", (ctx, {round, proposalOutcome}) => {
   round.append("chat", {
     text,
     sender: {
-      id: Date.now(), 
+      id: Date.now(),
       name: "Notification",
-      role: "Notification", 
+      role: "Notification",
     },
   });
-  
+
 
 });
 
-Empirica.on("round", "proposalStatus", (ctx, {round, proposalStatus}) => {
+Empirica.on("round", "proposalStatus", (ctx, { round, proposalStatus }) => {
 
-  playerCount=round.currentGame.get("treatment").playerCount
+  playerCount = round.currentGame.get("treatment").playerCount
 
-  if(proposalStatus.status && proposalStatus.content.proposal.vote){
+  if (proposalStatus.status && proposalStatus.content.proposal.vote) {
     countVotes = proposalStatus.content.proposal.vote.length
-    if(countVotes>=playerCount) {
-      
-      
-      const resultingProposal = proposalStatus.content.proposal
-      
-      
-      const votes_for = resultingProposal.vote.filter(v=>Object.values(v)==1).length
-      const votes_against = resultingProposal.vote.filter(v=>Object.values(v)==0).length
+    if (countVotes >= playerCount) {
 
-      resultingProposal.result = {for: votes_for, against: votes_against}
-      
-      const  proposalItems = Object.keys(proposalStatus.content.proposal.decisions).join(", ")
+
+      const resultingProposal = proposalStatus.content.proposal
+
+
+      const votes_for = resultingProposal.vote.filter(v => Object.values(v) == 1).length
+      const votes_against = resultingProposal.vote.filter(v => Object.values(v) == 0).length
+
+      resultingProposal.result = { for: votes_for, against: votes_against }
+
+      const proposalItems = Object.keys(proposalStatus.content.proposal.decisions).join(", ")
       const submitterRole = resultingProposal.submitterRole
 
       console.log('  ${submission_data.submitterRole}')
       // reset vote status 
       round.set("proposalStatus", {
-        status: false, 
+        status: false,
         content: {
-          message: "this is a message", 
+          message: "this is a message",
           proposal: resultingProposal
         }
       })
@@ -293,21 +293,21 @@ Empirica.on("round", "proposalStatus", (ctx, {round, proposalStatus}) => {
       const ph = round.get("proposalVoteHistory")
       ph.push(resultingProposal)
       round.set("proposalVoteHistory", ph)
-  
 
-      const passtext = votes_for >= playerCount ? "INFORMAL proposal by " + submitterRole + " passed.  " 
+
+      const passtext = votes_for >= playerCount ? "INFORMAL proposal by " + submitterRole + " passed.  "
         : "INFORMAL proposal by " + submitterRole + " rejected with " + votes_for + " yes votes.  "
 
       const text = passtext + "Proposal included: " + proposalItems
       round.append("chat", {
         text,
         sender: {
-          id: Date.now(), 
+          id: Date.now(),
           name: "Notification",
-          role: "Notification", 
+          role: "Notification",
         },
       });
-      
+
 
       round.set("lastProposalItems", proposalItems)
       round.set("lastProposalSubmitter", submitterRole)
@@ -320,13 +320,13 @@ Empirica.on("round", "proposalStatus", (ctx, {round, proposalStatus}) => {
 });
 
 
- Empirica.on("round", "watchValue", (ctx, { round, watchValue }) => {
+Empirica.on("round", "watchValue", (ctx, { round, watchValue }) => {
 
-   console.log("proposal")
-   console.log(round.get("proposalHistory"))
+  console.log("proposal")
+  console.log(round.get("proposalHistory"))
 
-   console.log("proposal with vote")
-   console.log(round.get("proposalVoteHistory"))
+  console.log("proposal with vote")
+  console.log(round.get("proposalVoteHistory"))
 
   //round.set("proposalHistory",[])
   //round.set("proposalVoteHistory",[])
@@ -336,7 +336,7 @@ Empirica.on("round", "proposalStatus", (ctx, {round, proposalStatus}) => {
 
 Empirica.on("round", "goendTriggered", (ctx, { round, goendTriggered }) => {
 
- 
+
   if (goendTriggered === true) {
     console.log("Go end triggered, preparing to move.");
 
@@ -349,9 +349,9 @@ Empirica.on("round", "goendTriggered", (ctx, { round, goendTriggered }) => {
 
     if (resultStage) {
       players.forEach(player => {
-      
+
         player.stage.set(resultStage);
-        
+
       });
     } else {
       console.log("Result stage not found. Please check the stage setup.");

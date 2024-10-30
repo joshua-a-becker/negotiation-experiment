@@ -75,11 +75,11 @@ export function Choice() {
     featureData === undefined
       ? ""
       : featureData.roleNames === undefined
-      ? ""
-      : featureData.roleNames[player.get("role")]
+        ? ""
+        : featureData.roleNames[player.get("role")]
   );
 
-  const role1 = featureData === undefined ? "" : featureData.roleNames === undefined ? "": featureData.roleNames["role1"];
+  const role1 = featureData === undefined ? "" : featureData.roleNames === undefined ? "" : featureData.roleNames["role1"];
 
   window.round = round;
 
@@ -94,7 +94,11 @@ export function Choice() {
   };
 
   //before starting
-  if (round.get("proposalOutcome") === undefined) {
+  // if (round.get("proposalOutcome") === undefined) {
+  //   round.set("proposalOutcome", null);
+  // }
+
+  if (round && round.get("proposalOutcome") === undefined) {
     round.set("proposalOutcome", null);
   }
 
@@ -252,27 +256,27 @@ export function Choice() {
     proposalStatusData === undefined
       ? undefined
       : proposalStatusData.content === undefined
-      ? undefined
-      : proposalStatusData.content.proposal;
+        ? undefined
+        : proposalStatusData.content.proposal;
 
   // determine whether player has already voted, conditional on an open poll
   const currentlyVoted =
     proposalStatusData === undefined
       ? undefined
       : proposalStatusData.content.proposal === undefined
-      ? undefined
-      : proposalStatusData.content.proposal.vote === undefined
-      ? false
-      : proposalStatusData.content.proposal.vote.filter(
-          (v) => Object.keys(v)[0] === player.get("role")
-        ).length > 0;
+        ? undefined
+        : proposalStatusData.content.proposal.vote === undefined
+          ? false
+          : proposalStatusData.content.proposal.vote.filter(
+            (v) => Object.keys(v)[0] === player.get("role")
+          ).length > 0;
 
   // calculate player's current vote
   const currentVote = !currentlyVoted
     ? undefined
     : proposalStatusData.content.proposal.vote.filter(
-        (v) => Object.keys(v)[0] === player.get("role")
-      )[0][player.get("role")];
+      (v) => Object.keys(v)[0] === player.get("role")
+    )[0][player.get("role")];
   window.proposalStatus = round.get("proposalStatus");
   window.proposalStatusData = proposalStatusData;
   window.currentlyVoted = currentlyVoted;
@@ -355,7 +359,7 @@ export function Choice() {
         <>
           Proposal{" "}
           {proposalStatusData.content.proposal.result.for ===
-          treatment.playerCount ? (
+            treatment.playerCount ? (
             <>
               Passed (unofficial)
               <br />
@@ -447,9 +451,8 @@ export function Choice() {
       const minutesLeft = remainingSeconds / 60;
       appendSystemMessage({
         id: `reminder-${remainingSeconds}`,
-        text: `Reminder: ${minutesLeft} Minute${
-          minutesLeft > 1 ? "s" : ""
-        } left.`,
+        text: `Reminder: ${minutesLeft} Minute${minutesLeft > 1 ? "s" : ""
+          } left.`,
         sender: {
           id: "system",
           name: "System",
@@ -489,8 +492,8 @@ export function Choice() {
       proposalStatusData.content.proposal === undefined
         ? undefined
         : proposalStatusData.content.proposal.vote === undefined
-        ? undefined
-        : proposalStatusData.content.proposal.vote.filter(
+          ? undefined
+          : proposalStatusData.content.proposal.vote.filter(
             (v) => Object.keys(v)[0] === player.get("role")
           ).length > 0;
 
@@ -508,7 +511,7 @@ export function Choice() {
     round.set("proposalStatus", locProposalStatus);
   };
 
-  const handleOptionChange = (featureName) => {};
+  const handleOptionChange = (featureName) => { };
 
   const handleSubmitProposal = (submission_data) => {
     // Reset proposalOutcome to null each time a new proposal is submitted
