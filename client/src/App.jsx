@@ -12,6 +12,7 @@ import { MyConsent } from "./intro-exit/MyConsent.jsx";
 import { Sorry } from "./intro-exit/Sorry";
 import { Summary } from "./intro-exit/Summary";
 import { Walkthrough } from "./intro-exit/Walkthrough";
+import { WaitingPage } from "./intro-exit/WaitingPage";
 
 import {
   useGame,
@@ -51,7 +52,7 @@ export default function App() {
     //if(isDevelopment) return [WaitingPage];
     //return [Walkthrough, WaitingPage];
     //return [MyConsent];
-    return [MyConsent, Introduction1, Introduction2, Walkthrough];// WaitingPage];
+    return [MyConsent, Introduction1, Introduction2, Walkthrough, WaitingPage];
 
   }
 

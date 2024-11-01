@@ -1,4 +1,3 @@
-//callbacks.js
 import { ClassicListenersCollector } from "@empirica/core/admin/classic";
 
 

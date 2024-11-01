@@ -3,14 +3,15 @@ import { Button } from "../components/Button";
 import { usePlayer, useGame } from "@empirica/core/player/classic/react";
 import { isDevelopment } from "@empirica/core/player"
 
+
 export function WaitingPage({ next }) {
 
 
 
   const game = useGame(); 
   const player = usePlayer();
-
-  
+  const treatment = game.get("treatment");
+  const settingsUrl = treatment.settingsUrl;
 
   const [startTime, setStartTime] = useState("NA");
   const [closeTime, setCloseTime] = useState("NA");
@@ -49,13 +50,11 @@ export function WaitingPage({ next }) {
   }
 
   useEffect(() => {
-    fetch("https://decide.empirica.app/data/json/settings.json")
+    fetch(settingsUrl)
       .then(response => response.json()) // 将响应转换为 JSON
       .then(data => {
         setStartTime(data["startTime"]);
         setCloseTime(data["closeTime"]);
-        if(isDevelopment) setStartTime("13:09")
-        if(isDevelopment) setCloseTime("NA")
         setLoaded(true)
       })
       .catch(error => console.error("Failed to load features:", error)); // 处理可能的错误
@@ -67,7 +66,7 @@ export function WaitingPage({ next }) {
       <strong>Time to start: </strong> {hours>0?hours+":":""}{hours>0&&mins<10?0:""}{mins}:{(hours>0||mins)&&secs<10?0:""}{secs}
         <br/><br/><br/>
         <center>
-        <button className="bg-gray text-black font-bold py-2 px-4 rounded">
+        <button className="bg-gray text-black font-bold py-2 px-4 rounded" disabled="true" style={{cursor: "not-allowed"}}>
         (Not Open Yet)
         </button>
         </center>

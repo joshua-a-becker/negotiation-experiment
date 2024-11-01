@@ -3,6 +3,7 @@ import { isDevelopment } from "@empirica/core/player"
 import React, {useEffect, useState} from "react";
 import { Button } from "../components/Button";
 import "./Introduction.css";
+import { usePlayer, useGame } from "@empirica/core/player/classic/react";
 
 
 export function MyConsent({ next }) {
@@ -10,34 +11,41 @@ export function MyConsent({ next }) {
   const [closeTime, setCloseTime] = useState("NA");
   const [loadedStartTime, setLoadedStartTime] = useState(false);
 
+  const game = useGame(); 
+  const treatment = game.get("treatment");
+  const fetchUrl=treatment.settingsUrl
 
 
   useEffect(() => {
-    const isIPaddress = /^[0-9.]+$/.test(window.location.hostname);
-    if(isIPaddress) {
-      setCloseTime("NA")
-      setLoadedStartTime(true)
-      console.log("Page on IP address, not domain name---no closing time set.")
-      return;
-    }
-
-    const baseurl = window.location.hostname;
-    const fetchurl = "http://"+baseurl+":8000/settings.json"
-    console.log("URL: " + baseurl)
-    console.log("FetchURL: " + fetchurl)
-    fetch(fetchurl, {cache: "reload"})
-      .then(response => response.json()) // 将响应转换为 JSON
+        
+    console.log("FetchURL: " + fetchUrl)
+    fetch(fetchUrl, {cache: "reload"})
+      .then(response => {
+        // Then try to parse as JSON
+        const response_json = response.json()
+        console.log(response_json)
+        window.response_json = response_json
+        return response_json;
+      })
       .then(data => {
+        window.data = data;
+        console.log("Attempting to set start time.")
         console.log(data)
         if(data["closeTime"]) {
           setCloseTime(data["closeTime"]);
+          console.log("success")
         } else {
           setCloseTime("NA")
+          console.log("NA")
         }
         
         setLoadedStartTime(true)
       })
-      .catch(error => console.error("Failed to load features:", error)); // 处理可能的错误
+      .catch(error => {
+        setCloseTime("NA")
+        console.error("Failed to load features:", error)
+        console.error("Closetime not set!!!")
+      });
 
   }, []);
 

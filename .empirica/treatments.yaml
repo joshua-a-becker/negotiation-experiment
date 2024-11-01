@@ -46,6 +46,9 @@ factors:
         - value: 15
         - value: 30
         - value: 120
+    - name: settingsUrl
+      values:
+        - value: https://challenge.negotiation.education/json/settings.json
 treatments:
     - name: pilot_easy_scaled
       factors:
@@ -57,33 +60,4 @@ treatments:
         numRounds: 1
         playerCount: 3
         scenario: pilot_easy_scaled
-    - name: quicktest
-      factors:
-        basicpay: 2.5
-        featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/master/testscoresheet.json
-        formalSubmitDuration: 60
-        formalVoteDuration: 60
-        informalSubmitDuration: 30
-        numRounds: 1
-        playerCount: 3
-        scenario: pilot_easy_scaled
-    - name: pilot_hard_scaled
-      factors:
-        basicpay: 2.5
-        featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/master/testscoresheet.json
-        formalSubmitDuration: 60
-        formalVoteDuration: 60
-        informalSubmitDuration: 600
-        numRounds: 1
-        playerCount: 3
-        scenario: pilot_hard_scaled
-    - name: demo_speed
-      factors:
-        basicpay: 2.5
-        featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/master/testscoresheet.json
-        formalSubmitDuration: 120
-        formalVoteDuration: 120
-        informalSubmitDuration: 120
-        numRounds: 1
-        playerCount: 3
-        scenario: pilot_hard_scaled
+        settingsUrl: https://challenge.negotiation.education/json/settings.json
