@@ -9,36 +9,6 @@ Empirica.onGameStart(({ game }) => {
   const treatment = game.get("treatment");
   const { role1, role2, role3, numRounds, informalSubmitDuration, formalSubmitDuration, formalVoteDuration, resultDuration, featureUrl } = treatment;
 
-
-  /*
-  console.log("setting feature data...")
-  
-  console.log(new Date())
-  fetch(featureUrl)
-          .then(response => response.json()) // 将响应转换为 JSON
-          .then(data => {
-            game.set("featureData", data)
-  
-            console.log("done inside")
-            console.log(new Date())
-          })
-          .catch(error => console.error("Failed to load features:", error)); // 处理可能的错误
-  
-  
-  console.log("...done")
-  console.log(new Date())
-  */
-
-  // for (let i = 0; i < numRounds; i++) {
-  //   const round = game.addRound({
-  //     name: `Round ${i+1}`,
-  //   });
-  //   round.addStage({ name: "Informal Submit", duration: informalSubmitDuration });
-  //   round.addStage({ name: "Formal Submit", duration: formalSubmitDuration });
-  //   round.addStage({ name: "Formal Vote", duration: formalVoteDuration });
-  //   round.addStage({name:"Result", duration: resultDuration})
-  // }
-
   for (let i = 0; i < numRounds; i++) {
     const round = game.addRound({
       name: `Round ${i + 1}`,

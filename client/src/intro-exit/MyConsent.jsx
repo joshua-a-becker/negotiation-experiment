@@ -13,20 +13,35 @@ export function MyConsent({ next }) {
 
 
   useEffect(() => {
+    const isIPaddress = /^[0-9.]+$/.test(window.location.hostname);
+    if(isIPaddress) {
+      setCloseTime("NA")
+      setLoadedStartTime(true)
+      console.log("Page on IP address, not domain name---no closing time set.")
+      return;
+    }
 
-    fetch("https://jsonplaceholder.typicode.com/todos/1", {cache: "reload"})
+    const baseurl = window.location.hostname;
+    const fetchurl = "http://"+baseurl+":8000/settings.json"
+    console.log("URL: " + baseurl)
+    console.log("FetchURL: " + fetchurl)
+    fetch(fetchurl, {cache: "reload"})
       .then(response => response.json()) // 将响应转换为 JSON
       .then(data => {
+        console.log(data)
+        if(data["closeTime"]) {
+          setCloseTime(data["closeTime"]);
+        } else {
+          setCloseTime("NA")
+        }
         
-        setCloseTime(data["closeTime"]);
-        if(isDevelopment) setCloseTime("NA")
         setLoadedStartTime(true)
       })
       .catch(error => console.error("Failed to load features:", error)); // 处理可能的错误
 
   }, []);
 
-
+  console.log(loadedStartTime)
   if(loadedStartTime){
     let secondsUntilClose = (target => (new Date(new Date().setHours(...target.split(':')) - Date.now()) / 1000))(closeTime);
     console.log(secondsUntilClose)

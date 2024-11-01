@@ -17,18 +17,26 @@ factors:
       values:
         - value: https://decide.empirica.app/data/json/feature_data.json
         - value: https://raw.githubusercontent.com/joshua-a-becker/RTools/master/testscoresheet.json
+    - name: scenario
+      values:
+        - value: pilot_simple_scaled
+        - value: pilot_final_easy
+        - value: pilot_easy_scaled
+        - value: pilot_hard_scaled
     - name: formalSubmitDuration
       desc: Duration of the Formal Submit stage in seconds
       values:
         - value: 60
         - value: 603333
         - value: 600
+        - value: 120
     - name: formalVoteDuration
       desc: Duration of the Formal Submit stage in seconds
       values:
         - value: 60
         - value: 222222
         - value: 600
+        - value: 120
     - name: informalSubmitDuration
       desc: Duration of the Informal Submit stage in seconds
       values:
@@ -37,12 +45,7 @@ factors:
         - value: 60
         - value: 15
         - value: 30
-    - name: scenario
-      values:
-        - value: pilot_simple_scaled
-        - value: pilot_final_easy
-        - value: pilot_easy_scaled
-        - value: pilot_hard_scaled
+        - value: 120
 treatments:
     - name: pilot_easy_scaled
       factors:
@@ -74,13 +77,13 @@ treatments:
         numRounds: 1
         playerCount: 3
         scenario: pilot_hard_scaled
-    - name: quicktesthard
+    - name: demo_speed
       factors:
         basicpay: 2.5
         featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/master/testscoresheet.json
-        formalSubmitDuration: 60
-        formalVoteDuration: 60
-        informalSubmitDuration: 15
+        formalSubmitDuration: 120
+        formalVoteDuration: 120
+        informalSubmitDuration: 120
         numRounds: 1
         playerCount: 3
         scenario: pilot_hard_scaled
