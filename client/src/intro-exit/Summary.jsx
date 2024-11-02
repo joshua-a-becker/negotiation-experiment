@@ -17,12 +17,32 @@ export function Summary({ next }) {
   
   const proposalHistory = game.get("proposalHistory");
  
-  let returnText=""
+  let returnText="Waiting for other players.."
 
-  if(stage.get("name")=="Submit Formal Vote") {
-    returnText = "Please wait while others vote..."
+  window.game=game;
+  window.round=round;
+  window.stagename=stage.get("name")
+  window.treatment=treatment
+
+  if(stage.get("name") == "Round Summary" && (round.get("index")+1)==treatment.numRounds) {
+    return("Exit Summary")
+
+  }
+
+  const votingBlock = 
+    <>
+      <div className="container">
+        <div className="waiting-section">
+          <div className="loader"></div>
+          <div>Other parties are still voting. Once votes are in and tallied, the results will be shown.</div>
+        </div>
+      </div>
+    </>
+
+  if(stage.get("name")=="Submit Formal Vote" || stage.get("name")=="Formal Vote") {
+    returnText = votingBlock
   } 
-  
+
   return (
     returnText
   );

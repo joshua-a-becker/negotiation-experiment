@@ -29,35 +29,21 @@ export function Stage() {
 
   if (game.get("featureData") === undefined) return <Loading />;
 
-  if (player.stage.get("submit")) {
-    if (players.length === 3) {
-      return <Summary />;
-    }
-
-    return (
-      <div className="waiting-section">
-        <p>
-          please wait for others
-        </p>
-      </div>
-    );
-  }
+  if (player.stage.get("submit")) { return <Summary /> }
 
 
   switch (stage.get("name")) {
+    
     case "Discussion and Informal Vote":
       return <Choice />;
 
     case "Submit Formal Vote":
-
       return <FormalSubmit />
 
     case "Formal Vote":
-
       return <FormalVote />;
 
     case "Round Summary":
-
       return <Result />;
 
     default:

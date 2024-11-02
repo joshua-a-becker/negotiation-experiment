@@ -53,10 +53,8 @@ function Header(props) {
             </div>
         </div>
 
-    return(
-
-    <>
-        <div className="informal-text-brief-wrapper" style={{ position: "relative" }}>
+    const instructionsBlock = props.instructions===null ? <></> :
+        <>
             <div className="informal-text-brief-1" style={{ position: "relative", marginTop: '20px' }}>
                 <div
                 className="modal-closer"
@@ -67,6 +65,13 @@ function Header(props) {
                 <h6 style={{cursor: "pointer"}} onClick={handleInstructionsModal}><strong><a style={{cursor: "pointer"}} onClick={handleInstructionsModal}>INSTRUCTIONS (click to expand)</a></strong></h6>
                 {showInstructionsModal && (instructionsText)}
             </div>
+        </>
+
+    return(
+
+    <>
+        <div className="informal-text-brief-wrapper" style={{ position: "relative" }}>
+            {instructionsBlock}
             {messageContent}
         </div>
     </>

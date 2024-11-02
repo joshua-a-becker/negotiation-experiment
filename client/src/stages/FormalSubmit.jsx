@@ -31,6 +31,8 @@ export function FormalSubmit() {
 
   window.round=round;
 
+  if(round.get("formalProposalSubmitted")) {player.stage.set("submit",true)}
+
   const treatmentFeatureData = game.get("featureData")[treatment.scenario]
   const features = treatmentFeatureData.features
 
@@ -87,8 +89,24 @@ export function FormalSubmit() {
   const generateUniqueId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
 
   const handleSubmitProposal = (submission_data) => {
-    event.preventDefault();
+    
     console.log("submit")
+
+    // check they're allowed to submit!!
+    
+    const playerScore = calculatePoints(submission_data.decisions)
+    console.log(submission_data)
+    console.log("SCORE: " + playerScore)
+    if (playerScore <= 0) {
+      setModalMessage(
+        "This proposal will earn you a negative bonus, you are not allowed to accept it. Note that if you do not reach agreement, you will still earn the base pay for this task."
+      );
+      setShowModal(true);
+      console.log("stop!  you cna't submit that!")
+      return;
+    }
+  
+ 
 
     // get history from server
     const proposalHistory = round.get("proposalHistory")
@@ -140,6 +158,11 @@ export function FormalSubmit() {
     return (
       <div className="flex-container">
         <div className="flex-child">
+          <CustomModal
+            show={showModal}
+            handleClose={handleCloseModal}
+            message={modalMessage}
+          />
           <div className="informal-text-brief-wrapper" style={{ marginTop: '100px' }}>
             <div className="informal-text-brief-1">
               <b>Your role:</b> {player.get("name")}.

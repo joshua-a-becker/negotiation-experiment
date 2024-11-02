@@ -16,7 +16,7 @@ Empirica.onGameStart(({ game }) => {
     round.addStage({ name: "Discussion and Informal Vote", duration: informalSubmitDuration });
     round.addStage({ name: "Submit Formal Vote", duration: formalSubmitDuration });
     round.addStage({ name: "Formal Vote", duration: formalVoteDuration });
-    round.addStage({ name: "Round Summary", duration: 120 });
+    round.addStage({ name: "Round Summary", duration: 12000 });
   }
 
 
@@ -64,9 +64,6 @@ Empirica.onRoundStart(({ round }) => {
 
 
 Empirica.on("round", "proposalHistory", (ctx, { round, proposalHistory }) => {
-
-  // IF FORMAL VOTE STAGE, WE WILL HAVE FORMAL VOTES WITH NO INFORMAL VOTES
-  
 
   // NOTE:  WE ONLY CARE IF THERE'S A FORMAL VOTE PASSED
   const playerCount = round.currentGame.get("treatment").playerCount;
