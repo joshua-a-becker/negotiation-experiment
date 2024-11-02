@@ -91,6 +91,7 @@ function Calculator(props) {
             formalVote: []
         };
 
+        window.hps=props.handleProposalSubmission
         props.handleProposalSubmission(submission_data);
 
 
@@ -159,7 +160,7 @@ function Calculator(props) {
                     <button onClick={handleSubmitProposal}
                         className="submit-button"
                     >
-                        Submit for Informal Vote
+                        Submit for {props.formalVote ? "FINAL" : "Informal"} Vote
                     </button>
                     <CustomModal show={showModal} handleClose={handleCloseModal} message={modalMessage} />
 

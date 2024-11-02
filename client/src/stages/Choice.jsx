@@ -85,6 +85,21 @@ export function Choice() {
 
 
   const handleFormalVote = (vote) => {
+
+    // CHECK IF THEY'RE ALLOWED TO VOTE YES!
+    if(vote) {
+      const playerScore = calculatePoints(latestProposal.decisions)
+      if (playerScore < 0) {
+        setModalMessage(
+          "This proposal will earn you a negative bonus, you are not allowed to accept it. Note that if you do not reach agreement, you will still earn the base pay for this task."
+        );
+        setShowModal(true);
+        console.log("stop!")
+        return;
+      }
+    }
+
+
     console.log("official")
     const role = player.get("role")
     const proposalHistory = round.get("proposalHistory")

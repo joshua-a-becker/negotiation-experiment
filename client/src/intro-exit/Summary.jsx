@@ -5,6 +5,7 @@ import { Button } from "../components/Button";
 import { useChat } from '../ChatContext';
 
 export function Summary({ next }) {
+  
 
   const player = usePlayer();
   const game = useGame();
@@ -13,102 +14,17 @@ export function Summary({ next }) {
   const players = usePlayers();
   const treatment = game.get("treatment");
   const { basicpay } = treatment;
-  const roleIdentifier = player.get("role");
-  const roundPoints = player.get("roundPoints") || 0;
-  const cumulativePoints = player.get("cumulativePoints") || 0;
-  const roundPointsHistory = game.get("RoundPointsHistory") || [];
-  const totalRounds = roundPointsHistory ? roundPointsHistory.length / 3 : 0;
-  const currentPlayerRoundPoints = roundPointsHistory.filter(({ role }) => role === roleIdentifier);
-  //const roundScores = currentPlayerRoundPoints.map(({ totalPoints }) => totalPoints).join(" + ");
-  const roundScores = currentPlayerRoundPoints.reduce((cumulativePoints, { totalPoints }) => cumulativePoints + totalPoints, 0);
-
-  const proposalHistory = game.get("proposalHistory") || [];
-  const lastProposal = proposalHistory[proposalHistory.length - 1]; // last one
-  const lastProposalMessage = lastProposal ? `Good job on your last proposal: ${lastProposal}` : "";
-  const roleScores = game.get("roleScores");// infomral 
-  // console.log("round get test", game.get("roleScores"));
-  //const currentRoleScore = roleScores[roleIdentifier];
-  const currentRoleScore = roleScores?.[roleIdentifier] || null;
-
-  useEffect(() => {
-
-    const roundPointsHistory = game.get("RoundPointsHistory");
-    const missingProposal = game.get("missingProposal")
-
-    if (roundPointsHistory) {
-
-      const totalRounds = roundPointsHistory.length;
-      let cumulativePoints = 0;
-
-      // const roundScores = roundPointsHistory.map(({ totalPoints }) => {
-      //   cumulativePoints += totalPoints;
-      //   return totalPoints;
-      // }).join(" + ");
-
-      const roundScores = roundPointsHistory.reduce((cumulativePoints, { totalPoints }) => {
-        return cumulativePoints + totalPoints;
-      }, 0);
-
-      console.log(`SUMMARY.JSX: In total you have earned £ ${roundScores} across ${totalRounds} rounds, for a total of ${cumulativePoints}.`);
-      console.log(game.get("missingProposal"))
-    }
-  }, [game]);
-
-  const goendTriggered = game.get("goendTriggered");
-  let returnText = "";
-
-
   
+  const proposalHistory = game.get("proposalHistory");
+ 
+  let returnText=""
 
-  if (!goendTriggered) {
-    console.log("Stage: " + stage)
-    if(stage) console.log("Stage: " + stage.get("name"));
-    console.log("Round: " + round)
-    if(round) console.log("PO: " + round.get("proposalOutcome"));
-    console.log("Roundscores: " + roundScores)
-    if (roundScores >= 0) {
-      console.log("here 69")
-      returnText = <> Proposal Passed <br /> <br></br>You earned a bonus of £{Math.round(roundScores * 100) / 100} and a base payment of £{basicpay} for a total payment of £{Math.round((parseFloat(basicpay) + parseFloat(roundScores)) * 100) / 100}.</>;
-    } else {
-      console.log("Returning negative text")
-      returnText = <>Your bonus was negative, and so was set to zero.<br /><br />  You earned a base payment of £{basicpay}</>;
-    }
-  } else {
-    console.log("here 76")
-    console.log("CRS: " + currentRoleScore)
-    returnText = <>Your score for \this round: £{currentRoleScore.toFixed(2)} and a base payment of £{basicpay} for a total payment of £{(Math.round((parseFloat(basicpay) + parseFloat(currentRoleScore)) * 100) / 100).toFixed(2)}.</>;
-  }
-
-
-  const returnContent = !(!stage) ? <>""</> : <>{game && (<div className="waiting-section">
-    <h4>
-
-      <br />
-      {game.get("missingProposal") ? <>No proposal was submitted in time.<br /><br /></> : <></>}
-      {game.get("pass") || game.get("goendTriggered") || game.get("gameOver") ?
-        ""
-        : <>The proposal did not pass.<br /><br /></>}
-      {returnText}
-      <br />
-
-      <br /><strong>Please enter the code "completed" to indicate that you have completed the task.</strong>
-      <br />
-    </h4>
-    <br />
-    <Button handleClick={next} autoFocus >
-      <p>OK</p>
-    </Button>
-  </div>)}</>
-
-
-  
-  window.currentRoleScore=currentRoleScore
-  window.roundPointsHistory = roundPointsHistory
-  console.log("Round", round)
-  console.log(returnContent)
+  if(stage.get("name")=="Submit Formal Vote") {
+    returnText = "Please wait while others vote..."
+  } 
   
   return (
-    returnContent
+    returnText
   );
 }
 

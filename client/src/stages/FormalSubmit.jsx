@@ -29,6 +29,7 @@ export function FormalSubmit() {
   let remainingSeconds = timer?.remaining ? Math.round(timer.remaining / 1000) : null;
   const treatment = game.get("treatment");
 
+  window.round=round;
 
   const treatmentFeatureData = game.get("featureData")[treatment.scenario]
   const features = treatmentFeatureData.features
@@ -82,94 +83,27 @@ export function FormalSubmit() {
   }, [remainingSeconds, appendSystemMessage]);
 
 
-  useEffect(() => {
-    setTotalPoints(calculateTotal());
-  }, [selectedFeatures, player]);
 
-  const handleOptionChange = featureName => {
-    setSelectedFeatures(prev => ({
-      ...prev,
-      [featureName]: !prev[featureName]
-    }));
-  };
-
-  const calculateTotal = () => {
-    const role = player.get("role");
-    return features.reduce((total, feature) => {
-      const isSelected = selectedFeatures[feature.name];
-      const roleBonus = feature.bonus[role] || 0;
-      return total + (isSelected ? roleBonus : 0);
-    }, 0);
-  };
-
-  const getSubmittedFeaturesAndBonuses = () => {
-    if (!submittedData_formal) {
-      return null;
-    }
-  };
-  const submissionInfo = getSubmittedFeaturesAndBonuses();
   const generateUniqueId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
 
-
-  const handleSubmitProposal = (event) => {
+  const handleSubmitProposal = (submission_data) => {
     event.preventDefault();
+    console.log("submit")
+
+    // get history from server
+    const proposalHistory = round.get("proposalHistory")
+
+    // add Role 1 vote to submission (bc default vote=yes)
+    submission_data.formalVote.push( {[player.get("role")]: 1})
+    
+    // add submission to history
+    proposalHistory.push(submission_data);
+    
+    // update server data
+    round.set("proposalHistory", proposalHistory)   
 
 
-    const hasSelectedFeatureformal = Object.values(selectedFeatures).some(isSelected => isSelected);
-    if (!hasSelectedFeatureformal) {
-      setModalMessage(
-        "You must propose at least one feature to include in your product"
-      );
-      setShowModal(true);
-      //alert("You must propose at least one feature to include in your product.");
-      return;
-    }
-
-    const totalPoints = calculateTotal();
-
-
-
-    // Check if the total bonus is negative
-    if (totalPoints < 0) {
-      setModalMessage(
-        "This proposal will earn you a negative bonus, you are not allowed to propose a negative bonus proposal."
-      );
-      setShowModal(true);
-      return; // Exit the function without submitting anything, allowing the user to reselect
-    }
-
-    const choices = Object.entries(selectedFeatures).reduce((acc, [feature, isSelected]) => {
-      if (isSelected) acc[feature] = features.find(f => f.name === feature).bonus[player.get("role")];
-      return acc;
-    }, {});
-
-    round.set("submittedData_formal", {
-      playerID: player._id,
-      decisions: choices,
-      submitterRole: player.get("role")
-    });
-    setIsSubmitted(true);
-    round.set("isSubmitted", true);
-    setHasSubmittedProposal(true);
-    round.set("isVoting", true);
-    round.set("totalPoints", totalPoints);
-    round.set("gonext", true);
-
-
-    if (submitterRole === "role1") {
-      const currentCount = game.get("submitCount") || 0;
-      game.set("submitCount", currentCount + 1);
-      const submissions = game.get("submissions") || [];
-      submissions.push({
-        submitter: submitterRole,
-        choices,
-        count: currentCount + 1
-      });
-      game.set("submissions", submissions);
-
-    }
-
-    const selectedFeatureNames = Object.entries(selectedFeatures).filter(([_, isSelected]) => isSelected).map(([featureName]) => featureName);
+    const selectedFeatureNames = ["a","b"] //Object.entries(selectedFeatures).filter(([_, isSelected]) => isSelected).map(([featureName]) => featureName);
     const formalmessageText = `${role1} has submitted a formal proposal. Features Included are: ${selectedFeatureNames.join(", ")}.`;
     appendSystemMessage({
       id: generateUniqueId(),
@@ -181,78 +115,28 @@ export function FormalSubmit() {
         role: "Notification",
       }
     });
-  };
 
-  if (round.get("isSubmitted")) {
-    player.stage.set("submit", true);
-    return;
+    // NOW LOG THAT THE PROPOSAL HAS BEEN SUBMITTED AND SUBMIT
+    round.set("formalProposalSubmitted",true)
+    player.stage.set("submit", true)
+  }
+
+  const calculatePoints = (selectedFeatures) => {
+    const featuresToCalc = treatmentFeatureData.features
+
+
+    const pointsReturn = featuresToCalc.reduce((total, feature) => {
+        const isSelected = selectedFeatures[feature.name];
+        const roleBonus = feature.bonus[player.get("role")] || 0;
+        return (total + (isSelected ? roleBonus : 0));
+    }, 0);
+
+    return pointsReturn
   }
 
 
-  if (player.get("role") === "role1") {
-    return (
-      <div className="container">
-        <div className="text-brief-wrapper">
-          <div className="text-brief">
-            <h6>Time to vote! Please offer a final proposal.<br /><br />The chat history contains informal vote results.</h6>
-          </div>
-        </div>
-        <br />
-        <div className="table-container">
-          <div className="table-wrapper">
-            <br />
-            <table className="styled-table-orange">
-              <thead>
-                <tr >
-                  <th>Feature</th>
-                  <th>Include</th>
-                  <th>Bonus</th>
-                </tr>
-              </thead>
-              <tbody>
-                {features.map((feature, index) => {
-                  const isDesiredFeature = desiredFeaturesForRole.split(", ").includes(feature.name);
-                  return (
-                    <tr key={index} className={isDesiredFeature ? "selected-feature" : ""}>
-                      <td>{feature.name}</td>
-                      <td>
-                        <input
-                          type="checkbox"
-                          checked={!!selectedFeatures[feature.name]}
-                          onChange={() => handleOptionChange(feature.name)}
-                        />
-                      </td>
-                      <td>
-                        {selectedFeatures[feature.name] ?
-                          <strong>{feature.bonus[player.get("role")]}</strong>
-                          :
-                          <div style={{ color: "#888888" }}>{feature.bonus[player.get("role")]}</div>
-                        }
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+  const displaySubmit = player.get("role") === "role1"
 
-            <div className="total-points-display"> Total bonus: ${Math.round(totalPoints * 100) / 100}</div>
-            <br />
-            {!hasSubmittedProposal && (
-              <div className="button-container">
-
-                <button onClick={handleSubmitProposal} className={"submit-button-orange"}>
-                  Submit for Formal Vote
-                </button>
-                <CustomModal show={showModal} handleClose={handleCloseModal} message={modalMessage} />
-              </div>
-            )}
-          </div>
-        </div>
-
-      </div>
-    )
-
-  } else {
     return (
       <div className="flex-container">
         <div className="flex-child">
@@ -268,14 +152,17 @@ export function FormalSubmit() {
               showVoteButton={true}
               roleName={player.get("name")}
               playerRole={player.get("role")}
-              displaySubmit={false}
+              displaySubmit={displaySubmit}
               propSelectedFeatures={{}}
+              calculatePoints={calculatePoints}
+              handleProposalSubmission={handleSubmitProposal}
+              formalVote={true}
             />
           </div>
         </div>
       </div>
     );
-  }
+  
 }
 
 
