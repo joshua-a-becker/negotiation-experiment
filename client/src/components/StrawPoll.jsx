@@ -15,10 +15,8 @@ function StrawPoll(props) {
         ...restProps } = props;
 
     const features = props.featureData === undefined ? undefined : props.featureData.features;
-    const currentVote = props.CurrentVote
-    const totalBonusOverride = props.totalBonusOverride
     var submittedData_informal = props.submissionData;
-    var sampleValue = props.sampleValue
+
 
 
     const handleVoteSubmit = (vote) => {
@@ -80,7 +78,6 @@ function StrawPoll(props) {
     };
 
     const submissionInfo = getSubmittedFeaturesAndBonuses();
-    // sampleValue = submissionInfo && Math.round(submissionInfo.totalBonus * 100) / 100
 
     props.onChangeTotalBonus(submissionInfo && Math.round(submissionInfo.totalBonus * 100) / 100)
     const selectedFeatureNames = submittedData_informal ? Object.keys(submittedData_informal.decisions).join(", ") : "No features selected";

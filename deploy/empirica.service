@@ -1,0 +1,16 @@
+[Unit]
+Description=Empirica Service
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/empirica
+ExecStart=/usr/local/bin/empirica serve /root/empirica/empirica.tar.zst
+Restart=always
+RestartSec=5
+KillSignal=SIGINT
+TimeoutStopSec=10
+Environment="PATH=/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin"
+
+[Install]
+WantedBy=multi-user.target

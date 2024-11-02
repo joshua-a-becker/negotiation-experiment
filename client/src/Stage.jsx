@@ -56,16 +56,7 @@ export function Stage() {
 
       return <FormalVote />;
 
-    case "Result":
-
-      // if (player.stage.get("submit")) {
-      //   return <FormalVote />;
-      // }
-      // if (round.get("isSubmitted")) {
-      //   return <FormalVote />;
-      // } else {
-      //   return <FormalSubmit />;
-      // }
+    case "Round Summary":
 
       return <Result />;
 

@@ -6,6 +6,7 @@ export const Empirica = new ClassicListenersCollector();
 
 Empirica.onGameStart(({ game }) => {
   const treatment = game.get("treatment");
+  game.set("agreementHistory", [])
   const { role1, role2, role3, numRounds, informalSubmitDuration, formalSubmitDuration, formalVoteDuration, resultDuration, featureUrl } = treatment;
 
   for (let i = 0; i < numRounds; i++) {
@@ -15,25 +16,21 @@ Empirica.onGameStart(({ game }) => {
     round.addStage({ name: "Discussion and Informal Vote", duration: informalSubmitDuration });
     round.addStage({ name: "Submit Formal Vote", duration: formalSubmitDuration });
     round.addStage({ name: "Formal Vote", duration: formalVoteDuration });
-
-    // 只有当不是最后一轮时才添加结果阶段
-    if (i < numRounds - 1) {
-      round.addStage({ name: "Result", duration: resultDuration });
-    }
+    round.addStage({ name: "Round Summary", duration: 10000 });
   }
 
 
-  // 定义角色及其对应名称
+
   const roles = [{ key: "role1", name: role1 }, { key: "role2", name: role2 }, { key: "role3", name: role3 }];
 
-  // 随机分配角色
-  const shuffledRoles = roles.sort(() => Math.random() - 0.5); // 使用随机排序方法来打乱角色数组
+
+  const shuffledRoles = roles.sort(() => Math.random() - 0.5);
 
   game.players.forEach((player, index) => {
-    const roleIndex = index % shuffledRoles.length; // 确保即使玩家数量超过角色数量，也能循环分配
+    const roleIndex = index % shuffledRoles.length;
     const role = shuffledRoles[roleIndex];
-    player.set("role", role.key); // 存储角色键
-    player.set("name", role.name); // 存储角色名称
+    player.set("role", role.key); 
+    player.set("name", role.name);
   });
   game.set("submitCount", 0);
   game.set("submissions", []);
@@ -57,7 +54,7 @@ Empirica.onRoundStart(({ round }) => {
       .catch(error => console.error("Failed to load features:", error)); // 处理可能的错误
   }
 
-  round.set("proposalVoteHistory", [])
+  //round.set("proposalVoteHistory", [])
   round.set("proposalHistory", [])
   round.set("systemMessages", []);
   const startTime = Date.now();
@@ -66,18 +63,28 @@ Empirica.onRoundStart(({ round }) => {
 });
 
 Empirica.onStageStart(({ stage }) => {
+
+
+  console.log("stage START")
+  round = stage.round;
+  roundOver = round.get("roundOver")
+  console.log("Round over: " + roundOver)
+  if(roundOver & stage.get("name") != "Round Summary") {
+    console.log("Proposal passed.  Ending round.") 
+    const players = stage.currentGame.players;
+    players.forEach(player => {
+
+      player.stage.set("submit", true);
+
+    });
+  }
+
+
   if (stage.get("name") === "Informal Submit") {
 
     const players = stage.currentGame.players;
     for (const player of players) {
-      //    player.set("vote", null);
-      //   player.set("currentVote", null); // 如果你有这个状态的话
-      //  player.set("allVoted", false)
-      // 重置与投票相关的轮次状态
-      //  stage.set("anySubmitted", false);
-      //  stage.set("votingCompleted", false);
-      //  stage.set("submittedData_informal", null);
-      //  stage.set("allVoted", false)
+
       console.log(`Reset vote for player ${player.id}`);
     }
   }
@@ -85,6 +92,7 @@ Empirica.onStageStart(({ stage }) => {
 
 
 Empirica.onStageEnded(({ stage, game }) => {
+  console.log("End of stage: " + stage.get("name"))
 
   if (stage.get("name") === "Discussion and Informal Vote") {
     console.log("End of Discussion and Informal Vote stage");
@@ -137,10 +145,10 @@ Empirica.onStageEnded(({ stage, game }) => {
 
     stage.currentGame.set("RoundPointsHistory", roundPointsHistory);
 
-    console.log("Round Points History:");
+    //console.log("141 Round Points History:");
 
     roundPointsHistory.forEach((roundData) => {
-      console.log(`Round ${roundData.roundIndex + 1}: Rolename: ${roundData.roleName}, Role: ${roundData.role}, Total points: ${roundData.totalPoints}`);
+      //console.log(`Round ${roundData.roundIndex + 1}: Rolename: ${roundData.roleName}, Role: ${roundData.role}, Total points: ${roundData.totalPoints}`);
     });
   }
 
@@ -179,8 +187,9 @@ Empirica.onStageEnded(({ stage, game }) => {
   }
 
   stage.currentGame.set("RoundPointsHistory", roundPointsHistory);
-  console.log("Round Points History:");
+  console.log("183 Round Points History:");
   roundPointsHistory.forEach((roundData) => {
+    console.log("185")
     console.log(`Round ${roundData.roundIndex + 1}: Rolename: ${roundData.roleName}, Role: ${roundData.role}, Total points: ${roundData.totalPoints}`);
   });
 
@@ -189,7 +198,7 @@ Empirica.onStageEnded(({ stage, game }) => {
 
 
 Empirica.onRoundEnded(({ round }) => {
-  console.log("hello/adsf")
+  console.log("Round Ended")
 
   round.currentGame.set("test", 1)
   round.currentGame.set("missingProposal", round.get("missingProposal"))
@@ -199,7 +208,23 @@ Empirica.onGameEnded(({ game }) => { });
 
 
 Empirica.on("round", "proposalOutcome", (ctx, { round, proposalOutcome }) => {
-  console.log("P OUTCOME: " + proposalOutcome)
+  if(proposalOutcome=="passed") {
+    const game = round.currentGame;
+    const players = game.players;
+
+    round.set("roundOver", true)
+    console.log("Proposal passed.  Ending round.") 
+    console.log("game over: " + game.get("gameOver"))
+    players.forEach(player => {
+
+      player.stage.set("submit", true);
+
+    });
+  }
+
+  // console.log("Round/PO callback")
+  if(proposalOutcome===null) return;
+  // console.log("P OUTCOME: " + proposalOutcome)
 
   const proposalItems = round.get("lastProposalItems")
   const submitterRole = round.get("lastProposalSubmitter")

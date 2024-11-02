@@ -1,0 +1,9 @@
+[Unit]
+Description=Watch /root/empirica/empirica.tar.zst for changes
+
+[Path]
+PathChanged=/root/empirica/empirica.tar.zst
+Unit=empirica-restart.service
+
+[Install]
+WantedBy=multi-user.target

@@ -27,11 +27,8 @@ function Calculator(props) {
         }
     };
 
-    //const [features, setFeatures] = useState([]);
-    //const [productName, setProductName] = useState([]);
 
     const features = props.featureData === undefined ? props.featureData : props.featureData.features;
-    //const productName = props.featureData.productName;
 
     const [selectedFeatures, setSelectedFeatures] = useState(propSelectedFeatures);
 
@@ -58,19 +55,7 @@ function Calculator(props) {
         });
     };
 
-    const calculateTotal = () => {
-        const role = playerRole;
-        const pointsReturn = features.reduce((total, feature) => {
-            const isSelected = selectedFeatures[feature.name];
-            const roleBonus = feature.bonus[role] || 0;
-            return (total + (isSelected ? roleBonus : 0));
-        }, 0);
-        console.log("Player role", playerRole);
-        console.log("Updated playerBonusesByRole_informal:", pointsReturn);
-
-        return (pointsReturn);
-
-    };
+    const calculateTotal = props.calculatePoints
 
     const handleSubmitProposal = (event) => {
 
@@ -97,11 +82,13 @@ function Calculator(props) {
             return;
         }
 
-        const selectedFeatureNames = Object.keys(selectedFeatures).filter(feature => selectedFeatures[feature]);
+        //const selectedFeatureNames = Object.keys(selectedFeatures).filter(feature => selectedFeatures[feature]);
 
         const submission_data = {
             decisions: choices,
-            submitterRole: props.roleName
+            submitterRole: props.roleName,
+            informalVote: [],
+            formalVote: []
         };
 
         props.handleProposalSubmission(submission_data);
@@ -111,7 +98,7 @@ function Calculator(props) {
 
 
     useEffect(() => {
-        setTotalPoints(calculateTotal());
+        setTotalPoints(calculateTotal(selectedFeatures));
 
     }, [selectedFeatures]);
 

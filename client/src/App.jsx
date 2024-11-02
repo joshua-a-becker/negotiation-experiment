@@ -59,14 +59,14 @@ export default function App() {
   function exitSteps({ game, player, round }) {
 
     if (game.get("goendTriggered") === true) {
-      return [Summary, ExitSurvey];
+      return [ExitSurvey];
     }
 
     if (player.get("ended") === "game failed" || player.get("ended") === "game terminated" || player.get("ended") === "no more games") {
       return [Sorry, ExitSurvey];
     }
 
-    return [Summary, ExitSurvey];
+    return [ExitSurvey];
   }
 
   const paramsObj = Object.fromEntries(urlParams?.entries());
