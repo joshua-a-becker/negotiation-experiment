@@ -15,30 +15,7 @@ export function Result() {
   const player = usePlayer(); 
   const treatment = game.get("treatment");
 
-  const playerCount = treatment.playerCount;
-  
-
-  const ph = round.get("proposalHistory") 
-  const latestProposal = ph[Object.keys(ph)[Object.keys(ph).length - 1]]
-
-  const treatmentFeatureData = game.get("featureData")[treatment.scenario]
-
-  const calculatePoints = (selectedFeatures) => {
-    const featuresToCalc = treatmentFeatureData.features
-
-
-    const pointsReturn = featuresToCalc.reduce((total, feature) => {
-        const isSelected = selectedFeatures[feature.name];
-        const roleBonus = feature.bonus[player.get("role")] || 0;
-        return (total + (isSelected ? roleBonus : 0));
-    }, 0);
-
-    return pointsReturn
-  }
-
-  const potential_bonus = calculatePoints
-
-
+ 
   // no vote was completed in time
   
   const resultsMessage = player.round.get("roundSummary")

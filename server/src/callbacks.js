@@ -125,35 +125,33 @@ Empirica.onStageStart(({ stage }) => {
           return (total + (isSelected ? roleBonus : 0));
       }, 0);
   
-      return Number(pointsReturn.toFixed(1))
+      return ( Number(pointsReturn.toFixed(1)) );
     }
 
     players.forEach(player => { 
 
-      const playerBonus = calculatePoints(latestProposal.decisions, player.get("role") )
+      let playerBonus = calculatePoints(latestProposal.decisions, player.get("role") )
 
-      const roundSummary = 
-      (()=>{
-    
-        if(latestProposal.formalVote.length < playerCount) {
-          return("Sorry, no vote was completed in time.  You earned no bonus.")
-        }
+      let roundSummary = ""
 
-        const formalVoteCount = latestProposal.formalVote
-          .flatMap(obj => Object.values(obj))
-          .reduce((sum, val) => sum + Number(val), 0);
+      if(latestProposal.formalVote.length < playerCount) {
+        roundSummary = "Sorry, no vote was completed in time.  You earned no bonus."
+        playerBonus=0
+      }
+
+      const formalVoteCount = latestProposal.formalVote
+        .flatMap(obj => Object.values(obj))
+        .reduce((sum, val) => sum + Number(val), 0);
 
 
-        if(formalVoteCount<playerCount) {
-          return("Sorry, the vote did not pass, no agreement was reached.  You earned no bonus.")
-        } else if(formalVoteCount==playerCount) {
-          return(
-            "Congratulations!  You have reached agreement!<br/><br/>"+
-            "You received an additional bonus from this round: " + playerBonus            
-          )
-        }
-          
-      })()
+      if(formalVoteCount<playerCount) {
+        roundSummary = "Sorry, the vote did not pass, no agreement was reached.  You earned no bonus."
+        playerBonus=0
+      } else if(formalVoteCount==playerCount) {
+        roundSummary = 
+          "Congratulations!  You have reached agreement!<br/><br/>"+
+          "You received an additional bonus from this round: " + playerBonus                      
+      }
       
       player.round.set("roundSummary", roundSummary)
       playerBonusList = player.get("bonus")
