@@ -29,8 +29,6 @@ export function FormalSubmit() {
   let remainingSeconds = timer?.remaining ? Math.round(timer.remaining / 1000) : null;
   const treatment = game.get("treatment");
 
-  window.round=round;
-
   if(round.get("formalProposalSubmitted")) {player.stage.set("submit",true)}
 
   const treatmentFeatureData = game.get("featureData")[treatment.scenario]
@@ -41,9 +39,10 @@ export function FormalSubmit() {
     .map(feature => feature.name)
     .join(", ");
 
-  const role1 = featureData === undefined ? "" :
-    featureData.roleNames === undefined ? "" :
-      featureData.roleNames['role1']
+  const role1 = treatmentFeatureData === undefined ? "" :
+    treatmentFeatureData.roleNames === undefined ? "" :
+    treatmentFeatureData.roleNames['role1']
+
 
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');

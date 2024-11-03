@@ -23,9 +23,30 @@ export function Summary({ next }) {
   window.round=round;
   window.stagename=stage.get("name")
   window.treatment=treatment
+  window.player=player
 
   if(stage.get("name") == "Round Summary" && (round.get("index")+1)==treatment.numRounds) {
-    return("Exit Summary")
+
+    const totalBonus = player.get("bonus").reduce((sum, item) => sum + item.bonus, 0);
+    const basePay = treatment.basicpay
+    const totalPay = totalBonus + basePay
+
+    const roundBonusHtml = "<u>Round Bonuses</u><br/>" +
+      player.get("bonus")
+        .map(item => "Product: " + item.round + "<br/>Round Bonus: £" +item.bonus)
+        .join("<br/><br/>")
+
+    return(<>
+      <div className="waiting-section">
+        <br/><br/>
+        <b>The game is over!  Thank you for participating.</b>
+        <br/>You have earned £{totalPay} in total.
+        <br/><br/>This includes a base payment of: £{basePay}
+        <br/><br/>And the following round bonuses...
+        <br/><br/>
+        <span dangerouslySetInnerHTML={{__html: roundBonusHtml}} />
+      </div>
+    </>)
 
   }
 
@@ -38,6 +59,8 @@ export function Summary({ next }) {
         </div>
       </div>
     </>
+
+  returnText="TBD"
 
   if(stage.get("name")=="Submit Formal Vote" || stage.get("name")=="Formal Vote") {
     returnText = votingBlock

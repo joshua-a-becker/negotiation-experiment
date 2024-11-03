@@ -21,28 +21,29 @@ export function Result() {
   const ph = round.get("proposalHistory") 
   const latestProposal = ph[Object.keys(ph)[Object.keys(ph).length - 1]]
 
+  const treatmentFeatureData = game.get("featureData")[treatment.scenario]
+
+  const calculatePoints = (selectedFeatures) => {
+    const featuresToCalc = treatmentFeatureData.features
+
+
+    const pointsReturn = featuresToCalc.reduce((total, feature) => {
+        const isSelected = selectedFeatures[feature.name];
+        const roleBonus = feature.bonus[player.get("role")] || 0;
+        return (total + (isSelected ? roleBonus : 0));
+    }, 0);
+
+    return pointsReturn
+  }
+
+  const potential_bonus = calculatePoints
+
+
   // no vote was completed in time
-  const resultsMessage = 
-    (()=>{
   
-      if(latestProposal.formalVote.length < playerCount) {
-        return("Sorry, no vote was completed in time.  You earned no additional bonus.")
-      }
+  const resultsMessage = player.round.get("roundSummary")
 
-      const formalVoteCount = latestProposal.formalVote
-        .flatMap(obj => Object.values(obj))
-        .reduce((sum, val) => sum + Number(val), 0);
-
-
-      if(formalVoteCount<playerCount) {
-        return("Sorry, the vote has failed.  You earned no additional bonus.")
-      } else if(formalVoteCount==playerCount) {
-        return("Congratulations!  You have reached agreement!")
-      }
-        
-    })()
-  
-
+  window.player=player
 
   const clickOk = () => {
     player.stage.set("submit",true)
@@ -53,8 +54,7 @@ export function Result() {
       <div className="waiting-section">
         <h4>        
           <br />
-            {resultsMessage}
-          <br />
+          <div dangerouslySetInnerHTML={{__html: resultsMessage}} />
           <br/><p>Please press "OK" to continue.</p>
         </h4>
         <br />

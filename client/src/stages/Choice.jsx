@@ -265,7 +265,7 @@ export function Choice() {
       return (
         <>
           {" "}
-          Official Vote Failed <br />
+          Vote Failed (Unofficial)<br />
           Yes: {informalVoteCount} &nbsp;&nbsp;&nbsp;&nbsp; No: {playerCount - informalVoteCount}
         </>
       );

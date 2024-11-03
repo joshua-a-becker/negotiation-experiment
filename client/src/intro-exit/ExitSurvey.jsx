@@ -1,9 +1,22 @@
 import React, { useState } from "react";
-import { usePlayer } from "@empirica/core/player/classic/react";
+import {
+  useGame,
+  usePlayer,
+  usePlayers,
+  useRound,
+  useStageTimer,
+} from "@empirica/core/player/classic/react";
 import { Button } from "../components/Button";
 
 export function ExitSurvey({ next }) {
   const player = usePlayer();
+  const game = useGame();
+  const players = usePlayers();
+  const treatment = game.get("treatment");
+  const { basicpay } = treatment;
+
+
+
   const [feedback, setFeedback] = useState("");
 
   function handleSubmit(event) {
@@ -12,8 +25,30 @@ export function ExitSurvey({ next }) {
     next();
   }
 
+  const totalBonus = player.get("bonus").reduce((sum, item) => sum + item.bonus, 0);
+    const basePay = treatment.basicpay
+    const totalPay = totalBonus + basePay
+
+    const roundBonusHtml = "<u>Round Bonuses</u><br/>" +
+      player.get("bonus")
+        .map(item => "Product: " + item.round + "<br/>Round Bonus: £" +item.bonus)
+        .join("<br/><br/>")
+
+  const resultsDisplay = <>      
+        <br/><br/>
+        <b>The game is over!  Thank you for participating.</b>
+        <br/>You have earned £{totalPay} in total.
+        <br/><br/>This includes a base payment of: £{basePay}
+        <br/><br/>And the following round bonuses...
+        <br/><br/>
+        <span dangerouslySetInnerHTML={{__html: roundBonusHtml}} />      
+    </>
+
+
+
   return (
     <div className="py-8 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      {resultsDisplay}
       <form
         className="mt-12 space-y-8 divide-y divide-gray-200"
         onSubmit={handleSubmit}

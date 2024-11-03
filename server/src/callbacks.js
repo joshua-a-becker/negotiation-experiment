@@ -19,8 +19,6 @@ Empirica.onGameStart(({ game }) => {
     round.addStage({ name: "Round Summary", duration: 12000 });
   }
 
-
-
   const roles = [{ key: "role1", name: role1 }, { key: "role2", name: role2 }, { key: "role3", name: role3 }];
 
 
@@ -31,7 +29,9 @@ Empirica.onGameStart(({ game }) => {
     const role = shuffledRoles[roleIndex];
     player.set("role", role.key); 
     player.set("name", role.name);
+    player.set("bonus", [])
   });
+
   game.set("submitCount", 0);
   game.set("submissions", []);
   game.set("roundResults", []);
@@ -95,19 +95,72 @@ Empirica.on("round", "proposalHistory", (ctx, { round, proposalHistory }) => {
 
 Empirica.onStageStart(({ stage }) => {
 
-  round = stage.currentGame.currentRound
-
-  if(stage.get("name") == "Round Summary") {
-    // log round results into game results for exit page
-  }
-
+  const round = stage.currentGame.currentRound
+  const players = round.currentGame.players;  
   console.log("Start " + stage.get("name"))
 
   if(round.get("formalPassed") & stage.get("name") != "Round Summary") {
-    players = round.currentGame.players;  
     console.log("playersubmit")
     players.forEach(player => { player.stage.set("submit", true) });  
   } 
+
+  
+  if(stage.get("name") == "Round Summary") {
+    // log round results into game results for exit page
+    
+    const game = round.currentGame
+    const treatment = game.get("treatment");  
+    const treatmentFeatureData = game.get("featureData")[treatment.scenario]
+    const playerCount = treatment.playerCount;
+    const ph = round.get("proposalHistory") 
+    const latestProposal = ph[Object.keys(ph)[Object.keys(ph).length - 1]]
+  
+    const calculatePoints = (selectedFeatures, playerRole) => {
+      const featuresToCalc = treatmentFeatureData.features
+  
+  
+      const pointsReturn = featuresToCalc.reduce((total, feature) => {
+          const isSelected = selectedFeatures[feature.name];
+          const roleBonus = feature.bonus[playerRole] || 0;
+          return (total + (isSelected ? roleBonus : 0));
+      }, 0);
+  
+      return Number(pointsReturn.toFixed(1))
+    }
+
+    players.forEach(player => { 
+
+      const playerBonus = calculatePoints(latestProposal.decisions, player.get("role") )
+
+      const roundSummary = 
+      (()=>{
+    
+        if(latestProposal.formalVote.length < playerCount) {
+          return("Sorry, no vote was completed in time.  You earned no bonus.")
+        }
+
+        const formalVoteCount = latestProposal.formalVote
+          .flatMap(obj => Object.values(obj))
+          .reduce((sum, val) => sum + Number(val), 0);
+
+
+        if(formalVoteCount<playerCount) {
+          return("Sorry, the vote did not pass, no agreement was reached.  You earned no bonus.")
+        } else if(formalVoteCount==playerCount) {
+          return(
+            "Congratulations!  You have reached agreement!<br/><br/>"+
+            "You received an additional bonus from this round: " + playerBonus            
+          )
+        }
+          
+      })()
+      
+      player.round.set("roundSummary", roundSummary)
+      playerBonusList = player.get("bonus")
+      playerBonusList.push({"round": treatmentFeatureData.product_name, "bonus":playerBonus})
+      player.set("bonus", playerBonusList)
+    });  
+  }
 
 });
 
