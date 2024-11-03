@@ -19,19 +19,12 @@ export function Walkthrough({ next }) {
   const [proposalValue, setProposalValue] = useState()
   const [showInstructionsModal, setShownInstructionsModel] = useState(true);
 
-  //const walkThroughFeatures = featureData["walkthrough_features"];
-  //window.features=featureData
-
   const [walkThroughFeatures, setWalkThroughFeatures] = useState({features:[]});
   const [submissionData, setSubmissionData] = useState(player.get("submissionData")); 
   const [voteButtonActive, setVoteButtonActive] = useState(true); 
   const [showNextButton, setShowNextButton] = useState(false); 
 
   const role1 = walkThroughFeatures.roleNames===undefined ? "undefined" : walkThroughFeatures.roleNames.role1;
-
-  window.wtf = walkThroughFeatures
-
-  //const [playerMessage, setPlayerMessage] = useState("")
 
   const setPlayerMessage = (message) => {
     player.set("walkthroughMessage", message)
@@ -44,6 +37,18 @@ export function Walkthrough({ next }) {
       .catch(error => console.error("Failed to load features:", error)); // 处理可能的错误
   }, []); 
   
+  const calculatePoints = (selectedFeatures) => {
+    const featuresToCalc = walkThroughFeatures.features
+    const roleToCalc = "role1"
+
+    const pointsReturn = featuresToCalc.reduce((total, feature) => {
+        const isSelected = selectedFeatures[feature.name];
+        const roleBonus = feature.bonus[roleToCalc] || 0;
+        return (total + (isSelected ? roleBonus : 0));
+    }, 0);
+
+    return ( Number(pointsReturn.toFixed(1)) );
+  };
 
 
   const handleProposalSubmission = (submission_data) => {
@@ -281,6 +286,7 @@ export function Walkthrough({ next }) {
           showVoteButton={true}
           roleName = {role1}
           playerRole = "role1"
+          calculatePoints = {calculatePoints}
           displaySubmit = {!player.get("submissionData")}
           propSelectedFeatures = {player.get("selectedFeatures") ? player.get("selectedFeatures") : {} }
           handleOptionChange = {handleCalcOptionChange}

@@ -43,7 +43,6 @@ export function Result() {
   
   const resultsMessage = player.round.get("roundSummary")
 
-  window.player=player
 
   const clickOk = () => {
     player.stage.set("submit",true)

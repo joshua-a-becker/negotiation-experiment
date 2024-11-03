@@ -94,17 +94,17 @@ export function Choice() {
           "This proposal will earn you a negative bonus, you are not allowed to accept it. Note that if you do not reach agreement, you will still earn the base pay for this task."
         );
         setShowModal(true);
-        console.log("stop!")
+        
         return;
       }
     }
 
 
-    console.log("official")
+    
     const role = player.get("role")
     const proposalHistory = round.get("proposalHistory")
     proposalHistory[proposalHistory.length-1].formalVote.push( {[role]: vote})
-    console.log(proposalHistory)
+    
     round.set("proposalHistory", proposalHistory)   
   };
 
@@ -275,7 +275,7 @@ export function Choice() {
     //FORMAL VOTE IS STILL OPEN
     if(latestProposal.formalVote.length < playerCount) {
       const voted = latestProposal.formalVote.flatMap(obj => Object.keys(obj));
-      window.voted=voted
+      
       if(voted.includes(player.get("role"))) {
         return("Waiting for others to vote..")
       } else {
@@ -358,7 +358,7 @@ export function Choice() {
     const role = player.get("role")
     const proposalHistory = round.get("proposalHistory")
     proposalHistory[proposalHistory.length-1].informalVote.push( {[role]: vote})
-    console.log(proposalHistory)
+    
     round.set("proposalHistory", proposalHistory)
     
   };
@@ -367,7 +367,6 @@ export function Choice() {
 
   const handleSubmitProposal = (submission_data) => {
 
-    console.log(submission_data)
     
     const prevProposalHistory = round.get("proposalHistory")
     prevProposalHistory.push(submission_data);
@@ -388,9 +387,8 @@ export function Choice() {
     return ( Number(pointsReturn.toFixed(1)) );
   };
 
+  console.log("LINE 390 2024-11-03")
 
-  window.round=round
-  window.latestProposal = latestProposal
 
   return (
     <>
@@ -434,11 +432,6 @@ export function Choice() {
                   <Button handleClick={() => player.stage.set("submit", true)}>
                     Continue
                   </Button>
-                  {/*
-                  <Button handleClick={() => { round.set("watchValue", round.get("watchValue") + 1); console.log(round.get("watchValue")) }}>
-                    Click Me
-                  </Button> 
-                  */}
                 </>
               )}
             </div>
