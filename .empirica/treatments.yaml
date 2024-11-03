@@ -26,24 +26,6 @@ factors:
     - name: settingsUrl
       values:
         - value: https://challenge.negotiation.education/json/settings.json
-    - name: formalSubmitDuration
-      desc: Duration of the Formal Submit stage in seconds
-      values:
-        - value: 60
-        - value: 603333
-        - value: 600
-        - value: 120
-        - value: 6000
-        - value: 3
-    - name: formalVoteDuration
-      desc: Duration of the Formal Submit stage in seconds
-      values:
-        - value: 60
-        - value: 222222
-        - value: 600
-        - value: 120
-        - value: 6000
-        - value: 3
     - name: informalSubmitDuration
       desc: Duration of the Informal Submit stage in seconds
       values:
@@ -58,6 +40,28 @@ factors:
         - value: 5
         - value: 6000
         - value: 3
+        - value: 20
+        - value: 2
+    - name: formalVoteDuration
+      desc: Duration of the Formal Submit stage in seconds
+      values:
+        - value: 60
+        - value: 222222
+        - value: 600
+        - value: 120
+        - value: 6000
+        - value: 3
+        - value: 30
+    - name: formalSubmitDuration
+      desc: Duration of the Formal Submit stage in seconds
+      values:
+        - value: 60
+        - value: 603333
+        - value: 600
+        - value: 120
+        - value: 6000
+        - value: 3
+        - value: 30
 treatments:
     - name: pilot_easy_scaled
       factors:
@@ -81,17 +85,6 @@ treatments:
         playerCount: 3
         scenario: pilot_easy_scaled
         settingsUrl: https://challenge.negotiation.education/json/settings.json
-    - name: superfast
-      factors:
-        basicpay: 2.5
-        featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/master/testscoresheet.json
-        formalSubmitDuration: 6000
-        formalVoteDuration: 6000
-        informalSubmitDuration: 5
-        numRounds: 1
-        playerCount: 3
-        scenario: pilot_easy_scaled
-        settingsUrl: https://challenge.negotiation.education/json/settings.json
     - name: paced
       factors:
         basicpay: 2.5
@@ -103,13 +96,24 @@ treatments:
         playerCount: 3
         scenario: pilot_easy_scaled
         settingsUrl: https://challenge.negotiation.education/json/settings.json
+    - name: superfast
+      factors:
+        basicpay: 2.5
+        featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/master/testscoresheet.json
+        formalSubmitDuration: 6000
+        formalVoteDuration: 30
+        informalSubmitDuration: 2
+        numRounds: 1
+        playerCount: 3
+        scenario: pilot_easy_scaled
+        settingsUrl: https://challenge.negotiation.education/json/settings.json
     - name: runthrough
       factors:
         basicpay: 2.5
         featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/master/testscoresheet.json
-        formalSubmitDuration: 3
+        formalSubmitDuration: 30
         formalVoteDuration: 3
-        informalSubmitDuration: 30
+        informalSubmitDuration: 3
         numRounds: 1
         playerCount: 3
         scenario: pilot_easy_scaled

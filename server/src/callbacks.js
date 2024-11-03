@@ -102,6 +102,7 @@ Empirica.onStageStart(({ stage }) => {
   const ph = round.get("proposalHistory") 
   const latestProposal = ph[Object.keys(ph)[Object.keys(ph).length - 1]]
 
+  
   // if formal vote but nothing submitted, move forward
   if(stage.get("name") == "Formal Vote") {
 
@@ -144,41 +145,57 @@ Empirica.onStageStart(({ stage }) => {
       return ( Number(pointsReturn.toFixed(1)) );
     }
 
-    players.forEach(player => { 
+    
 
-      let playerBonus = 0
-      let roundSummary = ""
+    players.forEach(player => {      
 
-      if(latestProposal===undefined) {
-        roundSummary = "Sorry, no proposal was entered in time.  You earned no bonus."
-      } else {
+      player.round.set("bonus", 0)
 
-        potentialPlayerBonus = calculatePoints(latestProposal.decisions, player.get("role") )
+      let roundSummary = ((player)=>{
+        if(latestProposal===undefined) {
+          return("Sorry, no proposal was entered in time.  You earned no bonus.")
+        } else {
 
+          const formalVoteCount = latestProposal.formalVote
+            .flatMap(obj => Object.values(obj))
+            .reduce((sum, val) => sum + Number(val), 0);
+    
+          if(latestProposal.formalVote.length < playerCount) {
+            // this means there were just not enough votes
+            if(latestProposal.type == "informal") {
+              // this works because the only way an informal proposal can be the final proposal
+              // is IF it passed!  so an incomplete informal proposal = no formal proposal submitted
+              return("Sorry, no proposal was entered in time.  You earned no bonus.")
+            } else {
+              return("Sorry, the vote was completed in time.  You earned no bonus.")
+            }          
+          }
+    
+          if(formalVoteCount<playerCount) {
+            if(latestProposal.type == "informal") {
+              // this works because the only way an informal proposal can be the final proposal
+              // is IF it passed!  so an incomplete informal proposal = no formal proposal submitted
+              return("Sorry, no proposal was entered in time.  You earned no bonus.")
+            } else {
+              // but if it's formal, and incomplete, it just failed to pass
+              return("Sorry, the vote did not pass, no agreement was reached.  You earned no bonus.")
+            }          
+          } else if(formalVoteCount==playerCount) {
+            let playerBonus = calculatePoints(latestProposal.decisions, player.get("role") )      
+            return(
+              "Congratulations!  You have reached agreement!<br/><br/>"+
+              "You received an additional bonus from this round: " + playerBonus
+            )
+            player.round.set("bonus", playerBonus)
+          }
+        }
         
+      })(player)
 
-        if(latestProposal.formalVote.length < playerCount) {
-          roundSummary = "Sorry, no vote was completed in time.  You earned no bonus."
-        }
-  
-        const formalVoteCount = latestProposal.formalVote
-          .flatMap(obj => Object.values(obj))
-          .reduce((sum, val) => sum + Number(val), 0);
-  
-  
-        if(formalVoteCount<playerCount) {
-          roundSummary = "Sorry, the vote did not pass, no agreement was reached.  You earned no bonus."
-        } else if(formalVoteCount==playerCount) {
-          playerBonus = potentialPlayerBonus
-          roundSummary = 
-            "Congratulations!  You have reached agreement!<br/><br/>"+
-            "You received an additional bonus from this round: " + playerBonus                      
-        }
-      }
       
       player.round.set("roundSummary", roundSummary)
       playerBonusList = player.get("bonus")
-      playerBonusList.push({"round": treatmentFeatureData.product_name, "bonus":playerBonus})
+      playerBonusList.push({"round": treatmentFeatureData.product_name, "bonus":player.round.get("bonus")})
       player.set("bonus", playerBonusList)
     });  
   }
