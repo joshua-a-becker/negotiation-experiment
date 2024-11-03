@@ -114,6 +114,7 @@ export function FormalSubmit() {
     submission_data.formalVote.push( {[player.get("role")]: 1})
     
     // add submission to history
+    submission_data.type="formal"
     proposalHistory.push(submission_data);
     
     // update server data

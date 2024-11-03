@@ -95,25 +95,41 @@ Empirica.on("round", "proposalHistory", (ctx, { round, proposalHistory }) => {
 
 Empirica.onStageStart(({ stage }) => {
 
-  const round = stage.currentGame.currentRound
-  const players = round.currentGame.players;  
   console.log("Start " + stage.get("name"))
 
+  const round = stage.currentGame.currentRound
+  const players = round.currentGame.players;  
+  const ph = round.get("proposalHistory") 
+  const latestProposal = ph[Object.keys(ph)[Object.keys(ph).length - 1]]
+
+  // if formal vote but nothing submitted, move forward
+  if(stage.get("name") == "Formal Vote") {
+
+    if(latestProposal===undefined) {
+      // no proposal was EVER made
+      players.forEach(player => { player.stage.set("submit", true) });  
+    } else if (latestProposal.type == "informal") {
+      // informal proposals only
+      players.forEach(player => { player.stage.set("submit", true) });  
+    }
+    
+  }
+
+  // if formalPassed and not round summary, move forward
   if(round.get("formalPassed") & stage.get("name") != "Round Summary") {
     console.log("playersubmit")
     players.forEach(player => { player.stage.set("submit", true) });  
   } 
 
-  
+
+  // log round results into game results for exit page
   if(stage.get("name") == "Round Summary") {
-    // log round results into game results for exit page
+    
     
     const game = round.currentGame
     const treatment = game.get("treatment");  
     const treatmentFeatureData = game.get("featureData")[treatment.scenario]
     const playerCount = treatment.playerCount;
-    const ph = round.get("proposalHistory") 
-    const latestProposal = ph[Object.keys(ph)[Object.keys(ph).length - 1]]
   
     const calculatePoints = (selectedFeatures, playerRole) => {
       const featuresToCalc = treatmentFeatureData.features
@@ -130,27 +146,34 @@ Empirica.onStageStart(({ stage }) => {
 
     players.forEach(player => { 
 
-      let playerBonus = calculatePoints(latestProposal.decisions, player.get("role") )
-
+      let playerBonus = 0
       let roundSummary = ""
 
-      if(latestProposal.formalVote.length < playerCount) {
-        roundSummary = "Sorry, no vote was completed in time.  You earned no bonus."
-        playerBonus=0
-      }
+      if(latestProposal===undefined) {
+        roundSummary = "Sorry, no proposal was entered in time.  You earned no bonus."
+      } else {
 
-      const formalVoteCount = latestProposal.formalVote
-        .flatMap(obj => Object.values(obj))
-        .reduce((sum, val) => sum + Number(val), 0);
+        potentialPlayerBonus = calculatePoints(latestProposal.decisions, player.get("role") )
 
+        
 
-      if(formalVoteCount<playerCount) {
-        roundSummary = "Sorry, the vote did not pass, no agreement was reached.  You earned no bonus."
-        playerBonus=0
-      } else if(formalVoteCount==playerCount) {
-        roundSummary = 
-          "Congratulations!  You have reached agreement!<br/><br/>"+
-          "You received an additional bonus from this round: " + playerBonus                      
+        if(latestProposal.formalVote.length < playerCount) {
+          roundSummary = "Sorry, no vote was completed in time.  You earned no bonus."
+        }
+  
+        const formalVoteCount = latestProposal.formalVote
+          .flatMap(obj => Object.values(obj))
+          .reduce((sum, val) => sum + Number(val), 0);
+  
+  
+        if(formalVoteCount<playerCount) {
+          roundSummary = "Sorry, the vote did not pass, no agreement was reached.  You earned no bonus."
+        } else if(formalVoteCount==playerCount) {
+          playerBonus = potentialPlayerBonus
+          roundSummary = 
+            "Congratulations!  You have reached agreement!<br/><br/>"+
+            "You received an additional bonus from this round: " + playerBonus                      
+        }
       }
       
       player.round.set("roundSummary", roundSummary)

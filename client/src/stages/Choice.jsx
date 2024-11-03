@@ -367,7 +367,7 @@ export function Choice() {
 
   const handleSubmitProposal = (submission_data) => {
 
-    
+    submission_data.type = "informal"
     const prevProposalHistory = round.get("proposalHistory")
     prevProposalHistory.push(submission_data);
     round.set("proposalHistory", prevProposalHistory)

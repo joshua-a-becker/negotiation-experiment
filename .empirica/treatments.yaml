@@ -34,6 +34,7 @@ factors:
         - value: 600
         - value: 120
         - value: 6000
+        - value: 3
     - name: formalVoteDuration
       desc: Duration of the Formal Submit stage in seconds
       values:
@@ -42,6 +43,7 @@ factors:
         - value: 600
         - value: 120
         - value: 6000
+        - value: 3
     - name: informalSubmitDuration
       desc: Duration of the Informal Submit stage in seconds
       values:
@@ -55,6 +57,7 @@ factors:
         - value: 40
         - value: 5
         - value: 6000
+        - value: 3
 treatments:
     - name: pilot_easy_scaled
       factors:
@@ -96,6 +99,17 @@ treatments:
         formalSubmitDuration: 60
         formalVoteDuration: 60
         informalSubmitDuration: 60
+        numRounds: 1
+        playerCount: 3
+        scenario: pilot_easy_scaled
+        settingsUrl: https://challenge.negotiation.education/json/settings.json
+    - name: runthrough
+      factors:
+        basicpay: 2.5
+        featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/master/testscoresheet.json
+        formalSubmitDuration: 3
+        formalVoteDuration: 3
+        informalSubmitDuration: 30
         numRounds: 1
         playerCount: 3
         scenario: pilot_easy_scaled
