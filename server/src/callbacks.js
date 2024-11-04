@@ -16,7 +16,7 @@ Empirica.onGameStart(({ game }) => {
     round.addStage({ name: "Discussion and Informal Vote", duration: informalSubmitDuration });
     round.addStage({ name: "Submit Formal Vote", duration: formalSubmitDuration });
     round.addStage({ name: "Formal Vote", duration: formalVoteDuration });
-    round.addStage({ name: "Round Summary", duration: 12000 });
+    round.addStage({ name: "Round Summary", duration: 30 });
   }
 
   const roles = [{ key: "role1", name: role1 }, { key: "role2", name: role2 }, { key: "role3", name: role3 }];
@@ -151,7 +151,7 @@ Empirica.onStageStart(({ stage }) => {
 
       player.round.set("bonus", 0)
 
-      let roundSummary = ((player)=>{
+      let roundSummary = (()=>{
         if(latestProposal===undefined) {
           return("Sorry, no proposal was entered in time.  You earned no bonus.")
         } else {
@@ -167,7 +167,7 @@ Empirica.onStageStart(({ stage }) => {
               // is IF it passed!  so an incomplete informal proposal = no formal proposal submitted
               return("Sorry, no proposal was entered in time.  You earned no bonus.")
             } else {
-              return("Sorry, the vote was completed in time.  You earned no bonus.")
+              return("Sorry, the vote was not completed in time.  You earned no bonus.")
             }          
           }
     
@@ -182,15 +182,15 @@ Empirica.onStageStart(({ stage }) => {
             }          
           } else if(formalVoteCount==playerCount) {
             let playerBonus = calculatePoints(latestProposal.decisions, player.get("role") )      
+            player.round.set("bonus", playerBonus)
             return(
               "Congratulations!  You have reached agreement!<br/><br/>"+
-              "You received an additional bonus from this round: " + playerBonus
-            )
-            player.round.set("bonus", playerBonus)
+              "You received an additional bonus from this round: £" + playerBonus
+            )            
           }
         }
         
-      })(player)
+      })()
 
       
       player.round.set("roundSummary", roundSummary)

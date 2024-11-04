@@ -112,6 +112,7 @@ export function FormalSubmit() {
 
     // add Role 1 vote to submission (bc default vote=yes)
     submission_data.formalVote.push( {[player.get("role")]: 1})
+    submittion_data.timeSubmitted = remainingSeconds
     
     // add submission to history
     submission_data.type="formal"

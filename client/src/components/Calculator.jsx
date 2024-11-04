@@ -152,7 +152,7 @@ function Calculator(props) {
             </table>
 
             <div className="total-points-display">
-                Total Bonus: ${Math.round(totalPoints * 100) / 100}
+                Total Bonus: £{Math.round(totalPoints * 100) / 100}
             </div>
             {props.displaySubmit && (
                 <div className="button-container">
