@@ -15,6 +15,7 @@ function StrawPoll(props) {
         ...restProps } = props;
 
     const features = props.featureData === undefined ? undefined : props.featureData.features;
+    console.log("feature data", features)
     var submittedData_informal = props.submissionData;
 
 

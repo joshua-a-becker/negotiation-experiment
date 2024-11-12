@@ -1,8 +1,4 @@
 factors:
-    - name: playerCount
-      desc: playerCount determines the number of Players are in a Game.
-      values:
-        - value: 3
     - name: numRounds
       desc: How many times participants will make a choice
       values:
@@ -12,11 +8,6 @@ factors:
       values:
         - value: 2.5
         - value: 1
-    - name: featureUrl
-      desc: URL of the pay off matrix
-      values:
-        - value: https://decide.empirica.app/data/json/feature_data.json
-        - value: https://raw.githubusercontent.com/joshua-a-becker/RTools/master/testscoresheet.json
     - name: scenario
       values:
         - value: pilot_simple_scaled
@@ -55,6 +46,20 @@ factors:
         - value: 40
         - value: 5
         - value: 6000
+    - name: playerCount
+      desc: playerCount determines the number of Players are in a Game.
+      values:
+        - value: 3
+        - value: 4
+        - value: 2
+    - name: featureUrl
+      desc: URL of the pay off matrix
+      values:
+        - value: https://decide.empirica.app/data/json/feature_data.json
+        - value: https://raw.githubusercontent.com/joshua-a-becker/RTools/master/testscoresheet.json
+        - value: https://raw.githubusercontent.com/Nisansali/MorePlayers/refs/heads/main/MorePlayes/Players.json
+        - value: https://raw.githubusercontent.com/Nisansali/MorePlayers/refs/heads/main/MorePlayes/Players.jsonhttps://raw.githubusercontent.com/joshua-a-becker/RTools/master/testscoresheet.json
+        - value: https://raw.githubusercontent.com/Nisansali/MorePlayers/refs/heads/main/MorePlayes/Players.jsonhttps://raw.githubusercontent.com/Nisansali/MorePlayers/refs/heads/main/MorePlayes/Players.json
 treatments:
     - name: pilot_easy_scaled
       factors:
@@ -98,5 +103,16 @@ treatments:
         informalSubmitDuration: 60
         numRounds: 1
         playerCount: 3
+        scenario: pilot_easy_scaled
+        settingsUrl: https://challenge.negotiation.education/json/settings.json
+    - name: more_players
+      factors:
+        basicpay: 2.5
+        featureUrl: https://raw.githubusercontent.com/Nisansali/MorePlayers/refs/heads/main/MorePlayes/Players.json
+        formalSubmitDuration: 6000
+        formalVoteDuration: 6000
+        informalSubmitDuration: 6000
+        numRounds: 1
+        playerCount: 4
         scenario: pilot_easy_scaled
         settingsUrl: https://challenge.negotiation.education/json/settings.json

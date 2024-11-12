@@ -23,6 +23,8 @@ export function Choice() {
   const game = useGame();
   const treatment = game.get("treatment");
 
+  console.log(players)
+
   const { appendSystemMessage } = useChat();
   const timer = useStageTimer();
 
@@ -48,6 +50,7 @@ export function Choice() {
       : game.get("featureData")[treatment.scenario];
 
 
+      console.log(featureData)
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
 
@@ -63,9 +66,11 @@ export function Choice() {
 
 
   const role1 = featureData === undefined ? "" : featureData.roleNames === undefined ? "" : featureData.roleNames["role1"];
+  const role4 = featureData === undefined ? "" : featureData.roleNames === undefined ? "" : featureData.roleNames["role4"];
+  console.log('This is Role no 4 from the new method',role4)
 
   function calculateRoleScoresFromLatestSubmission(history, features) {
-    const roleScores = { role1: 0, role2: 0, role3: 0 };
+    const roleScores = { role1: 0, role2: 0, role3:0};
     if (history.length > 0) {
       const latestSubmission = history[history.length - 1]; // 获取最新的提交
       const productNames = Object.keys(latestSubmission.decisions);
@@ -76,6 +81,7 @@ export function Choice() {
           roleScores.role1 += feature.bonus.role1;
           roleScores.role2 += feature.bonus.role2;
           roleScores.role3 += feature.bonus.role3;
+
         }
       });
     }
@@ -99,15 +105,15 @@ export function Choice() {
       }
     }
 
-
-    
     const role = player.get("role")
+    
     const proposalHistory = round.get("proposalHistory")
     proposalHistory[proposalHistory.length-1].formalVote.push( {[role]: vote})
     
     round.set("proposalHistory", proposalHistory)   
   };
 
+ 
 
   const ph = round.get("proposalHistory") 
   const latestProposal = ph[Object.keys(ph)[Object.keys(ph).length - 1]]
@@ -309,10 +315,6 @@ export function Choice() {
     } else if(formalVoteCount==playerCount) {
       return("Congratulations!  You have reached agreement!")
     }
-      
-    
-
-
       return("unexpected condition, please report ERROR Choice.jsx 224")
   };
 
@@ -388,6 +390,7 @@ export function Choice() {
   };
 
   console.log("LINE 390 2024-11-03")
+  console.log(player.get("role"))
 
 
   return (

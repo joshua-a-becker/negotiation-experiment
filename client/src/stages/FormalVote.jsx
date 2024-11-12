@@ -190,6 +190,7 @@ export function FormalVote() {
 
 
   window.features = features
+  
 
   return (
     <>

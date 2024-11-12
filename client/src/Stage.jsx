@@ -30,7 +30,7 @@ export function Stage() {
   if (game.get("featureData") === undefined) return <Loading />;
 
   if (player.stage.get("submit")) { return <Summary /> }
-
+  console.log("Players New",players)
 
   switch (stage.get("name")) {
     
