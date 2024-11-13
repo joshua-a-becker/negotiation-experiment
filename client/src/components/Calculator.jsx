@@ -94,6 +94,12 @@ function Calculator(props) {
         window.hps=props.handleProposalSubmission
         props.handleProposalSubmission(submission_data);
 
+        const timeStamp = new Date()
+      
+      
+
+        console.log('Time Stamp',timeStamp)
+
 
     };
 
@@ -159,8 +165,10 @@ function Calculator(props) {
 
                     <button onClick={handleSubmitProposal}
                         className="submit-button"
+                        
                     >
                         Submit for {props.formalVote ? "FINAL" : "Informal"} Vote
+                      
                     </button>
                     <CustomModal show={showModal} handleClose={handleCloseModal} message={modalMessage} />
 

@@ -58,13 +58,14 @@ export function Choice() {
     setShowModal(false);
   };
 
+  // const timeStamp = new Date()
+  // console.log("date", timeStamp)
+
   player.set("name",
     featureData === undefined ? "" :
       featureData.roleNames === undefined ?
         "" : featureData.roleNames[player.get("role")]
   )
-
-
   const role1 = featureData === undefined ? "" : featureData.roleNames === undefined ? "" : featureData.roleNames["role1"];
   const role4 = featureData === undefined ? "" : featureData.roleNames === undefined ? "" : featureData.roleNames["role4"];
   console.log('This is Role no 4 from the new method',role4)

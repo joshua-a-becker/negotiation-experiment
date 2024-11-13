@@ -101,7 +101,7 @@ export function FormalSubmit() {
         "This proposal will earn you a negative bonus, you are not allowed to accept it. Note that if you do not reach agreement, you will still earn the base pay for this task."
       );
       setShowModal(true);
-      console.log("stop!  you cna't submit that!")
+   
       return;
     }
   
