@@ -8,6 +8,15 @@ Empirica.onGameStart(({ game }) => {
   const treatment = game.get("treatment");
   game.set("agreementHistory", [])
   const { role1, role2, role3,  numRounds, informalSubmitDuration, formalSubmitDuration, formalVoteDuration, resultDuration, featureUrl } = treatment;
+  // const {
+  //   roles,
+  //   numRounds,
+  //   informalSubmitDuration,
+  //   formalSubmitDuration,
+  //   formalVoteDuration,
+  //   resultDuration,
+  //   featureUrl,
+  // } = treatment;
 
   for (let i = 0; i < numRounds; i++) {
     const round = game.addRound({
@@ -20,6 +29,7 @@ Empirica.onGameStart(({ game }) => {
   }
 
   const roles = [{ key: "role1", name: role1 }, { key: "role2", name: role2 }, { key: "role3", name: role3 }];
+  // const rolesArray = Object.entries(roles).map(([key, name]) => ({ key, name }));
 
 
   const shuffledRoles = roles.sort(() => Math.random() - 0.5);
