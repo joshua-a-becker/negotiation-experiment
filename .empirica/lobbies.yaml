@@ -1,5 +1,5 @@
 lobbies:
     - name: Default 90s fail
-      kind: shared
-      duration: 5m0s
+      kind: individual
+      duration: 1m0s
       strategy: fail

@@ -7,7 +7,7 @@ export const Empirica = new ClassicListenersCollector();
 Empirica.onGameStart(({ game }) => {
   const treatment = game.get("treatment");
   game.set("agreementHistory", [])
-  const { role1, role2, role3,  numRounds, informalSubmitDuration, formalSubmitDuration, formalVoteDuration, resultDuration, featureUrl } = treatment;
+  const { numRounds, informalSubmitDuration, formalSubmitDuration, formalVoteDuration, resultDuration, featureUrl } = treatment;
   // const {
   //   roles,
   //   numRounds,
@@ -28,17 +28,16 @@ Empirica.onGameStart(({ game }) => {
     round.addStage({ name: "Round Summary", duration: 12000 });
   }
 
-  const roles = [{ key: "role1", name: role1 }, { key: "role2", name: role2 }, { key: "role3", name: role3 }];
-  // const rolesArray = Object.entries(roles).map(([key, name]) => ({ key, name }));
-
-
-  const shuffledRoles = roles.sort(() => Math.random() - 0.5);
+  n = game.players.length;
+  shuffledRoles = Array.from({length: n}, (_, i) => i + 1).sort(() => Math.random() - 0.5).map(n => `role${n}`)
 
   game.players.forEach((player, index) => {
     const roleIndex = index % shuffledRoles.length;
+    
     const role = shuffledRoles[roleIndex];
-    player.set("role", role.key); 
-    player.set("name", role.name);
+    console.log(index)
+    console.log(role)
+    player.set("role", role); 
     player.set("bonus", [])
   });
 
