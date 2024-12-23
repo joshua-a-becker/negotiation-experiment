@@ -193,10 +193,13 @@ function MessageComp({ attribute, gameStartTime }) {
   const ts = attribute.createdAt;
   const textColor = isSystemMessage ? "#FF4500" : roleColors[msg.sender.role] || "#000000";
 
-  if(msg.sender.role=="PROPOSAL") {
-      const round = useRound();
+  if(msg.sender.role=="PROPOSAL" && msg.id) {
+    
+    const round = useRound();
     const proposalHistory = round.get("proposalHistory")
 
+    window.msg=msg;
+    window.proposalHistory = proposalHistory
     const this_proposal = proposalHistory[msg.id-1]
     console.log("P: ")
     console.log(this_proposal)

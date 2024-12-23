@@ -47,6 +47,10 @@ factors:
       values:
         - value: 600
         - value: 6000
+    - name: proposalInChat
+      values:
+        - value: "yes"
+        - value: "no"
 treatments:
     - name: pilot_easy_scaled_5
       factors:
@@ -94,7 +98,7 @@ treatments:
         playerCount: 3
         scenario: pilot_easy_scaled
         settingsUrl: https://challenge.negotiation.education/json/settings.json
-    - name: test_3_self
+    - name: test_3_self_proposalchat
       factors:
         basicpay: 2.5
         calculatorAnchoring: self
@@ -104,5 +108,19 @@ treatments:
         informalSubmitDuration: 6000
         numRounds: 1
         playerCount: 3
+        proposalInChat: "yes"
+        scenario: pilot_easy_scaled
+        settingsUrl: https://challenge.negotiation.education/json/settings.json
+    - name: test_3_self_nochat
+      factors:
+        basicpay: 2.5
+        calculatorAnchoring: self
+        featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/refs/heads/master/testscoresheet.json
+        formalSubmitDuration: 60
+        formalVoteDuration: 60
+        informalSubmitDuration: 6000
+        numRounds: 1
+        playerCount: 3
+        proposalInChat: "no"
         scenario: pilot_easy_scaled
         settingsUrl: https://challenge.negotiation.education/json/settings.json

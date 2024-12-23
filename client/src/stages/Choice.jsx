@@ -345,7 +345,6 @@ export function Choice() {
   };
 
   useEffect(() => {
-    console.log(round.get("messages"))
     setIsMounted(true);
     return () => setIsMounted(false);
   }, []);
@@ -415,12 +414,9 @@ export function Choice() {
     // SELF (defalt):  proposal stays in calculator
     // GROUP: submitted proposal fills everyone's calculator
     // BLANK: calculator resets to blank
-    console.log("checking..")
+
     if(treatment.calculatorAnchoring) {
-      console.log("valid moving on")
-      console.log(treatment.calculatorAnchoring.toLowerCase())
       if(treatment.calculatorAnchoring.toLowerCase()==="blank") {
-        console.log("resetting for blank")
         calculatorRef.current.Set({});
       }  
     }
@@ -437,20 +433,24 @@ export function Choice() {
     /// add proposal to chat history
     /// but onlf if it's toggled!
 
-    console.log("appending")
-    round.append("chat", {
-      text: prevProposalHistory.length,
-      id: prevProposalHistory.length,
-      sender: {
-        Time: ukTime,
-        id: Date.now(),
-        role: "PROPOSAL",
-        name: "PROPOSAL",
-      },
-    });
-
+    console.log("P IN CHAT")
+    console.log(treatment.proposalInChat)
+    if(treatment.proposalInChat==="yes")
+    {
+      round.append("chat", {
+        text: prevProposalHistory.length,
+        id: prevProposalHistory.length,
+        sender: {
+          Time: ukTime,
+          id: Date.now(),
+          role: "PROPOSAL",
+          name: "PROPOSAL",
+        },
+      });
+    }
   };
 
+  // helper function to calculate points
   const calculatePoints = (selectedFeatures) => {
     const featuresToCalc = featureData.features
     const roleToCalc = player.get("role")
