@@ -1,20 +1,20 @@
-
-
 import React from "react";
+import { forwardRef, useImperativeHandle } from 'react';
 import { useState, useEffect, useContext, useRef } from 'react';
 import { Button } from "../components/Button";
 import CustomModal from "../stages/Modal";
 import { ScrollContext } from "../components/ScrollContext";
 
-function Calculator(props) {
 
-    //const totalPoints = 100
+const Calculator = forwardRef((props, ref) => {
+
 
     const { propSelectedFeatures = {},
         displaySubmit = true,
         handleOptionChange = () => { },
         featureData = {},
         ...restProps } = props;
+
 
     const [totalPoints, setTotalPoints] = useState(0);
 
@@ -37,6 +37,8 @@ function Calculator(props) {
     const [showModal, setShowModal] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
 
+    const calculateTotal = props.calculatePoints
+
     const handleCloseModal = () => {
         setShowModal(false);
     };
@@ -55,9 +57,16 @@ function Calculator(props) {
         });
     };
 
-    const calculateTotal = props.calculatePoints
+    useImperativeHandle(ref, () => ({
+        Set: (target_proposal) => {
+          setSelectedFeatures(target_proposal);
+          setTotalPoints(0);
+        }
+      }));
 
     const handleSubmitProposal = (event) => {
+
+
 
         event.preventDefault();
 
@@ -91,14 +100,8 @@ function Calculator(props) {
             formalVote: []
         };
 
-        window.hps=props.handleProposalSubmission
+
         props.handleProposalSubmission(submission_data);
-
-        const timeStamp = new Date()
-      
-      
-
-        console.log('Time Stamp',timeStamp)
 
 
     };
@@ -197,6 +200,6 @@ function Calculator(props) {
 
         </div>
     );
-}
+});
 
 export default Calculator;

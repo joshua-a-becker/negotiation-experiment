@@ -24,10 +24,6 @@ factors:
       desc: Duration of the Formal Submit stage in seconds
       values:
         - value: 60
-    - name: informalSubmitDuration
-      desc: Duration of the Informal Submit stage in seconds
-      values:
-        - value: 600
     - name: settingsUrl
       values:
         - value: SET_THIS
@@ -41,18 +37,17 @@ factors:
         - value: https://github.com/joshua-a-becker/RTools/blob/master/testscoresheet.json
         - value: https://raw.githubusercontent.com/joshua-a-becker/RTools/refs/heads/master/testscoresheet.json
         - value: https://raw.githubusercontent.com/joshua-a-becker/RTools/refs/heads/master/scaled_payoff_data.json
+    - name: calculatorAnchoring
+      values:
+        - value: blank
+        - value: self
+        - value: group
+    - name: informalSubmitDuration
+      desc: Duration of the Informal Submit stage in seconds
+      values:
+        - value: 600
+        - value: 6000
 treatments:
-    - name: pilot_easy_scaled_3
-      factors:
-        basicpay: 2.5
-        featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/refs/heads/master/testscoresheet.json
-        formalSubmitDuration: 60
-        formalVoteDuration: 60
-        informalSubmitDuration: 600
-        numRounds: 1
-        playerCount: 3
-        scenario: pilot_easy_scaled
-        settingsUrl: https://challenge.negotiation.education/json/settings.json
     - name: pilot_easy_scaled_5
       factors:
         basicpay: 2.5
@@ -74,4 +69,28 @@ treatments:
         numRounds: 1
         playerCount: 5
         scenario: pilot_hard_scaled
+        settingsUrl: https://challenge.negotiation.education/json/settings.json
+    - name: test_3_blank
+      factors:
+        basicpay: 2.5
+        calculatorAnchoring: blank
+        featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/refs/heads/master/testscoresheet.json
+        formalSubmitDuration: 60
+        formalVoteDuration: 60
+        informalSubmitDuration: 6000
+        numRounds: 1
+        playerCount: 3
+        scenario: pilot_easy_scaled
+        settingsUrl: https://challenge.negotiation.education/json/settings.json
+    - name: test_3_group
+      factors:
+        basicpay: 2.5
+        calculatorAnchoring: group
+        featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/refs/heads/master/testscoresheet.json
+        formalSubmitDuration: 60
+        formalVoteDuration: 60
+        informalSubmitDuration: 6000
+        numRounds: 1
+        playerCount: 3
+        scenario: pilot_easy_scaled
         settingsUrl: https://challenge.negotiation.education/json/settings.json

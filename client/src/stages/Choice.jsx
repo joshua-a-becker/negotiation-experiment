@@ -1,4 +1,5 @@
 import { isDevelopment } from "@empirica/core/player";
+import { useRef } from 'react';
 import {
   useGame,
   usePlayer,
@@ -16,6 +17,22 @@ import StrawPoll from "../components/StrawPoll";
 import "./css/TableStyles.css";
 import CustomModal from "./Modal";
 
+
+const getLondonTime = () => {
+  const parts = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Europe/London',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+  }).format(new Date()).split(/[\/,]/);
+
+  return `${parts[2].trim()}-${parts[1]}-${parts[0]}:${parts[3].trim().replace(/:/g, '-')}`;
+}
+
 export function Choice() {
   const player = usePlayer();
   const players = usePlayers();
@@ -23,7 +40,9 @@ export function Choice() {
   const game = useGame();
   const treatment = game.get("treatment");
 
-  console.log(players)
+  window.t = treatment;
+
+  const calculatorRef = useRef();
 
   const { appendSystemMessage } = useChat();
   const timer = useStageTimer();
@@ -31,6 +50,8 @@ export function Choice() {
   const playerCount = treatment.playerCount;
   
   const textRef = useContext(ScrollContext);
+
+  const [isMounted, setIsMounted] = useState(false);
 
   const [forceUpdate, setForceUpdate] = useState(false);
   const [value, setValue] = useState();
@@ -49,10 +70,8 @@ export function Choice() {
       ? undefined
       : game.get("featureData")[treatment.scenario];
 
-
-      console.log(featureData)
   const [showModal, setShowModal] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
+  const [modalMessage, setModalMessage] = useState("")
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -68,7 +87,13 @@ export function Choice() {
   )
   const role1 = featureData === undefined ? "" : featureData.roleNames === undefined ? "" : featureData.roleNames["role1"];
   const role4 = featureData === undefined ? "" : featureData.roleNames === undefined ? "" : featureData.roleNames["role4"];
-  console.log('This is Role no 4 from the new method',role4)
+  
+  const ph = round.get("proposalHistory") 
+  const latestProposal = ph[Object.keys(ph)[Object.keys(ph).length - 1]]
+
+  const latestProposalTimestamp = latestProposal === undefined ? "NA" : latestProposal.timestamp;
+
+  window.lpt=latestProposalTimestamp
 
   function calculateRoleScoresFromLatestSubmission(history, features) {
     const roleScores = { role1: 0, role2: 0, role3:0};
@@ -115,10 +140,6 @@ export function Choice() {
   };
 
  
-
-  const ph = round.get("proposalHistory") 
-  const latestProposal = ph[Object.keys(ph)[Object.keys(ph).length - 1]]
-
 
   const informalVoteButtons = () => {
     const proposer = latestProposal.submitterRole
@@ -319,6 +340,20 @@ export function Choice() {
       return("unexpected condition, please report ERROR Choice.jsx 224")
   };
 
+  useEffect(() => {
+    setIsMounted(true);
+    return () => setIsMounted(false);
+  }, []);
+  
+  useEffect(() => {
+    if (!isMounted) return;
+    console.log("ref")
+    console.log(calculatorRef.current)
+    if (calculatorRef.current && treatment.calculatorAnchoring.toLowerCase()==="group") {
+      calculatorRef.current.Set({});
+    }
+  }, [latestProposalTimestamp, isMounted]);
+
   // code for handling countdown reminder notifications
   useEffect(() => {
     const reminders = [300, 120];
@@ -370,8 +405,27 @@ export function Choice() {
 
   const handleSubmitProposal = (submission_data) => {
 
-    
+    // HERE WE IMPLEMENT THE 'BLANK' FACTOR
+    // THAT DETERMINES CALCULATOR RESET
+    // SELF (defalt):  proposal stays in calculator
+    // GROUP: submitted proposal fills everyone's calculator
+    // BLANK: calculator resets to blank
+    console.log("checking..")
+    if(treatment.calculatorAnchoring) {
+      console.log("valid moving on")
+      console.log(treatment.calculatorAnchoring.toLowerCase())
+      if(treatment.calculatorAnchoring.toLowerCase()==="blank") {
+        console.log("resetting for blank")
+        calculatorRef.current.Set({});
+      }  
+    }
+
+    submission_data.type = "informal";
+    submission_data.timestamp = getLondonTime();
+
     const prevProposalHistory = round.get("proposalHistory")
+    
+
     prevProposalHistory.push(submission_data);
     round.set("proposalHistory", prevProposalHistory)
 
@@ -390,8 +444,6 @@ export function Choice() {
     return ( Number(pointsReturn.toFixed(1)) );
   };
 
-  console.log("LINE 390 2024-11-03")
-  console.log(player.get("role"))
 
 
   return (
@@ -428,6 +480,7 @@ export function Choice() {
                 }
                 handleOptionChange={handleOptionChange}
                 playerRole={player.get("role")}
+                ref={calculatorRef} 
               />
 
               {isDevelopment && urlDev && (

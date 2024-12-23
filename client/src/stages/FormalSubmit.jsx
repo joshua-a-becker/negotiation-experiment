@@ -13,6 +13,21 @@ import featureData from "../featureData"
 import CustomModal from "./Modal"
 
 
+const getLondonTime = () => {
+  const parts = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Europe/London',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+  }).format(new Date()).split(/[\/,]/);
+
+  return `${parts[2].trim()}-${parts[1]}-${parts[0]}:${parts[3].trim().replace(/:/g, '-')}`;
+}
+
 export function FormalSubmit() {
   const player = usePlayer();
   const players = usePlayers();
@@ -112,7 +127,8 @@ export function FormalSubmit() {
 
     // add Role 1 vote to submission (bc default vote=yes)
     submission_data.formalVote.push( {[player.get("role")]: 1})
-    
+    submission_data.type = "formal";
+    submission_data.timestamp = getLondonTime();
     // add submission to history
     proposalHistory.push(submission_data);
     
