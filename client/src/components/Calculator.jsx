@@ -60,6 +60,7 @@ const Calculator = forwardRef((props, ref) => {
     useImperativeHandle(ref, () => ({
         Set: (target_proposal) => {
           setSelectedFeatures(target_proposal);
+          console.log("set")
           setTotalPoints(0);
         }
       }));
@@ -82,12 +83,13 @@ const Calculator = forwardRef((props, ref) => {
         }, {});
 
         // if nothign selected, alert and do nothing
-        if (!Object.values(selectedFeatures).some(value => value === true)) {
+        console.log("SF - " + selectedFeatures)
+        window.selectedFeatures = selectedFeatures
+        if (Object.entries(selectedFeatures).length<1) {
             setModalMessage(
                 "You must propose at least one feature to include in your product"
             );
             setShowModal(true);
-            console.log("stop!")
             return;
         }
 

@@ -19,8 +19,6 @@ export function Chat({
 }) {
   const game = useGame();
   const player = usePlayer();
-  const round = useRound();
-
 
   const roundStartTime = scope.get("roundStartTime")
 
@@ -195,7 +193,39 @@ function MessageComp({ attribute, gameStartTime }) {
   const ts = attribute.createdAt;
   const textColor = isSystemMessage ? "#FF4500" : roleColors[msg.sender.role] || "#000000";
 
-  window.relativeTime = relativeTime;
+  if(msg.sender.role=="PROPOSAL") {
+      const round = useRound();
+    const proposalHistory = round.get("proposalHistory")
+
+    const this_proposal = proposalHistory[msg.id-1]
+    console.log("P: ")
+    console.log(this_proposal)
+    window.this_proposal=this_proposal
+
+    const votes = this_proposal.informalVote
+    const totalYes = votes
+        .map(vote => Object.values(vote)[0])
+        .reduce((sum, vote) => sum + vote, 0);
+    const totalNo = votes.length - totalYes;
+    
+    return(
+      <div className="flex items-start my-2" >
+        {/* <div className="flex-shrink-0">{avatarImage}</div> */}
+        <div className="ml-3 text-sm" >
+          <p>
+            <span className="font-semibold" style={{ color: textColor }}>
+              {this_proposal.submitterRole} has submitted a proposal!
+            </span>
+            <span className="pl-2 text-gray-400">{(relativeTime !== "NaN:NaN") ? relativeTime : ""}</span>
+          </p>
+          <p style={{ color: textColor }}><i>Features included:</i> {Object.keys(this_proposal.decisions).join(", ")}</p>
+          <p style={{ color: textColor }}><i>Votes:</i> Yes:  {totalYes}, No: {totalNo}</p>
+          
+        </div>
+      </div>
+    )
+  }
+
 
   return (
 
@@ -209,6 +239,7 @@ function MessageComp({ attribute, gameStartTime }) {
           <span className="pl-2 text-gray-400">{(relativeTime !== "NaN:NaN") ? relativeTime : ""}</span>
         </p>
         <p style={{ color: textColor }}>{msg.text}</p>
+        
       </div>
     </div>
   );

@@ -40,8 +40,6 @@ export function Choice() {
   const game = useGame();
   const treatment = game.get("treatment");
 
-  window.t = treatment;
-
   const calculatorRef = useRef();
 
   const { appendSystemMessage } = useChat();
@@ -53,14 +51,19 @@ export function Choice() {
 
   const [isMounted, setIsMounted] = useState(false);
 
+  const ukTime = new Date().toLocaleString("en-GB", { timeZone: "Europe/London" });
+
   const [forceUpdate, setForceUpdate] = useState(false);
   const [value, setValue] = useState();
+
   if (forceUpdate) {
     setForceUpdate(false);
   }
+
   let remainingSeconds = timer?.remaining
     ? Math.round(timer.remaining / 1000)
     : null;
+
   const urlParams = new URLSearchParams(window.location.search);
 
   const urlDev = urlParams.get("urlDev");
@@ -94,7 +97,7 @@ export function Choice() {
 
   const latestProposalTimestamp = latestProposal === undefined ? "NA" : latestProposal.timestamp;
 
-  window.lpt=latestProposalTimestamp
+  
 
   function calculateRoleScoresFromLatestSubmission(history, features) {
     const roleScores = { role1: 0, role2: 0, role3:0};
@@ -122,9 +125,9 @@ export function Choice() {
     // CHECK IF THEY'RE ALLOWED TO VOTE YES!
     if(vote) {
       const playerScore = calculatePoints(latestProposal.decisions)
-      if (playerScore < 0) {
+      if (playerScore <= 0) {
         setModalMessage(
-          "This proposal will earn you a negative bonus, you are not allowed to accept it. Note that if you do not reach agreement, you will still earn the base pay for this task."
+          "This proposal will earn you a " + (playerScore<0 ? "negative" : "zero") +" bonus, you are not allowed to accept it. Note that if you do not reach agreement, you will still earn the base pay for this task."
         );
         setShowModal(true);
         
@@ -342,15 +345,15 @@ export function Choice() {
   };
 
   useEffect(() => {
+    console.log(round.get("messages"))
     setIsMounted(true);
     return () => setIsMounted(false);
   }, []);
   
   useEffect(() => {
+    
     if (!isMounted) return;
-    console.log("ref")
-    console.log( treatment.calculatorAnchoring.toLowerCase())
-    console.log(calculatorRef.current )
+    if(latestProposalTimestamp.toLowerCase()==='na') return;
     if (calculatorRef.current && treatment.calculatorAnchoring.toLowerCase()==="group") {
       calculatorRef.current.Set(latestProposal.decisions);
     }
@@ -430,6 +433,21 @@ export function Choice() {
 
     prevProposalHistory.push(submission_data);
     round.set("proposalHistory", prevProposalHistory)
+
+    /// add proposal to chat history
+    /// but onlf if it's toggled!
+
+    console.log("appending")
+    round.append("chat", {
+      text: prevProposalHistory.length,
+      id: prevProposalHistory.length,
+      sender: {
+        Time: ukTime,
+        id: Date.now(),
+        role: "PROPOSAL",
+        name: "PROPOSAL",
+      },
+    });
 
   };
 
