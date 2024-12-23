@@ -205,12 +205,19 @@ function MessageComp({ attribute, gameStartTime }) {
     console.log(this_proposal)
     window.this_proposal=this_proposal
 
-    const votes = this_proposal.informalVote
-    const totalYes = votes
+    const votesInformal = this_proposal.informalVote
+    const totalYesInformal = votesInformal
         .map(vote => Object.values(vote)[0])
         .reduce((sum, vote) => sum + vote, 0);
-    const totalNo = votes.length - totalYes;
+    const totalNoInformal = votesInformal.length - totalYesInformal;
     
+    const votesFormal = this_proposal.formalVote
+    const totalYesFormal = votesFormal
+        .map(vote => Object.values(vote)[0])
+        .reduce((sum, vote) => sum + vote, 0);
+    const totalNoFormal = votesFormal.length - totalYesFormal;
+    
+
     return(
       <div className="flex items-start my-2" >
         {/* <div className="flex-shrink-0">{avatarImage}</div> */}
@@ -222,7 +229,8 @@ function MessageComp({ attribute, gameStartTime }) {
             <span className="pl-2 text-gray-400">{(relativeTime !== "NaN:NaN") ? relativeTime : ""}</span>
           </p>
           <p style={{ color: textColor }}><i>Features included:</i> {Object.keys(this_proposal.decisions).join(", ")}</p>
-          <p style={{ color: textColor }}><i>Votes:</i> Yes:  {totalYes}, No: {totalNo}</p>
+          <p style={{ color: textColor }}><i>Informal votes:</i> Yes:  {totalYesInformal}, No: {totalNoInformal}</p>
+          {(votesFormal.length>0 ? <p style={{ color: textColor }}><i>Official votes:</i> Yes:  {totalYesFormal}, No: {totalNoFormal}</p> : "")}
           
         </div>
       </div>
