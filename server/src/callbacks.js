@@ -25,7 +25,7 @@ Empirica.onGameStart(({ game }) => {
     round.addStage({ name: "Discussion and Informal Vote", duration: informalSubmitDuration });
     round.addStage({ name: "Submit Formal Vote", duration: formalSubmitDuration });
     round.addStage({ name: "Formal Vote", duration: formalVoteDuration });
-    round.addStage({ name: "Round Summary", duration: 12000 });
+    round.addStage({ name: "Round Summary", duration: 60 });
   }
 
   n = game.players.length;
@@ -159,12 +159,12 @@ Empirica.onStageStart(({ stage }) => {
       } else if(formalVoteCount==playerCount) {
         roundSummary = 
           "Congratulations!  You have reached agreement!<br/><br/>"+
-          "You received an additional bonus from this round: " + playerBonus                      
+          "You received an additional bonus from this round: " + playerBonus.toFixed(2)                    
       }
       
       player.round.set("roundSummary", roundSummary)
       playerBonusList = player.get("bonus")
-      playerBonusList.push({"round": treatmentFeatureData.product_name, "bonus":playerBonus})
+      playerBonusList.push({"round": treatmentFeatureData.product_name, "bonus":playerBonus.toFixed(2)})
       player.set("bonus", playerBonusList)
     });  
   }

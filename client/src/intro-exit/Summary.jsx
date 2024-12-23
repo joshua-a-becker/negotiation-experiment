@@ -67,7 +67,7 @@ export function Summary({ next }) {
   } 
 
   return (
-    returnText
+    ""//returnText
   );
 }
 

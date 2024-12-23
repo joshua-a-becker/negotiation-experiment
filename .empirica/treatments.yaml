@@ -94,3 +94,15 @@ treatments:
         playerCount: 3
         scenario: pilot_easy_scaled
         settingsUrl: https://challenge.negotiation.education/json/settings.json
+    - name: test_3_self
+      factors:
+        basicpay: 2.5
+        calculatorAnchoring: self
+        featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/refs/heads/master/testscoresheet.json
+        formalSubmitDuration: 60
+        formalVoteDuration: 60
+        informalSubmitDuration: 6000
+        numRounds: 1
+        playerCount: 3
+        scenario: pilot_easy_scaled
+        settingsUrl: https://challenge.negotiation.education/json/settings.json

@@ -1,5 +1,13 @@
 lobbies:
-    - name: Default 90s fail
+    - name: 1 minute
       kind: individual
       duration: 1m0s
+      strategy: fail
+    - name: 3min
+      kind: individual
+      duration: 3m0s
+      strategy: fail
+    - name: instant fail
+      kind: individual
+      duration: 5s
       strategy: fail

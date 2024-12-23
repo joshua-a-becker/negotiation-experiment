@@ -95,7 +95,6 @@ export function Choice() {
   const latestProposalTimestamp = latestProposal === undefined ? "NA" : latestProposal.timestamp;
 
   window.lpt=latestProposalTimestamp
-  window.d = latestProposal.decisions
 
   function calculateRoleScoresFromLatestSubmission(history, features) {
     const roleScores = { role1: 0, role2: 0, role3:0};
@@ -150,7 +149,7 @@ export function Choice() {
         {proposer} has made a proposal! See details below.
         <br />
         <br />
-        Value to you: <b>{calculatePoints(latestProposal.decisions)}</b>
+        Value to you: <b>{calculatePoints(latestProposal.decisions).toFixed(1)}</b>
         <br />
         <br />
         Please cast an informal vote.
@@ -183,7 +182,7 @@ export function Choice() {
         Passed (unofficial)
         <br />
         <br />
-        Value to you: <b>{proposalValue}</b>
+        Value to you: <b>{proposalValue.toFixed(2)}</b>
         <br />
         <br />
         Would you like to make this official?
@@ -444,7 +443,7 @@ export function Choice() {
         return (total + (isSelected ? roleBonus : 0));
     }, 0);
 
-    return ( Number(pointsReturn.toFixed(1)) );
+    return ( Number(pointsReturn.toFixed(2)) );
   };
 
 
