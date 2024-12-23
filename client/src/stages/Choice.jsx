@@ -90,10 +90,12 @@ export function Choice() {
   
   const ph = round.get("proposalHistory") 
   const latestProposal = ph[Object.keys(ph)[Object.keys(ph).length - 1]]
+  
 
   const latestProposalTimestamp = latestProposal === undefined ? "NA" : latestProposal.timestamp;
 
   window.lpt=latestProposalTimestamp
+  window.d = latestProposal.decisions
 
   function calculateRoleScoresFromLatestSubmission(history, features) {
     const roleScores = { role1: 0, role2: 0, role3:0};
@@ -348,9 +350,10 @@ export function Choice() {
   useEffect(() => {
     if (!isMounted) return;
     console.log("ref")
-    console.log(calculatorRef.current)
+    console.log( treatment.calculatorAnchoring.toLowerCase())
+    console.log(calculatorRef.current )
     if (calculatorRef.current && treatment.calculatorAnchoring.toLowerCase()==="group") {
-      calculatorRef.current.Set({});
+      calculatorRef.current.Set(latestProposal.decisions);
     }
   }, [latestProposalTimestamp, isMounted]);
 
