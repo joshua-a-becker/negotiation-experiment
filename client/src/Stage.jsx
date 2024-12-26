@@ -9,7 +9,7 @@ import {
 import { Loading } from "@empirica/core/player/react";
 import React from "react";
 import { Choice } from "./stages/Choice";
-import { FormalSubmit } from "./stages/FormalSubmit";
+import { FormalProposal } from "./stages/FormalProposal";
 import { FormalVote } from "./stages/FormalVote";
 import { Result } from "./stages/Result";
 import { useEffect } from 'react';
@@ -36,8 +36,8 @@ export function Stage() {
     case "Discussion and Informal Vote":
       return <Choice />;
 
-    case "Submit Formal Vote":
-      return <FormalSubmit />
+    case "Formal Proposal":
+      return <FormalProposal />
 
     case "Formal Vote":
       return <FormalVote />;

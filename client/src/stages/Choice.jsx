@@ -92,7 +92,7 @@ export function Choice() {
   const role4 = featureData === undefined ? "" : featureData.roleNames === undefined ? "" : featureData.roleNames["role4"];
   
   const ph = round.get("proposalHistory") 
-  const latestProposal = ph[Object.keys(ph)[Object.keys(ph).length - 1]]
+  const latestProposal = ph === undefined ? undefined : ph[Object.keys(ph)[Object.keys(ph).length - 1]]
   
 
   const latestProposalTimestamp = latestProposal === undefined ? "NA" : latestProposal.timestamp;

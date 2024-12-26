@@ -23,7 +23,7 @@ Empirica.onGameStart(({ game }) => {
       name: `Round ${i + 1}`,
     });
     round.addStage({ name: "Discussion and Informal Vote", duration: informalSubmitDuration });
-    round.addStage({ name: "Submit Formal Vote", duration: formalSubmitDuration });
+    round.addStage({ name: "Formal Proposal", duration: formalSubmitDuration });
     round.addStage({ name: "Formal Vote", duration: formalVoteDuration });
     // if(numRounds>1) {
       round.addStage({ name: "Round Summary", duration: 45 });
@@ -105,9 +105,14 @@ Empirica.on("round", "proposalHistory", (ctx, { round, proposalHistory }) => {
 });
 
 Empirica.onStageStart(({ stage }) => {
-
-  const round = stage.currentGame.currentRound
+  const game = stage.currentGame;
+  const round = game.currentRound
   const players = round.currentGame.players;  
+  const treatment = game.get("treatment");
+
+  const featureData = game.get("featureData") === undefined ? undefined : game.get("featureData")[treatment.scenario];
+  const role1 = featureData === undefined ? "" : featureData.roleNames === undefined ? "" : featureData.roleNames["role1"];
+
   console.log("Start " + stage.get("name"))
 
   if(round.get("formalPassed") & stage.get("name") != "Round Summary") {
@@ -115,6 +120,18 @@ Empirica.onStageStart(({ stage }) => {
     players.forEach(player => { player.stage.set("submit", true) });  
   } 
 
+  console.log("start here")
+  if(stage.get("name") == "Formal Proposal") {
+    console.log("FP here")
+    round.append("chat", {
+      text: "Time has run out!  " + role1 + " will now make a final proposal.",
+      sender: {
+        Time: Date.now(),
+        role: "Notification",
+        name: "Notification",
+      },
+    });
+  }
   
   if(stage.get("name") == "Round Summary") {
     // log round results into game results for exit page

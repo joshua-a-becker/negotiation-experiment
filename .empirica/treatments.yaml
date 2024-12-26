@@ -49,13 +49,6 @@ factors:
         - value: 60
         - value: 30
         - value: 600
-    - name: informalSubmitDuration
-      desc: Duration of the Informal Submit stage in seconds
-      values:
-        - value: 600
-        - value: 6000
-        - value: 30
-        - value: 3000
     - name: showValue
       desc: show proposal value in details box and chat message
       values:
@@ -66,6 +59,14 @@ factors:
       values:
         - value: "yes"
         - value: "no"
+    - name: informalSubmitDuration
+      desc: Duration of the Informal Submit stage in seconds
+      values:
+        - value: 600
+        - value: 6000
+        - value: 30
+        - value: 3000
+        - value: 1
 treatments:
     - name: blank_copy_value_inchat
       factors:
@@ -90,6 +91,21 @@ treatments:
         formalSubmitDuration: 60
         formalVoteDuration: 60
         informalSubmitDuration: 6000
+        numRounds: 1
+        playerCount: 3
+        proposalInChat: "yes"
+        scenario: pilot_easy_scaled
+        settingsUrl: https://challenge.negotiation.education/json/settings.json
+        showCopyButton: "no"
+        showValue: "yes"
+    - name: fast
+      factors:
+        basicpay: 2.5
+        calculatorAnchoring: blank
+        featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/refs/heads/master/testscoresheet.json
+        formalSubmitDuration: 600
+        formalVoteDuration: 600
+        informalSubmitDuration: 1
         numRounds: 1
         playerCount: 3
         proposalInChat: "yes"

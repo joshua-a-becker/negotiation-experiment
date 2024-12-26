@@ -28,7 +28,7 @@ const getLondonTime = () => {
   return `${parts[2].trim()}-${parts[1]}-${parts[0]}:${parts[3].trim().replace(/:/g, '-')}`;
 }
 
-export function FormalSubmit() {
+export function FormalProposal() {
   const player = usePlayer();
   const players = usePlayers();
   const round = useRound();
