@@ -256,6 +256,12 @@ export function Choice() {
     return false;
   }
 
+  const copyProposal = () => {
+    if(latestProposal) {
+      calculatorRef.current.Set(latestProposal.decisions)
+    }
+  }
+
   const calcHeaderMessage = () => {
 
     // POSSIBLE STATES
@@ -488,6 +494,7 @@ export function Choice() {
                 submissionData={latestProposal}
                 playerRole={player.get("role")}
                 onChangeTotalBonus={setTotalBonus}
+                copyProposal={copyProposal}
               />
 
               <Calculator
