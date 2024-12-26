@@ -13,6 +13,7 @@ function StrawPoll(props) {
     const { WaitingMessage = 'Waiting for other players.',
         playerRole = props.playerRole,
         copyProposal = props.copyPropsoal,
+        showCopyButton = props.showCopyButton,
         ...restProps } = props;
 
     const features = props.featureData === undefined ? undefined : props.featureData.features;
@@ -91,6 +92,10 @@ function StrawPoll(props) {
             .map(feature => feature.name)
             .join(", ");
 
+    const copyButton = showCopyButton ? 
+        <Button className="!px-0.5 !py-0.5" handleClick={copyProposal}>Copy</Button> 
+            :
+        "NA"
 
     const proposalForVote = submittedData_informal ?
         <>
@@ -100,7 +105,7 @@ function StrawPoll(props) {
                     <thead>
                         <tr  >
                             <td colSpan="2" style={{ borderTop: '0px', borderRight: '0px', borderLeft: '0px', fontWeight: 'bold' }}>
-                                Proposal by {submittedData_informal['submitterRole']} <Button className="!px-0.5 !py-0.5" handleClick={copyProposal}>Copy</Button>
+                                Proposal by {submittedData_informal['submitterRole']} {copyButton}
                                 <br />
                                 <div className="total-points-display"> </div>
 

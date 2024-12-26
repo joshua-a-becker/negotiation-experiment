@@ -495,6 +495,7 @@ export function Choice() {
                 playerRole={player.get("role")}
                 onChangeTotalBonus={setTotalBonus}
                 copyProposal={copyProposal}
+                showCopyButton={String(treatment.showCopyButton).toLowerCase()=="yes"}
               />
 
               <Calculator
