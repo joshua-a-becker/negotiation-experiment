@@ -29,7 +29,7 @@ export function Stage() {
 
   if (game.get("featureData") === undefined) return <Loading />;
 
-  if (player.stage.get("submit")) { return <Summary /> }
+  if (player.stage.get("submit") & stage.get("name")==="Round Summary") { return("Please wait for other players..") }
 
   switch (stage.get("name")) {
     

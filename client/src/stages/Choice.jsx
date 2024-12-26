@@ -143,18 +143,21 @@ export function Choice() {
     round.set("proposalHistory", proposalHistory)   
   };
 
- 
+  
+
 
   const informalVoteButtons = () => {
+    const valueLine = <>Value to you: <b>£{calculatePoints(latestProposal.decisions).toFixed(2)}</b><br /><br /></>
     const proposer = latestProposal.submitterRole
+
+
     return (
       <>
         {proposer} has made a proposal! See details below.
         <br />
         <br />
-        Value to you: <b>{calculatePoints(latestProposal.decisions).toFixed(1)}</b>
-        <br />
-        <br />
+        {String(treatment.showValue).toLowerCase()==="yes" ? valueLine : ""}
+
         Please cast an informal vote.
         <br />
         <br />

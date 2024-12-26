@@ -12,14 +12,18 @@ import CustomModal from "./stages/Modal"
 
 
 
+
 export function Chat({
   scope,
   attribute = "messages",
   loading: LoadingComp = Loading,
 }) {
-  const game = useGame();
-  const player = usePlayer();
 
+
+
+  const game = useGame();
+  
+  const player = usePlayer();
   const roundStartTime = scope.get("roundStartTime")
 
   const startTimeRef = useRef(Date.now());
@@ -33,8 +37,6 @@ export function Chat({
   const playerMessages = scope.getAttribute(attribute)?.items || [];
   const [lastMessageId, setLastMessageId] = useState(null);
   const systemMessagesLengthRef = useRef(systemMessages.length);
-
-
 
 
 
@@ -172,7 +174,14 @@ function Messages({ props, msgs, playerRole, gameStartTime }) {
 }
 
 
+
+
+
 function MessageComp({ attribute, gameStartTime }) {
+
+  const game = useGame();
+  const treatment = game.get("treatment");
+  const player = usePlayer();
 
   const messageTime = new Date(attribute.createdAt);
 
@@ -193,18 +202,39 @@ function MessageComp({ attribute, gameStartTime }) {
   const ts = attribute.createdAt;
   const textColor = isSystemMessage ? "#FF4500" : roleColors[msg.sender.role] || "#000000";
 
+  // helper function to calculate points
+  const calculatePoints = (selectedFeatures) => {
+
+
+    const featureData =
+      game.get("featureData") === undefined
+        ? undefined
+        : game.get("featureData")[treatment.scenario];
+        
+
+    const featuresToCalc = featureData.features
+    const roleToCalc = player.get("role")
+
+    const pointsReturn = featuresToCalc.reduce((total, feature) => {
+        const isSelected = selectedFeatures[feature.name];
+        const roleBonus = feature.bonus[roleToCalc] || 0;
+        return (total + (isSelected ? roleBonus : 0));
+    }, 0);
+
+    return ( Number(pointsReturn.toFixed(2)) );
+  };
+
   if(msg.sender.role=="PROPOSAL" && msg.id) {
     
+    
+
     const round = useRound();
     const proposalHistory = round.get("proposalHistory")
-
-    window.msg=msg;
-    window.proposalHistory = proposalHistory
     const this_proposal = proposalHistory[msg.id-1]
-    console.log("P: ")
-    console.log(this_proposal)
-    window.this_proposal=this_proposal
+    
+    if(this_proposal === undefined) { return ("Processing...")}
 
+    
     const votesInformal = this_proposal.informalVote
     const totalYesInformal = votesInformal
         .map(vote => Object.values(vote)[0])
@@ -216,7 +246,14 @@ function MessageComp({ attribute, gameStartTime }) {
         .map(vote => Object.values(vote)[0])
         .reduce((sum, vote) => sum + vote, 0);
     const totalNoFormal = votesFormal.length - totalYesFormal;
+  
+
     
+    window.features = this_proposal.decisions
+    window.calc = calculatePoints(this_proposal.decisions)
+
+    const valueLine =
+      <p style={{ color: textColor }}><i>Value to you:</i> £{calculatePoints(this_proposal.decisions)}</p>
 
     return(
       <div className="flex items-start my-2" >
@@ -229,6 +266,7 @@ function MessageComp({ attribute, gameStartTime }) {
             <span className="pl-2 text-gray-400">{(relativeTime !== "NaN:NaN") ? relativeTime : ""}</span>
           </p>
           <p style={{ color: textColor }}><i>Features included:</i> {Object.keys(this_proposal.decisions).join(", ")}</p>
+          {String(treatment.showValue).toLowerCase()==="yes" ? valueLine : ""}
           <p style={{ color: textColor }}><i>Informal votes:</i> Yes:  {totalYesInformal}, No: {totalNoInformal}</p>
           {(votesFormal.length>0 ? <p style={{ color: textColor }}><i>Official votes:</i> Yes:  {totalYesFormal}, No: {totalNoFormal}</p> : "")}
           

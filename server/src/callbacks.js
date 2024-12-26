@@ -25,7 +25,9 @@ Empirica.onGameStart(({ game }) => {
     round.addStage({ name: "Discussion and Informal Vote", duration: informalSubmitDuration });
     round.addStage({ name: "Submit Formal Vote", duration: formalSubmitDuration });
     round.addStage({ name: "Formal Vote", duration: formalVoteDuration });
-    round.addStage({ name: "Round Summary", duration: 60 });
+    // if(numRounds>1) {
+      round.addStage({ name: "Round Summary", duration: 45 });
+    // }
   }
 
   n = game.players.length;

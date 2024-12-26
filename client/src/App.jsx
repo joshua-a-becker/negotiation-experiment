@@ -10,7 +10,7 @@ import { Introduction1 } from "./intro-exit/Introduction1";
 import { Introduction2 } from "./intro-exit/Introduction2";
 import { MyConsent } from "./intro-exit/MyConsent.jsx";
 import { Sorry } from "./intro-exit/Sorry";
-import { Summary } from "./intro-exit/Summary";
+import { GameSummary } from "./intro-exit/GameSummary";
 import { Walkthrough } from "./intro-exit/Walkthrough";
 import { WaitingPage } from "./intro-exit/WaitingPage";
 

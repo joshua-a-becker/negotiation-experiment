@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Button } from "../components/Button";
 import { useChat } from '../ChatContext';
 
-export function Summary({ next }) {
+export function GameSummary({ next }) {
   
 
   const player = usePlayer();
@@ -19,20 +19,16 @@ export function Summary({ next }) {
  
   let returnText="Waiting for other players.."
 
-  window.game=game;
-  window.round=round;
-  window.stagename=stage.get("name")
-  window.treatment=treatment
-  window.player=player
 
-  if(stage.get("name") == "Round Summary" && (round.get("index")+1)==treatment.numRounds) {
+  window.player = player;
 
-    const totalBonus = player.get("bonus").reduce((sum, item) => sum + item.bonus, 0);
-    const basePay = treatment.basicpay
+    const totalBonus = parseFloat(player.get("bonus").reduce((sum, item) => sum + item.bonus, 0));
+    const basePay = parseFloat(treatment.basicpay)
     const totalPay = totalBonus + basePay
-    
+
+
     window.basePay=basePay
-    window.totalBonus=totalBonus
+    window.totalPay = totalPay
 
     const roundBonusHtml = "<u>Round Bonuses</u><br/>" +
       player.get("bonus")
@@ -48,30 +44,12 @@ export function Summary({ next }) {
         <br/><br/>And the following round bonuses...
         <br/><br/>
         <span dangerouslySetInnerHTML={{__html: roundBonusHtml}} />
+               <br/><br/><Button handleClick={next} autoFocus >
+                  <p>Click to Finish</p>
+                </Button>  
       </div>
     </>)
 
-  }
-
-  const votingBlock = 
-    <>
-      <div className="container">
-        <div className="waiting-section">
-          <div className="loader"></div>
-          <div>Other parties are still voting. Once votes are in and tallied, the results will be shown.</div>
-        </div>
-      </div>
-    </>
-
-  returnText="TBD"
-
-  if(stage.get("name")=="Submit Formal Vote" || stage.get("name")=="Formal Vote") {
-    returnText = votingBlock
-  } 
-
-  return (
-    ""//returnText
-  );
 }
 
-export default Summary;
+export default GameSummary;

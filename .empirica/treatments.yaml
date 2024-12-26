@@ -16,14 +16,6 @@ factors:
       values:
         - value: 3
         - value: 5
-    - name: formalVoteDuration
-      desc: Duration of the Formal Submit stage in seconds
-      values:
-        - value: 60
-    - name: formalSubmitDuration
-      desc: Duration of the Formal Submit stage in seconds
-      values:
-        - value: 60
     - name: settingsUrl
       values:
         - value: SET_THIS
@@ -42,12 +34,30 @@ factors:
         - value: blank
         - value: self
         - value: group
+    - name: proposalInChat
+      values:
+        - value: "yes"
+        - value: "no"
+    - name: formalVoteDuration
+      desc: Duration of the Formal Submit stage in seconds
+      values:
+        - value: 60
+        - value: 600
+    - name: formalSubmitDuration
+      desc: Duration of the Formal Submit stage in seconds
+      values:
+        - value: 60
+        - value: 30
+        - value: 600
     - name: informalSubmitDuration
       desc: Duration of the Informal Submit stage in seconds
       values:
         - value: 600
         - value: 6000
-    - name: proposalInChat
+        - value: 30
+        - value: 3000
+    - name: showValue
+      desc: show proposal value in details box and chat message
       values:
         - value: "yes"
         - value: "no"
@@ -111,16 +121,31 @@ treatments:
         proposalInChat: "yes"
         scenario: pilot_easy_scaled
         settingsUrl: https://challenge.negotiation.education/json/settings.json
-    - name: test_3_self_nochat
+    - name: time_test
       factors:
         basicpay: 2.5
         calculatorAnchoring: self
         featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/refs/heads/master/testscoresheet.json
-        formalSubmitDuration: 60
-        formalVoteDuration: 60
-        informalSubmitDuration: 6000
+        formalSubmitDuration: 600
+        formalVoteDuration: 600
+        informalSubmitDuration: 3000
         numRounds: 1
         playerCount: 3
-        proposalInChat: "no"
+        proposalInChat: "yes"
         scenario: pilot_easy_scaled
         settingsUrl: https://challenge.negotiation.education/json/settings.json
+        showValue: "yes"
+    - name: time_test_novalue
+      factors:
+        basicpay: 2.5
+        calculatorAnchoring: self
+        featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/refs/heads/master/testscoresheet.json
+        formalSubmitDuration: 600
+        formalVoteDuration: 600
+        informalSubmitDuration: 3000
+        numRounds: 1
+        playerCount: 3
+        proposalInChat: "yes"
+        scenario: pilot_easy_scaled
+        settingsUrl: https://challenge.negotiation.education/json/settings.json
+        showValue: "no"
