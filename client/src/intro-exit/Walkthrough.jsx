@@ -24,6 +24,10 @@ export function Walkthrough({ next }) {
   const [voteButtonActive, setVoteButtonActive] = useState(true); 
   const [showNextButton, setShowNextButton] = useState(false); 
 
+  const showCopyButton = String(treatment.showCopyButton).toLowerCase()==="yes"
+
+  const [copyButtonClicked, setCopyButtonClicked] = useState(false);
+
   const role1 = walkThroughFeatures.roleNames===undefined ? "undefined" : walkThroughFeatures.roleNames.role1;
 
   const setPlayerMessage = (message) => {
@@ -74,19 +78,53 @@ export function Walkthrough({ next }) {
 
   const handleVoteSubmit = (vote) => {
     sendSystemMessage("Good job!  You'll see the same thing when someone else offers a proposal.")
-    setTimeout(
-      (sendSystemMessage, myMessage)=>{sendSystemMessage(myMessage)}
-      ,2000
-      ,sendSystemMessage
-      ,"All done!  Click 'next' to continue to the game."
-    )
-    setShowNextButton(true);
+
     player.set("currentVote", vote)
     setPlayerMessage(
       <>Waiting for other votes.</>
     )
+    
+    if(showCopyButton) {
+      setTimeout(
+        (sendSystemMessage, myMessage)=>{sendSystemMessage(myMessage)}
+        ,2000
+        ,sendSystemMessage
+        ,"Now, one last thing:  once a proposal has been made, you can use the \"copy\" button to move it to your calculator for revision."
+      )
+  
+      setTimeout(
+        (sendSystemMessage, myMessage)=>{sendSystemMessage(myMessage)}
+        ,3000
+        ,sendSystemMessage
+        ,"Go ahead and click the \"copy\" button now, even though it won't do anything in this demo, since the proposal is already in your calculator."
+      )  
+    } else {
+      handleCopyButtonClick()
+    }
+  }
+
+
+  const handleCopyButtonClick = () => {
+    
+
+    
+    sendSystemMessage("Great, all done!  Click 'next' to continue to the game.")
+    
+    setTimeout(
+      setCopyButtonClicked
+      ,2000
+      , true
+    );
+    
+    setTimeout(
+      setShowNextButton
+      ,2000
+      ,true
+    )
+    
     return(0);
   }
+
 
   const sendSystemMessage = (thisMessage) => {
     appendSystemMessage({
@@ -109,7 +147,7 @@ export function Walkthrough({ next }) {
 
       setTimeout(
         (sendSystemMessage, myMessage)=>{sendSystemMessage(myMessage)}
-        ,5000
+        ,1000
         ,sendSystemMessage
         ,"On your screen you see a calculator.  You can use the calculator to determine the bonus you'd get for various designs"
       )
@@ -117,17 +155,25 @@ export function Walkthrough({ next }) {
       
       setTimeout(
         (sendSystemMessage, myMessage)=>{sendSystemMessage(myMessage)}
-        ,10000
+        ,3000
         ,sendSystemMessage
         ,"You can also use the calculator to send a vote to others for consideration. "
       )
 
       setTimeout(
         (sendSystemMessage, myMessage)=>{sendSystemMessage(myMessage)}
-        ,11000
+        ,5000
         ,sendSystemMessage
         ,"To do this, pick a proposal and then click 'submit for informal vote'."
       )
+
+      setTimeout(
+        (sendSystemMessage, myMessage)=>{sendSystemMessage(myMessage)}
+        ,6000
+        ,sendSystemMessage
+        ,"Go ahead and do that now."
+      )
+
 
       player.set("walkThroughStatus", 1)
     }
@@ -176,9 +222,6 @@ export function Walkthrough({ next }) {
   };
 
   onLoad();
-
-
-
   
   // if they're done the walkthrough
   
@@ -236,7 +279,7 @@ export function Walkthrough({ next }) {
       </>
    
   
-  const walkthroughCompleted = !(player.get("currentVote")===undefined || player.get("currentVote") ===null)
+  const walkthroughCompleted = !(player.get("currentVote")===undefined || player.get("currentVote") ===null || !copyButtonClicked)
 
   const playerMessage =  calcWalkthroughMessage(player.get("walkthroughMessage"))
   
@@ -277,6 +320,8 @@ export function Walkthrough({ next }) {
           CurrentVote = {(player.get("currentVote")===null || player.get("currentVote")===undefined) ? undefined : player.get("currentVote")}
           playerRole = "role1"
           onChangeTotalBonus = {setProposalValue}
+          showCopyButton={showCopyButton}
+          copyProposal={handleCopyButtonClick}
         
         />
       
