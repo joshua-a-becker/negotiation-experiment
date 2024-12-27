@@ -38,17 +38,6 @@ factors:
       values:
         - value: "yes"
         - value: "no"
-    - name: formalVoteDuration
-      desc: Duration of the Formal Submit stage in seconds
-      values:
-        - value: 60
-        - value: 600
-    - name: formalSubmitDuration
-      desc: Duration of the Formal Submit stage in seconds
-      values:
-        - value: 60
-        - value: 30
-        - value: 600
     - name: showValue
       desc: show proposal value in details box and chat message
       values:
@@ -67,7 +56,54 @@ factors:
         - value: 30
         - value: 3000
         - value: 1
+        - value: 90
+        - value: 300
+    - name: formalSubmitDuration
+      desc: Duration of the Formal Submit stage in seconds
+      values:
+        - value: 60
+        - value: 30
+        - value: 600
+        - value: 5
+        - value: 500
+    - name: formalVoteDuration
+      desc: Duration of the Formal Submit stage in seconds
+      values:
+        - value: 60
+        - value: 600
+        - value: 5
+        - value: 500
 treatments:
+    - name: blank_NOCOPY_value_inchat
+      factors:
+        basicpay: 2.5
+        calculatorAnchoring: blank
+        featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/refs/heads/master/testscoresheet.json
+        formalSubmitDuration: 60
+        formalVoteDuration: 60
+        informalSubmitDuration: 300
+        numRounds: 1
+        playerCount: 3
+        proposalInChat: "yes"
+        scenario: pilot_easy_scaled
+        settingsUrl: https://challenge.negotiation.education/json/settings.json
+        showCopyButton: "yes"
+        showValue: "no"
+    - name: blank_copy_NOvalue_inchat
+      factors:
+        basicpay: 2.5
+        calculatorAnchoring: group
+        featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/refs/heads/master/testscoresheet.json
+        formalSubmitDuration: 60
+        formalVoteDuration: 60
+        informalSubmitDuration: 90
+        numRounds: 1
+        playerCount: 3
+        proposalInChat: "yes"
+        scenario: pilot_easy_scaled
+        settingsUrl: https://challenge.negotiation.education/json/settings.json
+        showCopyButton: "yes"
+        showValue: "no"
     - name: blank_copy_value_inchat
       factors:
         basicpay: 2.5
@@ -83,28 +119,13 @@ treatments:
         settingsUrl: https://challenge.negotiation.education/json/settings.json
         showCopyButton: "yes"
         showValue: "yes"
-    - name: blank_NOCOPY_value_inchat
-      factors:
-        basicpay: 2.5
-        calculatorAnchoring: blank
-        featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/refs/heads/master/testscoresheet.json
-        formalSubmitDuration: 60
-        formalVoteDuration: 60
-        informalSubmitDuration: 6000
-        numRounds: 1
-        playerCount: 3
-        proposalInChat: "yes"
-        scenario: pilot_easy_scaled
-        settingsUrl: https://challenge.negotiation.education/json/settings.json
-        showCopyButton: "no"
-        showValue: "yes"
     - name: fast
       factors:
         basicpay: 2.5
         calculatorAnchoring: blank
         featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/refs/heads/master/testscoresheet.json
-        formalSubmitDuration: 600
-        formalVoteDuration: 600
+        formalSubmitDuration: 500
+        formalVoteDuration: 500
         informalSubmitDuration: 1
         numRounds: 1
         playerCount: 3

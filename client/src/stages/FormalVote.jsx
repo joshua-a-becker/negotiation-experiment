@@ -116,9 +116,9 @@ export function FormalVote() {
   const voteButtons = () => {
     return (
       <>
-        <p>{latestProposal?.submitterRole || "Unknown"} has made a proposal! See details below.</p>
-        <p>Value to you: <b>{calculatePoints(latestProposal?.decisions || {})}</b></p>
-        <p>Please cast your final vote!</p>
+        <p>{latestProposal?.submitterRole || "Unknown"} has made a FINAL proposal! See details below.</p>
+        <p><br/>Value to you: <b>{parseFloat(calculatePoints(latestProposal?.decisions || {})).toFixed(2)}</b></p>
+        <p><br/>Please cast your final vote!<br/><br/></p>
         <div className="voting-buttons-container">
           <CustomModal
             show={showModal}
@@ -148,7 +148,7 @@ export function FormalVote() {
       <div className="container">
         <div className="waiting-section">
           <div className="loader"></div>
-          <p>Other parties are still voting. Once votes are in and tallied, the results will be shown.</p>
+          <p>Please wait while the other parties vote. Once votes are in and tallied, the results will be shown.</p>
         </div>
       </div>
     );

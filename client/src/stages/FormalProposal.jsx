@@ -168,7 +168,7 @@ export function FormalProposal() {
   }
 
 
-  const displaySubmit = player.get("role") === "role1"
+  if (player.get("role") === "role1") {
 
     return (
       <div className="flex-container">
@@ -190,7 +190,7 @@ export function FormalProposal() {
               showVoteButton={true}
               roleName={player.get("name")}
               playerRole={player.get("role")}
-              displaySubmit={displaySubmit}
+              displaySubmit={true}
               propSelectedFeatures={{}}
               calculatePoints={calculatePoints}
               handleProposalSubmission={handleSubmitProposal}
@@ -200,6 +200,16 @@ export function FormalProposal() {
         </div>
       </div>
     );
+  } else {
+    return(
+      <div className="container">
+        <div className="waiting-section">
+          <div className="loader"></div>
+          Please wait while {role1} submits a final proposal.
+        </div>
+      </div>
+    )
+  }
   
 }
 
