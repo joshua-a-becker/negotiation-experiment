@@ -135,3 +135,48 @@ treatments:
         settingsUrl: https://challenge.negotiation.education/json/settings.json
         showCopyButton: "yes"
         showValue: "yes"
+    - name: hard_group_copy_value_inchat
+      factors:
+        basicpay: 2.5
+        calculatorAnchoring: group
+        featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/refs/heads/master/testscoresheet.json
+        formalSubmitDuration: 60
+        formalVoteDuration: 60
+        informalSubmitDuration: 600
+        numRounds: 1
+        playerCount: 3
+        proposalInChat: "yes"
+        scenario: pilot_hard_scaled
+        settingsUrl: https://challenge.negotiation.education/json/settings.json
+        showCopyButton: "yes"
+        showValue: "yes"
+    - name: hard_blank_copy_value_inchat
+      factors:
+        basicpay: 2.5
+        calculatorAnchoring: blank
+        featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/refs/heads/master/testscoresheet.json
+        formalSubmitDuration: 60
+        formalVoteDuration: 60
+        informalSubmitDuration: 600
+        numRounds: 1
+        playerCount: 3
+        proposalInChat: "yes"
+        scenario: pilot_hard_scaled
+        settingsUrl: https://challenge.negotiation.education/json/settings.json
+        showCopyButton: "yes"
+        showValue: "yes"
+    - name: hard_self_copy_value_inchat
+      factors:
+        basicpay: 2.5
+        calculatorAnchoring: self
+        featureUrl: https://raw.githubusercontent.com/joshua-a-becker/RTools/refs/heads/master/testscoresheet.json
+        formalSubmitDuration: 60
+        formalVoteDuration: 60
+        informalSubmitDuration: 600
+        numRounds: 1
+        playerCount: 3
+        proposalInChat: "yes"
+        scenario: pilot_hard_scaled
+        settingsUrl: https://challenge.negotiation.education/json/settings.json
+        showCopyButton: "no"
+        showValue: "yes"

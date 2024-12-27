@@ -1,30 +1,50 @@
-import { isDevelopment } from "@empirica/core/player"
 import React, { useState, useEffect } from "react";
 import { Button } from "../components/Button";
 import { Profile } from "../Profile";
 import { usePlayer, useGame } from "@empirica/core/player/classic/react";
 
-export function Introduction1({ next }) {
+export function Introduction3({ next }) {
 
 
   const [boxCount, setBoxCount] = useState(0);
-  const [loadedStartTime, setLoadedStartTime] = useState(true);
+  const [startTime, setStartTime] = useState("");
+  const [role1, setRole1] = useState("the project leader");
+
   const game = useGame(); 
   //const player = usePlayer();
   const treatment = game.get("treatment");
 
-  const [role1, setRole1] = useState("the project head")
-
-
-
   const instructions =  [
-      'In this game, you will be paired with '+(treatment.playerCount-1)+' other players to reach agreement on a project design. '
-    , 'You will all have a list of features to include or exclude. You task is reach agreement with the other players on which features to include.'
-    , 'Some features earn you money, others lose you money.'
-    , 'Different people may get different bonuses for the same features.'
-    , 'We will provide you a platform to help you reach agreement!'
+      'On the next page, you will be shown a simple demo walkthrough of the app.'
+    , 'Once you enter the game, you will be randomly assigned a role, possibly ' + role1 + "."
+    , 'This demo doesn\'t have any other people, and uses a lunch plan as an example of the platform.'
+    , 'After you complete this demo, you can enter a waiting room to be paired with other people.'
+    
   ]
 
+  if(startTime!=="NA"&&startTime!=="") instructions.push('The game will open at exactly '+startTime+'.')
+
+  useEffect(() => {
+    fetch("https://decide.empirica.app/data/json/settings.json")
+      .then(response => response.json()) // 将响应转换为 JSON
+      .then(data => { setStartTime(data["startTime"]) })
+      .catch(error => console.error("Failed to load features:", error)); // 处理可能的错误
+  }, []); 
+
+  useEffect(() => {
+    if(game.get("featureData")===undefined) {
+      console.log("is undefined")
+      fetch(treatment.featureUrl)
+        .then(response => response.json()) 
+        .then(data => { setRole1(data[treatment.scenario].roleNames.role1) })
+        .catch(error => console.error("Failed to load features:", error));
+        
+      } else {
+        console.log("defined")
+        setRole1(game.get("featureData")[treatment.scenario].roleNames.role1)
+      }
+      
+  }, []);
 
   return (
     <>
