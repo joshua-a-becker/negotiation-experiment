@@ -21,6 +21,15 @@ export function Game() {
         .catch(error => console.error("Failed to load features:", error)); 
     }
   }, []);
+
+  // useEffect(() => {
+    
+  //   const alertMessage = game?.get("alertMessage");
+  //   if (alertMessage) {
+  //     alert(alertMessage);
+  //   }
+  // }, [game]); 
+
   
   
 

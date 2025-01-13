@@ -10,15 +10,11 @@ import { useChat } from './ChatContext';
 import { Timer } from "./components/Timer";
 import CustomModal from "./stages/Modal"
 
-
-
-
 export function Chat({
   scope,
   attribute = "messages",
   loading: LoadingComp = Loading,
 }) {
-
 
 
   const game = useGame();
