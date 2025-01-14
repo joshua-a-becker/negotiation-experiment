@@ -485,6 +485,7 @@ export function Choice() {
               player={player}
               role1={role1}
               textRef={textRef}
+              showCopyButton={treatment.showCopyButton}
             />
             <br />
             <br />

@@ -93,9 +93,9 @@ function StrawPoll(props) {
             .join(", ");
 
     const copyButton = showCopyButton ? 
-        <Button className="!px-0.5 !py-0.5" handleClick={copyProposal}>Copy</Button> 
+        <Button className="!px-1 !py-1 !bg-red-500 !text-white !hover:bg-red-600" handleClick={copyProposal}>COPY</Button> 
             :
-        "NA"
+        <></>
 
     const proposalForVote = submittedData_informal ?
         <>

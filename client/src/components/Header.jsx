@@ -17,6 +17,11 @@ function Header(props) {
                         <br />
                         <h6>Submit as many informal proposals as you want below.</h6>
                         <h6><br />The calculator shows what proposal is worth.</h6>
+                        { String(props.showCopyButton).toLowerCase()=="yes" && <><h6><br/>
+                        Use the "COPY" button to edit a given proposal.
+                        <br/><br/>You can submit your edited proposal when previous votes are complete.
+                        </h6></>
+                        }
                         <br />
                         <h6>{'role1' === player.get("role") ? "As " + role1 + ", you" : "At the end, " + role1} will submit a final proposal {'role1' === player.get("role") ? "at the end." : ""}</h6>
                         <h6><br /><strong>You ALL must agree for the final proposal to pass!</strong></h6>

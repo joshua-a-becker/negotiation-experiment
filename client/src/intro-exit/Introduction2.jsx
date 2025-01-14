@@ -1,3 +1,4 @@
+import { isDevelopment } from "@empirica/core/player"
 import React, { useState, useEffect } from "react";
 import { Button } from "../components/Button";
 import { Profile } from "../Profile";
@@ -7,44 +8,22 @@ export function Introduction2({ next }) {
 
 
   const [boxCount, setBoxCount] = useState(0);
-  const [startTime, setStartTime] = useState("");
-  const [role1, setRole1] = useState("the project leader");
-
+  const [loadedStartTime, setLoadedStartTime] = useState(true);
   const game = useGame(); 
   //const player = usePlayer();
   const treatment = game.get("treatment");
 
+  const [role1, setRole1] = useState("the project head")
+
+
+
   const instructions =  [
-      'On the next page, you will be shown a simple demo walkthrough of the app.'
-    , 'Once you enter the game, you will be randomly assigned a role, possibly ' + role1 + "."
-    , 'This demo doesn\'t have any other people, and uses a lunch plan as an example of the platform.'
-    , 'After you complete this demo, you can enter a waiting room to be paired with other people.'
-    
+      'You will have 10 minutes to chat while sharing unofficial, nonbinding votes.'
+    , 'If one of these passes, you will have the option to make it official.'
+    , 'If you haven\'t reached agreement after 10 minutes, '+ role1 +' will make a final, official proposal.  '
+    , 'You all must agree for a proposal to pass.  Only official votes count.'
   ]
 
-  if(startTime!=="NA"&&startTime!=="") instructions.push('The game will open at exactly '+startTime+'.')
-
-  useEffect(() => {
-    fetch("https://decide.empirica.app/data/json/settings.json")
-      .then(response => response.json()) // 将响应转换为 JSON
-      .then(data => { setStartTime(data["startTime"]) })
-      .catch(error => console.error("Failed to load features:", error)); // 处理可能的错误
-  }, []); 
-
-  useEffect(() => {
-    if(game.get("featureData")===undefined) {
-      console.log("is undefined")
-      fetch(treatment.featureUrl)
-        .then(response => response.json()) 
-        .then(data => { setRole1(data[treatment.scenario].roleNames.role1) })
-        .catch(error => console.error("Failed to load features:", error));
-        
-      } else {
-        console.log("defined")
-        setRole1(game.get("featureData")[treatment.scenario].roleNames.role1)
-      }
-      
-  }, []);
 
   return (
     <>

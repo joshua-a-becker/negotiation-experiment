@@ -8,6 +8,7 @@ import { AutoPlayerIdForm } from "./autoPlayerIdForm";
 import { ExitSurvey } from "./intro-exit/ExitSurvey";
 import { Introduction1 } from "./intro-exit/Introduction1";
 import { Introduction2 } from "./intro-exit/Introduction2";
+import { Introduction3 } from "./intro-exit/Introduction3";
 import { MyConsent } from "./intro-exit/MyConsent.jsx";
 import { Sorry } from "./intro-exit/Sorry";
 import { GameSummary } from "./intro-exit/GameSummary";
@@ -52,7 +53,7 @@ export default function App() {
     //if(isDevelopment) return [WaitingPage];
     //return [Walkthrough, WaitingPage];
     //return [MyConsent];
-    return [MyConsent, Introduction1, Introduction2, Walkthrough, WaitingPage];
+    return [MyConsent, Introduction1, Introduction2, Introduction3, Walkthrough];
 
   }
 
