@@ -9,9 +9,6 @@ export function Game() {
   const game = useGame();
   const round = useRound();
   const { playerCount, featureUrl } = game.get("treatment");
-
-  
-  
   
   useEffect(() => {
     if(game.get("featureData")===undefined) {
@@ -29,9 +26,6 @@ export function Game() {
   //     alert(alertMessage);
   //   }
   // }, [game]); 
-
-  
-  
 
   return (
     <div className="h-full w-full flex">

@@ -1,19 +1,20 @@
 {
-    "search.exclude": {
-        "": true,
-        "**/*.code-search": false,
-        "**/bower_components": false,
-        "**/node_modules": false
-    },
-    "files.exclude": {
-        "**/.DS_Store": false,
-        "**/.git": false,
-        "**/.hg": false,
-        "**/.svn": false,
-        "**/CVS": false,
-        "**/Thumbs.db": false
-    },
-    "search.useGlobalIgnoreFiles": false,
-    "search.useIgnoreFiles": false,
-    "search.useParentIgnoreFiles": false
+  "search.exclude": {
+    "": true,
+    "**/*.code-search": false,
+    "**/bower_components": false,
+    "**/node_modules": false
+  },
+  "files.exclude": {
+    "**/.DS_Store": false,
+    "**/.git": false,
+    "**/.hg": false,
+    "**/.svn": false,
+    "**/CVS": false,
+    "**/Thumbs.db": false
+  },
+  "search.useGlobalIgnoreFiles": false,
+  "search.useIgnoreFiles": false,
+  "search.useParentIgnoreFiles": false,
+  "cSpell.words": ["Empirica"]
 }

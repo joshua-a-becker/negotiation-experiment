@@ -34,7 +34,12 @@ export function Chat({
   const [lastMessageId, setLastMessageId] = useState(null);
   const systemMessagesLengthRef = useRef(systemMessages.length);
 
+  const round = useRound()
 
+  const chat = round.get("chat")
+  console.log('Chat Print Here in Chat' , chat)
+
+ 
 
   const displaySystemMessage = (text, id) => {
 
@@ -53,8 +58,6 @@ export function Chat({
     startTimeRef.current = Date.now();
   }, []);
 
-
-
   useEffect(() => {
     const currentLength = systemMessages.length;
 
@@ -66,10 +69,8 @@ export function Chat({
         setLastMessageId(messageId);
       }
     }
-
     systemMessagesLengthRef.current = currentLength;
   }, [systemMessages.length]);
-
 
   if (!scope || !player) {
     return <LoadingComp />;
@@ -91,6 +92,8 @@ export function Chat({
 
 
   };
+
+
 
   return (
     <div className="h-full w-full flex flex-col">
@@ -170,9 +173,6 @@ function Messages({ props, msgs, playerRole, gameStartTime }) {
 }
 
 
-
-
-
 function MessageComp({ attribute, gameStartTime }) {
 
   const game = useGame();
@@ -200,8 +200,7 @@ function MessageComp({ attribute, gameStartTime }) {
 
   // helper function to calculate points
   const calculatePoints = (selectedFeatures) => {
-
-
+    
     const featureData =
       game.get("featureData") === undefined
         ? undefined

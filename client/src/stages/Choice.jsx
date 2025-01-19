@@ -18,6 +18,7 @@ import "./css/TableStyles.css";
 import CustomModal from "./Modal";
 
 
+
 const getLondonTime = () => {
   const parts = new Intl.DateTimeFormat('en-GB', {
       timeZone: 'Europe/London',
@@ -34,25 +35,19 @@ const getLondonTime = () => {
 }
 
 export function Choice() {
+
   const player = usePlayer();
   const players = usePlayers();
   const round = useRound();
   const game = useGame();
   const treatment = game.get("treatment");
-
   const calculatorRef = useRef();
-
   const { appendSystemMessage } = useChat();
   const timer = useStageTimer();
-
   const playerCount = treatment.playerCount;
-  
   const textRef = useContext(ScrollContext);
-
   const [isMounted, setIsMounted] = useState(false);
-
   const ukTime = new Date().toLocaleString("en-GB", { timeZone: "Europe/London" });
-
   const [forceUpdate, setForceUpdate] = useState(false);
   const [value, setValue] = useState();
 
@@ -93,8 +88,6 @@ export function Choice() {
   
   const ph = round.get("proposalHistory") 
   const latestProposal = ph === undefined ? undefined : ph[Object.keys(ph)[Object.keys(ph).length - 1]]
-  
-
   const latestProposalTimestamp = latestProposal === undefined ? "NA" : latestProposal.timestamp;
 
   
@@ -102,7 +95,7 @@ export function Choice() {
   function calculateRoleScoresFromLatestSubmission(history, features) {
     const roleScores = { role1: 0, role2: 0, role3:0};
     if (history.length > 0) {
-      const latestSubmission = history[history.length - 1]; // 获取最新的提交
+      const latestSubmission = history[history.length - 1]; 
       const productNames = Object.keys(latestSubmission.decisions);
 
       productNames.forEach((name) => {
@@ -130,26 +123,19 @@ export function Choice() {
           "This proposal will earn you a " + (playerScore<0 ? "negative" : "zero") +" bonus, you are not allowed to accept it. Note that if you do not reach agreement, you will still earn the base pay for this task."
         );
         setShowModal(true);
-        
         return;
       }
     }
 
-    const role = player.get("role")
-    
+    const role = player.get("role")  
     const proposalHistory = round.get("proposalHistory")
     proposalHistory[proposalHistory.length-1].formalVote.push( {[role]: vote})
-    
     round.set("proposalHistory", proposalHistory)   
   };
-
-  
-
 
   const informalVoteButtons = () => {
     const valueLine = <>Value to you: <b>£{calculatePoints(latestProposal.decisions).toFixed(2)}</b><br /><br /></>
     const proposer = latestProposal.submitterRole
-
 
     return (
       <>
@@ -218,13 +204,13 @@ export function Choice() {
   }
 
   const calcDisplaySubmit = () => {
+
     // POSSIBLE STATES
     // no proposal | SHOW
     // informal vote open | HIDE
     // informal vote failed | SHOW
     // formal vote open | HIDE
     // formal vote failed | SHOW
-
 
     //  NO PROPOSAL YET
     if(latestProposal===undefined) { 
@@ -252,7 +238,6 @@ export function Choice() {
         return true;
       }
     }
-
     return false;
   }
 
@@ -293,14 +278,10 @@ export function Choice() {
       }      
     }
 
-    // THE INFORMAL VOTE IS COMPLETE
-
-
     // INFORMAL VOTE FAILED
     const informalVoteCount = latestProposal.informalVote
       .flatMap(obj => Object.values(obj))
       .reduce((sum, val) => sum + Number(val), 0);
-
 
     if(informalVoteCount < playerCount) {
       return (
@@ -325,16 +306,10 @@ export function Choice() {
       }      
     }
 
-    // FORMAL VOTE IS COMPLETE
-    
     const formalVoteCount = latestProposal.formalVote
       .flatMap(obj => Object.values(obj))
-      .reduce((sum, val) => sum + Number(val), 0);
-
-
-      
+      .reduce((sum, val) => sum + Number(val), 0); 
       // return <div>Please wait for others to vote</div>;
-
 
     if(formalVoteCount<playerCount) {
       return(
@@ -399,6 +374,32 @@ export function Choice() {
     }
   }, [remainingSeconds, appendSystemMessage]);
 
+  // useEffect(() => {
+  //   if (game.get("reminder-300")) {
+  //     appendSystemMessage({
+  //       id: "reminder-300",
+  //       text: game.get("reminder-300"),
+  //       sender: {
+  //         id: "system",
+  //         name: "System",
+  //         avatar: "",
+  //         role: "System",
+  //       },
+  //     });
+  //   }
+  //   if (game.get("warning-60")) {
+  //     appendSystemMessage({
+  //       id: "warning-60",
+  //       text: game.get("warning-60"),
+  //       sender: {
+  //         id: "system",
+  //         name: "System",
+  //         avatar: "",
+  //         role: "System",
+  //       },
+  //     });
+  //   }
+  // })
 
   const setTotalBonus = (number) => {
     setValue(number);
@@ -432,10 +433,7 @@ export function Choice() {
 
     submission_data.type = "informal";
     submission_data.timestamp = getLondonTime();
-
     const prevProposalHistory = round.get("proposalHistory")
-    
-
     prevProposalHistory.push(submission_data);
     round.set("proposalHistory", prevProposalHistory)
 
