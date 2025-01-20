@@ -1,131 +1,160 @@
 import { ClassicListenersCollector } from "@empirica/core/admin/classic";
-
-
+import { calculatePoints, updatePlayerPoints, getFeatureData } from './helper'
 export const Empirica = new ClassicListenersCollector();
-//import { usePlayer, useGame } from "@empirica/core/player/classic/react";
 
-
+// Game Start Listener
 Empirica.onGameStart(({ game }) => {
+  console.log("🚀 ~ Empirica.onGameStart ~ game:", game)
+
   const treatment = game.get("treatment");
   game.set("agreementHistory", [])
 
-  game.set("alertMessage", "The game has officially started! Get ready!");
-  const { numRounds, informalSubmitDuration, formalSubmitDuration, formalVoteDuration, resultDuration, featureUrl } = treatment;
-  //const { roles,numRounds, informalSubmitDuration,formalSubmitDuration,formalVoteDuration,resultDuration,featureUrl } = treatment;
+  const { numRounds, informalSubmitDuration, formalSubmitDuration, formalVoteDuration } = treatment;
 
-  for (let i = 0; i < numRounds; i++) {
+  for (let i = 1; i <= numRounds; i++) {
     const round = game.addRound({
-      name: `Round ${i + 1}`,
+      name: `Round ${i}`,
     });
+
     round.addStage({ name: "Discussion and Informal Vote", duration: informalSubmitDuration });
     round.addStage({ name: "Formal Proposal", duration: formalSubmitDuration });
     round.addStage({ name: "Formal Vote", duration: formalVoteDuration });
-    // if(numRounds>1) {
-      round.addStage({ name: "Round Summary", duration: 45 });
-    // }
+    round.addStage({ name: "Round Summary", duration: 45 });
   }
 
-  n = game.players.length;
-  shuffledRoles = Array.from({length: n}, (_, i) => i + 1).sort(() => Math.random() - 0.5).map(n => `role${n}`)
+  // Shuffle and assign roles to players
+  const numOfPlayers = game.players.length;
+  const shuffledRoles = Array.from({ length: numOfPlayers }, (_, i) => i + 1)
+    .sort(() => Math.random() - 0.5)
+    .map(n => `role${n}`)
+
+  console.log("🚀 ~ Empirica.onGameStart ~ shuffledRoles:", shuffledRoles)
 
   game.players.forEach((player, index) => {
+
     const roleIndex = index % shuffledRoles.length;
     const role = shuffledRoles[roleIndex];
-    player.set("role", role); 
-    player.set("bonus", [])
 
+    player.set("role", role);
+    player.set("bonus", [])
   });
 
   game.set("submitCount", 0);
   game.set("submissions", []);
   game.set("roundResults", []);
-
 });
 
 
-Empirica.onRoundStart(({ round }) => {
-
-  round.append("messages", {
-    text:'hello',
+// Round Start Listener
+Empirica.onRoundStart(async ({ round }) => {
+  console.log("Round has started!");
+  round.append("chat", {
+    text: `round started`,
     sender: {
-      Time: new Date().toLocaleString("en-GB", { timeZone: "Europe/London" }),
-      id: Date.now(),
-      name: "Notification",
+      Time: Date.now(),
       role: "Notification",
+      name: "Notification",
     },
   });
 
-  console.log("Round has started!");
- 
-  const featureUrl = round.currentGame.get("treatment").featureUrl;
-  
-  if (round.currentGame.get("featureData") === "undefined") {
-    console.log("round start fetch")
-    fetch(featureUrl)
-      .then(response => response.json()) 
-      .then(data => {
-        round.currentGame.set("featureData", data)
-        console.log("done inside roundstart")
-      })
-      .catch(error => console.error("Failed to load features:", error)); 
+  const { featureUrl } = round.currentGame.get("treatment");
+  const featureData = round.currentGame.get("featureData")
+
+  if (featureData === "undefined") {
+    console.log(`Fetching data from ${featureUrl}`)
+
+    try {
+      const response = getFeatureData(featureUrl)
+
+      round.currentGame.set("featureData", response)
+    } catch (error) {
+      console.error("Failed to load features:", error)
+    }
   }
 
-  //round.set("proposalVoteHistory", [])
+  const startTime = Date.now();
+
+  round.set("roundStartTime", startTime);
   round.set("proposalHistory", [])
   round.set("systemMessages", []);
-  const startTime = Date.now();
-  round.set("roundStartTime", startTime);
-  console.log(`Round ${round.get("index")} Start: Round start time set at ${new Date(startTime).toISOString()}`);
+
+  console.log(`Round ${round.get("index")} Start: Round start time set at ${startTime}`);
 });
+
 
 
 Empirica.on("round", "proposalHistory", (ctx, { round, proposalHistory }) => {
+  const { playerCount } = round.currentGame.get("treatment")
 
-  // NOTE:  WE ONLY CARE IF THERE'S A FORMAL VOTE PASSED
-  const playerCount = round.currentGame.get("treatment").playerCount;
-  const latestProposal = proposalHistory[Object.keys(proposalHistory)[Object.keys(proposalHistory).length - 1]]
-  //NO PROPOSAL YET
-  if(!latestProposal) { console.log("no proposal yet"); return; }
-  //A PROPOSAL BUT
-  //THERE WAS NO FORMAL VOTE
-  if(latestProposal.formalVote.length == 0) { console.log("no formal vote"); return; }
-  //A FORMAL VOTE.
-  //DID IT PASS?
+  if (!playerCount) {
+    console.warn("Player count not found in treatment data.");
+    return;
+  }
+
+  // Get the latest proposal
+  const proposalKeys = Object.keys(proposalHistory);
+  const latestProposal = proposalHistory[proposalKeys[proposalKeys.length - 1]];
+
+  if (!latestProposal) {
+    console.log("No proposal yet.");
+    return;
+  }
+
+  if (!latestProposal.formalVote || latestProposal.formalVote.length === 0) {
+    console.log("No formal vote on the latest proposal.");
+    return;
+  }
+
+  // Calculate the total votes in the formal vote
   const formalVoteCount = latestProposal.formalVote
-    .flatMap(obj => Object.values(obj))
+    .flatMap(Object.values)
     .reduce((sum, val) => sum + Number(val), 0);
 
-  if(formalVoteCount==playerCount) {
-    players = round.currentGame.players;
-    round.set("formalPassed",true)
-    console.log("playersubmit")
-    players.forEach(player => { player.stage.set("submit", true) });
-    console.log("success!")
+
+  if (formalVoteCount === playerCount) {
+    console.log("Formal vote passed.");
+    round.set("formalPassed", true);
+
+    round.currentGame.players.forEach(player => {
+      player.stage.set("submit", true);
+    });
+
+    console.log("Players submitted successfully!");
   }
-  
 });
 
+
+// Stage Start Listener
 Empirica.onStageStart(({ stage }) => {
 
   const game = stage.currentGame;
+
   const round = game.currentRound
-  const players = round.currentGame.players;  
-  const treatment = game.get("treatment");
-  const featureData = game.get("featureData") === undefined ? undefined : game.get("featureData")[treatment.scenario];
-  const role1 = featureData === undefined ? "" : featureData.roleNames === undefined ? "" : featureData.roleNames["role1"];
 
-  console.log("Start " + stage.get("name"))
+  const { scenario, playerCount } = game.get("treatment");
+  console.log("🚀 ~ Empirica.onStageStart ~ playerCount:", playerCount)
+  console.log("🚀 ~ Empirica.onStageStart ~ scenario:", scenario)
 
-  if(round.get("formalPassed") & stage.get("name") != "Round Summary") {
-    console.log("playersubmit")
-    players.forEach(player => { player.stage.set("submit", true) });  
-  } 
 
-  console.log("start here")
-  if(stage.get("name") == "Formal Proposal") {
-    console.log("FP here")
+  const featureData = game.get("featureData")?.[scenario];
+  console.log("🚀 ~ Empirica.onStageStart ~ featureData:", featureData)
+
+  const role1 = featureData?.roleNames?.role1 || ""
+  console.log("🚀 ~ Empirica.onStageStart ~ role1:", role1)
+
+  const stageName = stage.get("name")
+  console.log("🚀 ~ Empirica.onStageStart ~ stageName:", stageName)
+
+  const players = round.currentGame.players;
+  console.log("🚀 ~ Empirica.onStageStart ~ players:", players)
+
+  if (round.get("formalPassed") && stageName != "Round Summary") {
+    players.forEach(player => { player.stage.set("submit", true) });
+  }
+
+  if (stageName == "Formal Proposal") {
     round.append("chat", {
-      text: "Time has run out!  " + role1 + " will now make a final proposal.",
+      text: `Time has run out! ${role1} will now make a final proposal.`,
       sender: {
         Time: Date.now(),
         role: "Notification",
@@ -133,164 +162,144 @@ Empirica.onStageStart(({ stage }) => {
       },
     });
   }
-  if(stage.get("name") == "Round Summary") {
 
-    // log round results into game results for exit page
-    const game = round.currentGame
-    const treatment = game.get("treatment");  
-    const treatmentFeatureData = game.get("featureData")[treatment.scenario]
-    const playerCount = treatment.playerCount;
-    const ph = round.get("proposalHistory") 
-    const latestProposal = ph[Object.keys(ph)[Object.keys(ph).length - 1]]
-  
-    const calculatePoints = (selectedFeatures, playerRole) => {
-      
-      const featuresToCalc = treatmentFeatureData.features
-      const pointsReturn = featuresToCalc.reduce((total, feature) => {
-          const isSelected = selectedFeatures[feature.name];
-          const roleBonus = feature.bonus[playerRole] || 0;
-          return (total + (isSelected ? roleBonus : 0));
-      }, 0);
-  
-      return ( Number(pointsReturn.toFixed(1)) );
-    }
+  if (stageName == "Round Summary") {
+    const proposalHistory = round.get("proposalHistory")
+    console.log("🚀 ~ Empirica.onStageStart ~ proposalHistory:", proposalHistory)
+    const latestProposal = proposalHistory[Object.keys(proposalHistory)[Object.keys(proposalHistory).length - 1]]
+    console.log("🚀 ~ Empirica.onStageStart ~ latestProposal:", latestProposal)
 
-    players.forEach(player => { 
+    players.forEach(player => {
+      let playerBonus = calculatePoints(featureData.features, latestProposal?.decisions, player.get("role"))
+      console.log("🚀 ~ Empirica.onStageStart ~ playerBonus:", playerBonus)
 
-      let playerBonus = calculatePoints(latestProposal.decisions, player.get("role") )
       let roundSummary = ""
-      if(latestProposal.formalVote.length < playerCount) {
+
+      if (latestProposal.formalVote.length < playerCount) {
         roundSummary = "Sorry, no vote was completed in time.  You earned no bonus."
-        playerBonus=0
+        playerBonus = 0
       }
 
       const formalVoteCount = latestProposal.formalVote
         .flatMap(obj => Object.values(obj))
         .reduce((sum, val) => sum + Number(val), 0);
 
-      if(formalVoteCount<playerCount) {
-        roundSummary = "Sorry, the vote did not pass, no agreement was reached.  You earned no bonus."
-        playerBonus=0
-      } else if(formalVoteCount==playerCount) {
-        roundSummary = 
-          "Congratulations!  You have reached agreement!<br/><br/>"+
-          "You received an additional bonus from this round: " + playerBonus.toFixed(2)                    
-      }
-      
-      player.round.set("roundSummary", roundSummary)
-      playerBonusList = player.get("bonus")
-      playerBonusList.push({"round": treatmentFeatureData.product_name, "bonus":playerBonus.toFixed(2)})
-      player.set("bonus", playerBonusList)
-    });  
-  }
+      console.log("🚀 ~ Empirica.onStageStart ~ formalVoteCount:", formalVoteCount)
 
+
+      if (formalVoteCount < playerCount) {
+
+        roundSummary = "Sorry, no vote was completed in time. You earned no bonus."
+        playerBonus = 0
+
+      } else if (formalVoteCount == playerCount) {
+
+        roundSummary = `Congratulations! You have reached agreement! You earned an additional bonus: ${playerBonus.toFixed(2)}`;
+      }
+
+      player.round.set("roundSummary", roundSummary)
+      player.set("bonus", [
+        ...player.get("bonus"),
+        { round: featureData?.product_name, bonus: playerBonus.toFixed(2) }
+      ]);
+    });
+  }
 });
 
-Empirica.onStageEnded(({ stage, game }) => {
 
-  console.log("End of stage: " + stage.get("name"))
+// Stage End Listener
+Empirica.onStageEnded(({ stage }) => {
+  const stageName = stage.get("name");
+  const round = stage.round;
+  const roundIndex = round.get("index");
+  const players = stage.currentGame.players;
+  const playerBonusesByRole = round.get("playerBonusesByRole") || {};
 
-  if (stage.get("name") === "Discussion and Informal Vote") {
-    console.log("End of Discussion and Informal Vote stage");
-    const players = stage.currentGame.players;
-    for (const player of players) {
-      const goendTriggeredyes = player.get("goendTriggered");
-      if (goendTriggeredyes) {
-        console.log(`Game ended early due to trigger in Discussion and Informal Vote stage.`);
-        player.set("endearly", true);
-
-        stage.currentGame.end("failed", "end early due to goendTriggered");
-        break;
-      }
-    }
+  if (!players || players.length === 0) {
+    console.log("No players to process in this stage.");
+    return;
   }
 
-  if (stage.get("name") === "Discussion and Informal Vote") {
+  const roundPointsHistory = stage.currentGame.get("RoundPointsHistory") || [];
+  const pass = round.get("pass") || false;
 
-    console.log("End of Discussion and Informal Vote stage");
-    const round = stage.round;
-    const roundIndex = round.get("index");
-    const pass = round.get("pass");
-    const players = stage.currentGame.players;
-    const playerBonusesByRole = round.get("playerBonusesByRole") || {};
+  // Handle "Discussion and Informal Vote" stage
+  if (stageName === "Discussion and Informal Vote") {
 
-    if (!pass) {
+    // Check for early game termination
+
+    for (const player of players) {
+
+      if (player.get("goendTriggered")) {
+        console.log("Game ended early due to trigger in Discussion and Informal Vote stage.");
+
+        player.set("endearly", true);
+        stage.currentGame.end("failed", "end early due to goendTriggered");
+
+        return;
+      }
+    }
+
+    // Reset bonuses if round failed
+    if (!pass && Object.keys(playerBonusesByRole).length > 0) {
       for (const role in playerBonusesByRole) {
         playerBonusesByRole[role] = 0;
       }
     }
 
-    let roundPointsHistory = stage.currentGame.get("RoundPointsHistory") || [];
+    // Update points and round history
+    const updatedHistory = updatePlayerPoints(
+      players,
+      playerBonusesByRole,
+      roundIndex,
+      roundPointsHistory
+    );
 
-    for (const player of players) {
-      
-      const role = player.get("role");
-      const roleName = player.get("name");
-      let totalPoints = playerBonusesByRole[role] || 0;
-      const cumulativePoints = player.get("cumulativePoints") || 0;
-      const updatedCumulativePoints = totalPoints + cumulativePoints;
+    stage.currentGame.set("RoundPointsHistory", [...roundPointsHistory, ...updatedHistory]);
 
-      player.set("roundPoints", totalPoints);
-      player.set("cumulativePoints", updatedCumulativePoints);
-      player.set("RoundPointsHistory", roundPointsHistory);
-
-      roundPointsHistory.push({ roundIndex, totalPoints, roleName, role });
-    }
-
-    stage.currentGame.set("RoundPointsHistory", roundPointsHistory);
-
-    roundPointsHistory.forEach((roundData) => {
-      //console.log(`Round ${roundData.roundIndex + 1}: Rolename: ${roundData.roleName}, Role: ${roundData.role}, Total points: ${roundData.totalPoints}`);
+    console.log("Round Points History:");
+    updatedHistory.forEach(({ roundIndex, roleName, role, totalPoints }) => {
+      console.log(
+        `Round ${roundIndex + 1}: Role Name: ${roleName}, Role: ${role}, Total Points: ${totalPoints}`
+      );
     });
   }
 
-  // only needed for the formal vote
-  if (stage.get("name") !== "Formal Vote") return;
-  
-  const players = stage.currentGame.players;
-  const round = stage.round;
-  const roundIndex = round.get("index");
-  const pass = round.get("pass");
-  const playerBonusesByRole = round.get("playerBonusesByRole") || {};
+  // Handle "Formal Vote" stage
+  if (stageName === "Formal Vote") {
 
-  if (!pass) {
-    for (const role in playerBonusesByRole) {
-      playerBonusesByRole[role] = 0;
+    // Reset bonuses if round failed
+    if (!pass && Object.keys(playerBonusesByRole).length > 0) {
+      for (const role in playerBonusesByRole) {
+        playerBonusesByRole[role] = 0;
+      }
     }
+
+    // Update points and round history
+    const updatedHistory = updatePlayerPoints(
+      players,
+      playerBonusesByRole,
+      roundIndex,
+      roundPointsHistory
+    );
+
+    stage.currentGame.set("RoundPointsHistory", [...roundPointsHistory, ...updatedHistory]);
+
+    console.log("Round Points History:");
+    updatedHistory.forEach(({ roundIndex, roleName, role, totalPoints }) => {
+      console.log(
+        `Round ${roundIndex + 1}: Role Name: ${roleName}, Role: ${role}, Total Points: ${totalPoints}`
+      );
+    });
   }
-
-  let roundPointsHistory = stage.currentGame.get("RoundPointsHistory") || [];
-
-  for (const player of players) {
-
-    const role = player.get("role");
-    const roleName = player.get("name");
-    let totalPoints = playerBonusesByRole[role] || 0;
-    const cumulativePoints = player.get("cumulativePoints") || 0;
-    const updatedCumulativePoints = totalPoints + cumulativePoints;
-
-    player.set("roundPoints", totalPoints);
-    player.set("cumulativePoints", updatedCumulativePoints);
-    player.set("RoundPointsHistory", roundPointsHistory);
-
-    roundPointsHistory.push({ roundIndex, totalPoints, roleName, role });
-  }
-
-  stage.currentGame.set("RoundPointsHistory", roundPointsHistory);
-  console.log("183 Round Points History:");
-  roundPointsHistory.forEach((roundData) => {
-    console.log("185")
-    console.log(`Round ${roundData.roundIndex + 1}: Rolename: ${roundData.roleName}, Role: ${roundData.role}, Total points: ${roundData.totalPoints}`);
-  });
 
 });
 
 Empirica.onRoundEnded(({ round }) => {
-
-  console.log("Round Ended")
   round.currentGame.set("test", 1)
   round.currentGame.set("missingProposal", round.get("missingProposal"))
   round.currentGame.set("pass", round.get("pass"))
 });
 
 Empirica.onGameEnded(({ game }) => { });
+
