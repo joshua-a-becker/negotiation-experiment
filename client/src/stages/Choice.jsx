@@ -342,7 +342,7 @@ export function Choice() {
     }
   }, [latestProposalTimestamp, isMounted]);
 
-  // code for handling countdown reminder notifications
+  //code for handling countdown reminder notifications
   useEffect(() => {
     const reminders = [300, 120];
     if (reminders.includes(remainingSeconds)) {

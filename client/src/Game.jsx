@@ -1,4 +1,4 @@
-import {  useGame, useRound } from "@empirica/core/player/classic/react";
+import {  useGame, useRound ,} from "@empirica/core/player/classic/react";
 import Chat from "./Chat"; // 导入你的Chat组件，假设它和Game.jsx在同一目录
 import React from "react";
 import { Profile } from "./Profile";

@@ -1,13 +1,14 @@
-import { ClassicListenersCollector } from "@empirica/core/admin/classic";
+import { ClassicListenersCollector} from "@empirica/core/admin/classic";
 import { calculatePoints, updatePlayerPoints, getFeatureData } from './helper'
 export const Empirica = new ClassicListenersCollector();
 
 // Game Start Listener
 Empirica.onGameStart(({ game }) => {
-  console.log("🚀 ~ Empirica.onGameStart ~ game:", game)
+  //console.log("🚀 ~ Empirica.onGameStart ~ game:", game)
 
   const treatment = game.get("treatment");
   game.set("agreementHistory", [])
+  
 
   const { numRounds, informalSubmitDuration, formalSubmitDuration, formalVoteDuration } = treatment;
 
@@ -28,7 +29,7 @@ Empirica.onGameStart(({ game }) => {
     .sort(() => Math.random() - 0.5)
     .map(n => `role${n}`)
 
-  console.log("🚀 ~ Empirica.onGameStart ~ shuffledRoles:", shuffledRoles)
+  //console.log("🚀 ~ Empirica.onGameStart ~ shuffledRoles:", shuffledRoles)
 
   game.players.forEach((player, index) => {
 
@@ -47,6 +48,11 @@ Empirica.onGameStart(({ game }) => {
 
 // Round Start Listener
 Empirica.onRoundStart(async ({ round }) => {
+
+  const answerStage = round.stages.find((s) => s.name === "Discussion and Informal Vote");
+
+  console.log(answerStage)
+
   console.log("Round has started!");
   round.append("chat", {
     text: `round started`,
@@ -61,10 +67,10 @@ Empirica.onRoundStart(async ({ round }) => {
   const featureData = round.currentGame.get("featureData")
 
   if (featureData === "undefined") {
-    console.log(`Fetching data from ${featureUrl}`)
+   // console.log(`Fetching data from ${featureUrl}`)
 
     try {
-      const response = getFeatureData(featureUrl)
+      const response = await getFeatureData(featureUrl)
 
       round.currentGame.set("featureData", response)
     } catch (error) {
@@ -78,7 +84,7 @@ Empirica.onRoundStart(async ({ round }) => {
   round.set("proposalHistory", [])
   round.set("systemMessages", []);
 
-  console.log(`Round ${round.get("index")} Start: Round start time set at ${startTime}`);
+  //console.log(`Round ${round.get("index")} Start: Round start time set at ${startTime}`);
 });
 
 
@@ -124,29 +130,38 @@ Empirica.on("round", "proposalHistory", (ctx, { round, proposalHistory }) => {
 });
 
 
+//
+
+
+
 // Stage Start Listener
 Empirica.onStageStart(({ stage }) => {
 
+  const durationSec = stage.get("duration")
+
   const game = stage.currentGame;
 
-  const round = game.currentRound
+  const round = game.currentRound;
+
+  const treatment = game.get("treatment");
+ 
+
+  const { informalSubmitDuration } = treatment;
+
+  console.log("Informal Submit Duration", informalSubmitDuration)
+
 
   const { scenario, playerCount } = game.get("treatment");
-  console.log("🚀 ~ Empirica.onStageStart ~ playerCount:", playerCount)
-  console.log("🚀 ~ Empirica.onStageStart ~ scenario:", scenario)
-
 
   const featureData = game.get("featureData")?.[scenario];
-  console.log("🚀 ~ Empirica.onStageStart ~ featureData:", featureData)
 
   const role1 = featureData?.roleNames?.role1 || ""
-  console.log("🚀 ~ Empirica.onStageStart ~ role1:", role1)
 
   const stageName = stage.get("name")
-  console.log("🚀 ~ Empirica.onStageStart ~ stageName:", stageName)
+  //console.log("🚀 ~ Empirica.onStageStart ~ stageName:", stageName)
 
   const players = round.currentGame.players;
-  console.log("🚀 ~ Empirica.onStageStart ~ players:", players)
+  //console.log("🚀 ~ Empirica.onStageStart ~ players:", players)
 
   if (round.get("formalPassed") && stageName != "Round Summary") {
     players.forEach(player => { player.stage.set("submit", true) });
@@ -165,13 +180,13 @@ Empirica.onStageStart(({ stage }) => {
 
   if (stageName == "Round Summary") {
     const proposalHistory = round.get("proposalHistory")
-    console.log("🚀 ~ Empirica.onStageStart ~ proposalHistory:", proposalHistory)
+    //console.log("🚀 ~ Empirica.onStageStart ~ proposalHistory:", proposalHistory)
     const latestProposal = proposalHistory[Object.keys(proposalHistory)[Object.keys(proposalHistory).length - 1]]
-    console.log("🚀 ~ Empirica.onStageStart ~ latestProposal:", latestProposal)
+    //console.log("🚀 ~ Empirica.onStageStart ~ latestProposal:", latestProposal)
 
     players.forEach(player => {
       let playerBonus = calculatePoints(featureData.features, latestProposal?.decisions, player.get("role"))
-      console.log("🚀 ~ Empirica.onStageStart ~ playerBonus:", playerBonus)
+      //console.log("🚀 ~ Empirica.onStageStart ~ playerBonus:", playerBonus)
 
       let roundSummary = ""
 
@@ -184,7 +199,7 @@ Empirica.onStageStart(({ stage }) => {
         .flatMap(obj => Object.values(obj))
         .reduce((sum, val) => sum + Number(val), 0);
 
-      console.log("🚀 ~ Empirica.onStageStart ~ formalVoteCount:", formalVoteCount)
+      //console.log("🚀 ~ Empirica.onStageStart ~ formalVoteCount:", formalVoteCount)
 
 
       if (formalVoteCount < playerCount) {
@@ -203,7 +218,35 @@ Empirica.onStageStart(({ stage }) => {
         { round: featureData?.product_name, bonus: playerBonus.toFixed(2) }
       ]);
     });
+
   }
+// TIME OUT
+  const reminders = [
+    { time: 180000, message: "BACKEND Reminder: 5 Minutes left." },
+    { time: 240000, message: "BACKEND - Reminder: 2 Minutes left." },
+    { time: 60, message: "BACKEND - WARNING: 1 Minute left. Please finalize your list of proposed features for official voting." },
+  ];
+  
+  reminders.forEach(({ time, message }) => {
+    console.log("DURATION" , durationSec)
+    if (time >= durationSec) return; 
+  
+    const delay = (durationSec - time) * 1000; 
+    console.log("DELAY" , delay)
+  
+    setTimeout(() => {
+      console.log("time out working")
+      round.append("chat", {
+        text: "Time out working",
+        sender: {
+          Time: Date.now(),
+          role: "Notification",
+          name: "Notification",
+        },
+      });
+    }, 5000);
+
+  });
 });
 
 
@@ -214,6 +257,7 @@ Empirica.onStageEnded(({ stage }) => {
   const roundIndex = round.get("index");
   const players = stage.currentGame.players;
   const playerBonusesByRole = round.get("playerBonusesByRole") || {};
+
 
   if (!players || players.length === 0) {
     console.log("No players to process in this stage.");
