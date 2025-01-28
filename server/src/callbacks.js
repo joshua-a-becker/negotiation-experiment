@@ -53,16 +53,6 @@ Empirica.onRoundStart(async ({ round }) => {
 
   console.log(answerStage)
 
-  console.log("Round has started!");
-  round.append("chat", {
-    text: `round started`,
-    sender: {
-      Time: Date.now(),
-      role: "Notification",
-      name: "Notification",
-    },
-  });
-
   const { featureUrl } = round.currentGame.get("treatment");
   const featureData = round.currentGame.get("featureData")
 
@@ -130,12 +120,9 @@ Empirica.on("round", "proposalHistory", (ctx, { round, proposalHistory }) => {
 });
 
 
-//
-
-
 
 // Stage Start Listener
-Empirica.onStageStart(({ stage }) => {
+Empirica.onStageStart( async ({ stage }) => {
 
   const durationSec = stage.get("duration")
 
@@ -222,29 +209,31 @@ Empirica.onStageStart(({ stage }) => {
   }
 // TIME OUT
   const reminders = [
-    { time: 180000, message: "BACKEND Reminder: 5 Minutes left." },
-    { time: 240000, message: "BACKEND - Reminder: 2 Minutes left." },
-    { time: 60, message: "BACKEND - WARNING: 1 Minute left. Please finalize your list of proposed features for official voting." },
+    { time: 300, message: "Reminder: 5 Minutes left." },
+    { time: 120, message: "Reminder: 2 Minutes left." },
+    { time: 60, message: "WARNING: 1 Minute left. Please finalize your list of proposed features for official voting." },
   ];
   
+
   reminders.forEach(({ time, message }) => {
     console.log("DURATION" , durationSec)
-    if (time >= durationSec) return; 
+    // if (time >= durationSec) return; 
   
-    const delay = (durationSec - time) * 1000; 
-    console.log("DELAY" , delay)
+    const del = (durationSec - time) * 1000; 
+    console.log("DELAY" , del)
+
   
     setTimeout(() => {
-      console.log("time out working")
       round.append("chat", {
-        text: "Time out working",
+        text: message,
         sender: {
           Time: Date.now(),
           role: "Notification",
           name: "Notification",
         },
       });
-    }, 5000);
+      Empirica.flush();
+    }, del);
 
   });
 });
