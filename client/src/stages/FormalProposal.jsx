@@ -67,36 +67,36 @@ export function FormalProposal() {
   };
 
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    const reminders = [30];
-    if (reminders.includes(remainingSeconds)) {
-      const minutesLeft = remainingSeconds / 60;
-      appendSystemMessage({
-        id: `reminder-${remainingSeconds}`,
-        text: "Reminder: 30 seconds left.",
-        sender: {
-          id: "system",
-          name: "System",
-          avatar: "",
-          role: "System",
-        }
-      });
-    }
+  //   const reminders = [30];
+  //   if (reminders.includes(remainingSeconds)) {
+  //     const minutesLeft = remainingSeconds / 60;
+  //     appendSystemMessage({
+  //       id: `reminder-${remainingSeconds}`,
+  //       text: "Reminder: 30 seconds left.",
+  //       sender: {
+  //         id: "system",
+  //         name: "System",
+  //         avatar: "",
+  //         role: "System",
+  //       }
+  //     });
+  //   }
 
-    if (remainingSeconds === 10) {
-      appendSystemMessage({
-        id: `warning-${remainingSeconds}`,
-        text: "WARNING: 10 seconds left. please finalize your proposal.",
-        sender: {
-          id: "system",
-          name: "System",
-          avatar: "",
-          role: "System",
-        }
-      });
-    }
-  }, [remainingSeconds, appendSystemMessage]);
+  //   if (remainingSeconds === 10) {
+  //     appendSystemMessage({
+  //       id: `warning-${remainingSeconds}`,
+  //       text: "WARNING: 10 seconds left. please finalize your proposal.",
+  //       sender: {
+  //         id: "system",
+  //         name: "System",
+  //         avatar: "",
+  //         role: "System",
+  //       }
+  //     });
+  //   }
+  // }, [remainingSeconds, appendSystemMessage]);
 
 
 
