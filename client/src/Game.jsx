@@ -1,5 +1,5 @@
 import {  useGame, useRound ,} from "@empirica/core/player/classic/react";
-import Chat from "./Chat"; // 导入你的Chat组件，假设它和Game.jsx在同一目录
+import Chat from "./Chat";
 import React from "react";
 import { Profile } from "./Profile";
 import { Stage } from "./Stage";
@@ -18,14 +18,6 @@ export function Game() {
         .catch(error => console.error("Failed to load features:", error)); 
     }
   }, []);
-
-  // useEffect(() => {
-    
-  //   const alertMessage = game?.get("alertMessage");
-  //   if (alertMessage) {
-  //     alert(alertMessage);
-  //   }
-  // }, [game]); 
 
   return (
     <div className="h-full w-full flex">

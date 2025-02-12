@@ -59,14 +59,6 @@ export function Walkthrough({ next }) {
     setSubmissionData(submission_data)
     player.set("submissionData", submission_data)
     setPlayerMessage("proposed")
-    sendSystemMessage("Good!  Now, even though this is your own proposal, you still need to vote.")
-
-    setTimeout(
-      (sendSystemMessage, myMessage)=>{sendSystemMessage(myMessage)}
-      ,3000
-      ,sendSystemMessage
-      ,"Go ahead and vote on your proposal."
-    )
     setVoteButtonActive(false)
 
   }

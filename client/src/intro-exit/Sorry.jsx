@@ -2,7 +2,7 @@ import React from "react";
 import { useGame, usePlayer, usePlayers, useRound } from "@empirica/core/player/classic/react";
 import  { useEffect, useState } from "react";
 import { Button } from "../components/Button";
-import { useChat } from '../ChatContext'; 
+
 
 export function Sorry({next}) {
 

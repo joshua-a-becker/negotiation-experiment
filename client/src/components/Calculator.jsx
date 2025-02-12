@@ -64,12 +64,41 @@ const Calculator = forwardRef((props, ref) => {
           setTotalPoints(0);
         }
       }));
+      const [data, setData] = useState(null);
+      useEffect(() => {
+        fetch('/client/public/data.json')
+          .then((response) => response.json())
+          .then((json) => setData(json))
+          .catch((error) => console.error('Failed to load JSON:', error));
+      }, []);
+
 
     const handleSubmitProposal = (event) => {
 
-
-
         event.preventDefault();
+        const timestamp = Date.now();  
+        const date = new Date(timestamp);  
+        const hours = date.getHours();  
+        const minutes = date.getMinutes();   
+        const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+        console.log("Formatted Time:", formattedTime);  
+
+      
+        const updatedData = {  
+            ...data,
+            timestamp: timestamp,
+            formattedTime: formattedTime,
+            message: "This is the current time saved in the JSON file."
+        };
+        
+          
+            const json = JSON.stringify(updatedData, null, 4);
+            const blob = new Blob([json], { type: "application/json" });
+            const link = document.createElement("a");
+        
+            link.href = URL.createObjectURL(blob);
+            link.download = "data.json"; 
+            link.click();
 
         if (codeSectionRef.current) {
             codeSectionRef.current.scrollIntoView({ behavior: 'smooth' });

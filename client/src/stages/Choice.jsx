@@ -342,64 +342,6 @@ export function Choice() {
     }
   }, [latestProposalTimestamp, isMounted]);
 
-  //code for handling countdown reminder notifications
-  // useEffect(() => {
-  //   const reminders = [300, 120];
-  //   if (reminders.includes(remainingSeconds)) {
-  //     const minutesLeft = remainingSeconds / 60;
-  //     appendSystemMessage({
-  //       id: `reminder-${remainingSeconds}`,
-  //       text: `Reminder: ${minutesLeft} Minute${minutesLeft > 1 ? "s" : ""
-  //         } left.`,
-  //       sender: {
-  //         id: "system",
-  //         name: "System",
-  //         avatar: "",
-  //         role: "System",
-  //       },
-  //     });
-  //   }
-
-  //   if (remainingSeconds === 60) {
-  //     appendSystemMessage({
-  //       id: `warning-${remainingSeconds}`,
-  //       text: "WARNING: 1 Minute left. Please finalize your list of proposed features for official voting.",
-  //       sender: {
-  //         id: "system",
-  //         name: "System",
-  //         avatar: "",
-  //         role: "System",
-  //       },
-  //     });
-  //   }
-  // }, [remainingSeconds, appendSystemMessage]);
-
-  // useEffect(() => {
-  //   if (game.get("reminder-300")) {
-  //     appendSystemMessage({
-  //       id: "reminder-300",
-  //       text: game.get("reminder-300"),
-  //       sender: {
-  //         id: "system",
-  //         name: "System",
-  //         avatar: "",
-  //         role: "System",
-  //       },
-  //     });
-  //   }
-  //   if (game.get("warning-60")) {
-  //     appendSystemMessage({
-  //       id: "warning-60",
-  //       text: game.get("warning-60"),
-  //       sender: {
-  //         id: "system",
-  //         name: "System",
-  //         avatar: "",
-  //         role: "System",
-  //       },
-  //     });
-  //   }
-  // })
 
   const setTotalBonus = (number) => {
     setValue(number);
@@ -439,8 +381,6 @@ export function Choice() {
 
     /// add proposal to chat history
     /// but onlf if it's toggled!
-
-    console.log("P IN CHAT")
     console.log(treatment.proposalInChat)
     if(treatment.proposalInChat==="yes")
     {
