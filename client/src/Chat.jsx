@@ -81,12 +81,7 @@ function MessageComp({ attribute, gameStartTime }) {
   const game = useGame();
   const treatment = game.get("treatment");
   const player = usePlayer();
-
   const messageTime = new Date(attribute.createdAt);
-
-  // const elapsedTime = Math.floor((messageTime.getTime() - roundStartTime) / 1000);
-  // const relativeTime = humanTimer(elapsedTime);
-
   const elapsedTime = Math.floor((messageTime.getTime() - gameStartTime) / 1000);
   const relativeTime = humanTimer(elapsedTime);
 

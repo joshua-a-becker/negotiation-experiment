@@ -67,45 +67,10 @@ export function FormalProposal() {
   };
 
 
-  // useEffect(() => {
-
-  //   const reminders = [30];
-  //   if (reminders.includes(remainingSeconds)) {
-  //     const minutesLeft = remainingSeconds / 60;
-  //     appendSystemMessage({
-  //       id: `reminder-${remainingSeconds}`,
-  //       text: "Reminder: 30 seconds left.",
-  //       sender: {
-  //         id: "system",
-  //         name: "System",
-  //         avatar: "",
-  //         role: "System",
-  //       }
-  //     });
-  //   }
-
-  //   if (remainingSeconds === 10) {
-  //     appendSystemMessage({
-  //       id: `warning-${remainingSeconds}`,
-  //       text: "WARNING: 10 seconds left. please finalize your proposal.",
-  //       sender: {
-  //         id: "system",
-  //         name: "System",
-  //         avatar: "",
-  //         role: "System",
-  //       }
-  //     });
-  //   }
-  // }, [remainingSeconds, appendSystemMessage]);
-
-
-
   const generateUniqueId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
 
   const handleSubmitProposal = (submission_data) => {
-    
-    console.log("submit")
-
+  
     // check they're allowed to submit!!
     
     const playerScore = calculatePoints(submission_data.decisions)
@@ -124,16 +89,18 @@ export function FormalProposal() {
 
     // get history from server
     const proposalHistory = round.get("proposalHistory")
+    submission_data.isFormal = true; 
 
     // add Role 1 vote to submission (bc default vote=yes)
     submission_data.formalVote.push( {[player.get("role")]: 1})
     submission_data.type = "formal";
     submission_data.timestamp = getLondonTime();
     // add submission to history
+  
     proposalHistory.push(submission_data);
     
     // update server data
-    round.set("proposalHistory", proposalHistory)   
+    round.set("proposalHistory", proposalHistory)  
 
 
     const selectedFeatureNames = ["a","b"] //Object.entries(selectedFeatures).filter(([_, isSelected]) => isSelected).map(([featureName]) => featureName);

@@ -43,6 +43,8 @@ const Calculator = forwardRef((props, ref) => {
         setShowModal(false);
     };
 
+    const [timeArray, setTimeArray] = useState([]);
+
     const desiredFeaturesForRole = features
         .filter(feature => feature.bonus[playerRole] > 0)
         .map(feature => feature.name)
@@ -83,22 +85,8 @@ const Calculator = forwardRef((props, ref) => {
         const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
         console.log("Formatted Time:", formattedTime);  
 
-      
-        const updatedData = {  
-            ...data,
-            timestamp: timestamp,
-            formattedTime: formattedTime,
-            message: "This is the current time saved in the JSON file."
-        };
+        setTimeArray((prevTimes) => [...prevTimes, { timestamp, formattedTime }]);
         
-          
-            const json = JSON.stringify(updatedData, null, 4);
-            const blob = new Blob([json], { type: "application/json" });
-            const link = document.createElement("a");
-        
-            link.href = URL.createObjectURL(blob);
-            link.download = "data.json"; 
-            link.click();
 
         if (codeSectionRef.current) {
             codeSectionRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -110,6 +98,9 @@ const Calculator = forwardRef((props, ref) => {
             }
             return choices;
         }, {});
+
+       
+    
 
         // if nothign selected, alert and do nothing
         console.log("SF - " + selectedFeatures)
@@ -135,6 +126,21 @@ const Calculator = forwardRef((props, ref) => {
         props.handleProposalSubmission(submission_data);
 
 
+    };
+
+    const handleDownload = () => {
+        const updatedData = {
+            times: timeArray,
+            message: "This is the list of saved times."
+        };
+
+        const json = JSON.stringify(updatedData, null, 4);
+        const blob = new Blob([json], { type: "application/json" });
+        const link = document.createElement("a");
+
+        link.href = URL.createObjectURL(blob);
+        link.download = "data.json";
+        link.click();
     };
 
 
@@ -213,7 +219,10 @@ const Calculator = forwardRef((props, ref) => {
 
     return (
         <div className="table-wrapper">
+            <button onClick={handleDownload}>Download Data</button>
+
             {renderCalculator}
+           
             <div>
                 {/* <button onClick={scrollToCodeSection}>scrollToCodeSection</button> */}
                 <pre

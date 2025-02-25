@@ -209,8 +209,8 @@ Empirica.onStageStart( async ({ stage }) => {
   }
 // TIME OUT
   const reminders = [
-    { time: 300, message: "Reminder: 5 Minutes left." },
-    { time: 120, message: "Reminder: 2 Minutes left." },
+    // { time: 300, message: "Reminder: 5 Minutes left." },
+    // { time: 120, message: "Reminder: 2 Minutes left." },
     { time: 60, message: "WARNING: 1 Minute left. Please finalize your list of proposed features for official voting." },
   ];
   
@@ -237,7 +237,6 @@ Empirica.onStageStart( async ({ stage }) => {
 
   });
 });
-
 
 // Stage End Listener
 Empirica.onStageEnded(({ stage }) => {
