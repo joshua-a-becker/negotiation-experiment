@@ -4,6 +4,7 @@ import React from "react";
 import { Profile } from "./Profile";
 import { Stage } from "./Stage";
 import { useEffect} from 'react';
+import  VideoChat  from "./VideoChat.jsx"
 
 export function Game() {
   const game = useGame();
@@ -35,7 +36,8 @@ export function Game() {
 
       {playerCount > 1 && (
         <div className="h-full w-256 border-l flex justify-center items-center">
-          <Chat scope={round} attribute="chat" />
+          <VideoChat />
+          {/*<Chat scope={round} attribute="chat" />*/}
         </div>
       )}
     </div>

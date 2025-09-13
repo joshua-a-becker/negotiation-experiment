@@ -53,6 +53,7 @@ export default function App() {
     //if(isDevelopment) return [WaitingPage];
     //return [Walkthrough, WaitingPage];
     //return [MyConsent];
+    return [];
     return [MyConsent, Introduction1, Introduction2, Introduction3, Walkthrough];
 
   }
