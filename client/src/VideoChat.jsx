@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
-import { useGame, usePlayer } from "@empirica/core/player/classic/react";
+import { useGame, usePlayer, useRound } from "@empirica/core/player/classic/react";
 import DailyIframe from "@daily-co/daily-js";
 
 export default function VideoChat({ playerId, gameId, roundId }) {
@@ -8,34 +8,40 @@ export default function VideoChat({ playerId, gameId, roundId }) {
 
   const game = useGame();
   const player = usePlayer();
+  const round = useRound();
 
-  const roomUrl = game?.get("roomUrl");
+  const roomUrl = game?.get("roomUrl") || round?.get("roomUrl");
   const [remoteStreams, setRemoteStreams] = useState({});
   const [participantNames, setParticipantNames] = useState({});
   const [isRecording, setIsRecording] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [, forceRender] = useState({});
 
+  // Force rerender when roomUrl is undefined to pick up state changes
+  useEffect(() => {
+    let pollCount = 0;
+    const pollForRoomUrl = () => {
+      pollCount++;
+      console.log(`Poll attempt ${pollCount} (${pollCount * 0.5} seconds)`);
+      console.log("Polling - game object:", game);
+      console.log("Polling - round object:", round);
+      console.log("Polling - game roomUrl:", game?.get("roomUrl"));
+      console.log("Polling - round roomUrl:", round?.get("roomUrl"));
+      const currentRoomUrl = game?.get("roomUrl") || round?.get("roomUrl");
+      if (currentRoomUrl) {
+        console.log("Found roomUrl:", currentRoomUrl);
+        return; // Found it! Stop polling
+      }
+      // Still undefined - force rerender and poll again
+      console.log("forcing rerender");
+      forceRender({});
+      setTimeout(pollForRoomUrl, 500);
+    };
 
-  // const [roomUrl, setRoomUrl] = useState(null);
-
-  // Self-sustaining poll that doesn't depend on game reactivity
-  // useEffect(() => {
-  //   console.log("start polling")
-  //   const pollForRoomUrl = () => {
-  //     console.log("poll")
-  //     console.log(`game url: ${game?.get("roomUrl")}`)
-  //     const currentRoomUrl = game?.get("roomUrl");
-  //     if (currentRoomUrl && currentRoomUrl !== roomUrl) {
-  //       setRoomUrl(currentRoomUrl);
-  //       return; // Stop polling once found
-  //     }
-  //     // Schedule next poll
-  //     setTimeout(pollForRoomUrl, 1000);
-  //   };
-    
-  //   // Start polling immediately
-  //   pollForRoomUrl();
-  // }, []); // Empty deps - runs once and sustains itself
+    if (!roomUrl) {  // Only start polling if undefined
+      pollForRoomUrl();
+    }
+  }, []); // Run once on mount
 
   // Prevents "Duplicate DailyIframe instances are not allowed" in dev
   const Daily = useMemo(() => {

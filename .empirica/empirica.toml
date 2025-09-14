@@ -6,4 +6,5 @@ srtoken = "EFFzTZenCWLbFmLh"
 [[tajriba.auth.users]]
 name = "Admin"
 username = "admin"
-password = "BTsZEInS"
+password = "catscats"
+oldpassword = "BTsZEInS"

@@ -51,41 +51,40 @@ Empirica.onGameStart(({ game }) => {
 
 Empirica.onRoundStart(({ round }) => {
 
-  // video chat setup
+  // video chat setup - block until room creation completes
     const DAILY_API_KEY = process.env.DAILY_API_KEY || 'deae19f779b8882a97600cd2ba3a1f254074bd8a7c819ebae3b2e0188bc96657';
-    
-    // Create the room asynchronously but don't await it in the callback
+
     console.log("Game ID: " + round.currentGame.id)
     console.log("Round ID: " + round.id)
-    createDailyRoom({
-      apiKey: DAILY_API_KEY,
-      gameId: round.currentGame.id,
-      roundId: round.id,
-      durationMinutes: 30, // Room expires in 30 minutes
-      // enableRecording: true,
-      enable_recording: "raw-tracks",
-      privacy: 'public' // Keep as public for now since owner_only_broadcast is off
-    })
-    .then(room => {
+
+    try {
+      const room = createDailyRoom({
+        apiKey: DAILY_API_KEY,
+        gameId: round.currentGame.id,
+        roundId: round.id,
+        durationMinutes: 30, // Room expires in 30 minutes
+        // enableRecording: true,
+        enable_recording: "raw-tracks",
+        privacy: 'public' // Keep as public for now since owner_only_broadcast is off
+      });
+
       // Store the room URL in the game data so your React component can access it
       round.currentGame.set("roomUrl", room.url);
       round.set("roomUrl", room.url)
       round.currentGame.set("roomName", room.name);
       round.currentGame.set("roomExpiry", room.config.exp);
-      
-      console.log(`Room created for game ${round.currentGame}, round ${round.id}: ${room.url}`);
-    })
-    .catch(error => {
+
+      console.log(`Room created for game ${round.currentGame.id}, round ${round.id}: ${room.url}`);
+    } catch (error) {
       console.error('Failed to create Daily.co room:', error);
-      
+
       // Fallback: set a default room or handle the error
       // You might want to set a fallback room URL here
       console.log('Using fallback room configuration');
       // game.set("roomUrl", "https://negotiate.daily.co/fallback-room");
-    });
-    
-    // The callback returns immediately while room creation happens in the background
-    console.log('Room creation initiated for round:', round.id);
+    }
+
+    console.log('Room creation completed for round:', round.id);
 
   // standard game setup
   const featureUrl = round.currentGame.get("treatment").featureUrl;
