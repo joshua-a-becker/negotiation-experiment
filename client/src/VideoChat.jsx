@@ -16,6 +16,27 @@ export default function VideoChat({ playerId, gameId, roundId }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
 
+  // const [roomUrl, setRoomUrl] = useState(null);
+
+  // Self-sustaining poll that doesn't depend on game reactivity
+  // useEffect(() => {
+  //   console.log("start polling")
+  //   const pollForRoomUrl = () => {
+  //     console.log("poll")
+  //     console.log(`game url: ${game?.get("roomUrl")}`)
+  //     const currentRoomUrl = game?.get("roomUrl");
+  //     if (currentRoomUrl && currentRoomUrl !== roomUrl) {
+  //       setRoomUrl(currentRoomUrl);
+  //       return; // Stop polling once found
+  //     }
+  //     // Schedule next poll
+  //     setTimeout(pollForRoomUrl, 1000);
+  //   };
+    
+  //   // Start polling immediately
+  //   pollForRoomUrl();
+  // }, []); // Empty deps - runs once and sustains itself
+
   // Prevents "Duplicate DailyIframe instances are not allowed" in dev
   const Daily = useMemo(() => {
     if (typeof window !== "undefined") {
@@ -36,6 +57,7 @@ export default function VideoChat({ playerId, gameId, roundId }) {
     if (!callObject) {
       console.log("Creating Daily call object.");
       callObject = Daily.createCallObject();
+ 
     } else {
       console.log("Reusing existing Daily call object.");
     }
@@ -48,6 +70,11 @@ export default function VideoChat({ playerId, gameId, roundId }) {
       const participants = callObject.participants();
       const local = participants.local;
 
+    // Debug: Log all participant data
+    console.log("handling join")
+    console.log("All participants:", participants);
+     console.log("Local participant user_name:", participants.local?.user_name);
+
       if (local) {
         setParticipantNames((prev) => ({
           ...prev,
@@ -56,7 +83,20 @@ export default function VideoChat({ playerId, gameId, roundId }) {
       }
 
       try {
-        await callObject.startRecording();
+        await callObject.startRecording({
+          type: "cloud",
+            layout: {
+              preset: 'custom',
+              composition_params: {
+                'videoSettings.showParticipantLabels': true,
+                // 'videoSettings.labels.fontFamily': 'Exo',
+                // 'videoSettings.labels.fontWeight': '500',
+                // 'videoSettings.labels.fontSize_pct': 100,
+                // 'videoSettings.labels.color': 'white',
+                // 'videoSettings.labels.strokeColor': 'rgba(0, 0, 0, 0.9)'
+              },
+            },  
+        });
         setIsRecording(true);
         console.log("Recording started in Daily Cloud.");
       } catch (err) {
@@ -123,6 +163,7 @@ export default function VideoChat({ playerId, gameId, roundId }) {
     // Join only if not already joining/joined
     // Join with retry logic
     const joinWithRetry = async (attempt = 1) => {
+      console.log("tryin to join")
       const state = callObject.meetingState?.();
       if (state === "joining" || state === "joined") {
         console.log("Already in meeting state:", state);
@@ -131,7 +172,11 @@ export default function VideoChat({ playerId, gameId, roundId }) {
       
       try {
         console.log(`Joining meeting at: ${roomUrl} (attempt ${attempt})`);
-        await callObject.join({ url: roomUrl });
+        console.log(`Player name: ${player.get("role")}`)
+        await callObject.join({ 
+          url: roomUrl
+          , userName: player.get("role")
+         });
       } catch (error) {
         console.error(`Join attempt ${attempt} failed:`, error);
         if (attempt < 10) {

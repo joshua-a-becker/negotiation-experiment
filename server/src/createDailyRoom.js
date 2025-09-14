@@ -35,12 +35,15 @@ export async function createDailyRoom({
         exp: expirationTime,
         
         // Enable cloud recording if requested
-        enable_recording: enableRecording ? 'cloud' : false,
+        enable_recording: 'cloud',
         
         // Useful settings for research/negotiation contexts
         enable_chat: true,
         enable_people_ui: true,
         enable_prejoin_ui: false, // Skip the waiting room
+
+        // This shows names on video tiles
+        enable_network_ui: true,
         
         // Automatically start/stop camera and mic
         start_video_off: false,
@@ -56,10 +59,12 @@ export async function createDailyRoom({
         // max_participants: 10,
         
         // Enable screen sharing
-        enable_screenshare: true,
+        enable_screenshare: false,
         
         // Useful for research: prevent participants from joining before room is ready
         // not_before: Math.floor(Date.now() / 1000), // Uncomment if needed
+
+
       }
     };
 

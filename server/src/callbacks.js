@@ -62,12 +62,14 @@ Empirica.onRoundStart(({ round }) => {
       gameId: round.currentGame.id,
       roundId: round.id,
       durationMinutes: 30, // Room expires in 30 minutes
-      enableRecording: true,
+      // enableRecording: true,
+      enable_recording: "raw-tracks",
       privacy: 'public' // Keep as public for now since owner_only_broadcast is off
     })
     .then(room => {
       // Store the room URL in the game data so your React component can access it
       round.currentGame.set("roomUrl", room.url);
+      round.set("roomUrl", room.url)
       round.currentGame.set("roomName", room.name);
       round.currentGame.set("roomExpiry", room.config.exp);
       
@@ -340,6 +342,10 @@ Empirica.onRoundEnded(({ round }) => {
 Empirica.onGameEnded(({ game }) => { });
 
 
+// Trigger re-renders when videochat is ready
+Empirica.on("round", "roomUrl", (ctx, { round, roomUrl }) => {
+  console.log("Room URL updated:", roomUrl);
+});
 
 Empirica.on("round", "watchValue", (ctx, { round, watchValue }) => {
 

@@ -180,7 +180,7 @@ treatments:
         formalVoteDuration: 50000
         informalSubmitDuration: 1000
         numRounds: 1
-        playerCount: 2
+        playerCount: 3
         proposalInChat: "yes"
         scenario: pilot_easy_scaled
         settingsUrl: SET_THIS
